@@ -6,7 +6,7 @@ existing in ones possession will return results of recipes that can be made from
 It will also work in reverse, where recipes can be looked up which allows the \
 user to avoid scrolling through __annoying__ pages of ads and unnecessary text found on most recipe websites.
 
-> Lets Get It :octocat:
+> Let's Get It :octocat:
 
 ```
 console.log(Hello World)
