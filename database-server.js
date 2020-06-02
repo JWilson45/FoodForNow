@@ -8,7 +8,10 @@ app.get('/', (req, res) => {
 })
 
 app.get('/juan', (req, res) => {
-  res.sendFile('./images/juan.jpg')
+  res.sendfile('./images/juan.jpg')
+})
+app.get('/jake', (req, res) => {
+  res.sendfile('./images/jake.jpg')
 })
 
 app.listen(port, () => console.log(`Server listening on port ${port}`));
