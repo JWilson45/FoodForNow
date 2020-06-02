@@ -14,4 +14,4 @@ console.log(Hello World)
 
 *This is a __tab__ friendly environment*
 
-[Things like this do now phase us.](https://insanelab.com/blog/notes/spaces-vs-tabs/)
+[Things like this do not phase us.](https://insanelab.com/blog/notes/spaces-vs-tabs/)
