@@ -7,6 +7,7 @@ const app = express();
 const port = 3307;
 
 app.use(bodyParser.json());
+app.use(express.static('client/public'));
 
 app.get('/', (req, res) => {
   res.send("What up. We in devolopment baby.")
@@ -15,13 +16,13 @@ app.get('/', (req, res) => {
 app.get('/juan', (req, res) => {
   console.log('Juan Sent');
   res.sendFile('juan.jpg', {
-    root: './images'
+    root: './client/public/images'
   })
 })
 app.get('/jake', (req, res) => {
   console.log('Jake Sent');
   res.sendFile('jake.jpg', {
-    root: './images'
+    root: './client/public/images'
   })
 })
 
