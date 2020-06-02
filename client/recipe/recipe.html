@@ -10,10 +10,23 @@
   </head>
 
   <body>
-
-      <h1>The Recipe Finder</h1>
-      <div class="bg"></div>
+    <h1>The Recipe Finder</h1>
+    <h2>This is where you will add new recipes to the database</h2>
+    <form action="/recipe" method="post">
+      <label for="rName">Recipe name:</label><br>
+      <input type="text" id="rName" name="rName"><br><br>
+      <label for="cookTime">Cook Time:</label><br>
+      <input type="text" id="cookTime" name="cookTime"><br><br>
+      <label for="prepTime">Preparation Time:</label><br>
+      <input type="text" id="prepTime" name="prepTime"><br><br>
+      <label for="totalTime">Total Time:</label><br>
+      <input type="text" id="totalTime" name="totalTime"><br><br>
+      <label for="servings">Servings:</label><br>
+      <input type="text" id="servings" name="servings"><br><br>
+      <input type="submit" value="Submit">
+    </form>
 
   </body>
 
 </html>
+<!--recipe name, cook time, prep time, total time, servings, directions, ingredients -->
