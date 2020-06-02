@@ -10,7 +10,10 @@ app.use(bodyParser.json());
 app.use(express.static('client/public'));
 
 app.get('/', (req, res) => {
-  res.send("What up. We in devolopment baby.")
+  // res.send("What up. We in devolopment baby.")
+  res.sendFile('recipe.html', {
+    root: './client/views'
+  })
 })
 
 app.get('/juan', (req, res) => {
