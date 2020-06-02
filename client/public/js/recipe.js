@@ -11,12 +11,11 @@ fetch(url, {
       'Content-type': 'application/json'
     },
      body: JSON.stringify({
-    rName: ,
-    cTime: ,
-    pTime: ,
-    tTime: ,
-    servings: ,
-    submit: ,
+    rName: rName.innerHTML,
+    cTime: cTime.innerHTML,
+    pTime: pTime.innerHTML,
+    tTime: tTime.innerHTML,
+    servings: servings.innerHTML,
   })
 })
 .then(function (data) {
