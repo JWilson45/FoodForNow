@@ -22,7 +22,7 @@ con.connect(function(err) {
       if (err) throw err;
       console.log(result);
       res.setHeader('Content-Type', 'application/json');
-      res.send(id);
+      res.status(200).send(id.toString());
     })
   con.end();
 });
