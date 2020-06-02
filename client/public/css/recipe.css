@@ -1,0 +1,26 @@
+body {
+  background-color: #000000;
+  font-size: 15px;
+  color: #FFFFFF;
+}
+<<<<<<< HEAD:client/recipe/main.css
+h1 {
+  color: #FFFFFF;
+  text-align: center;
+  font-size: 40px;
+}
+h2 {
+  color: color: #FFFFFF;
+  font-size: 25px;
+=======
+.bg {
+  /* image used */
+  background-image: url("/images/bg.jpg");
+  /* height used */
+  height: 100%;
+  /* Center and scale the image nicely */
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+>>>>>>> d9cb273f6d407211a9ec305e428e5a8798c341e8:client/public/css/recipe.css
+}
