@@ -9,6 +9,10 @@ submit.addEventListener("click", function() {
   console.log('Hello World');
 });
 
+function test() {
+  console.log(rName.value);  
+}
+
 function sendData() {
 
   fetch('/recipe', {
@@ -17,11 +21,11 @@ function sendData() {
         'Content-type': 'application/json'
       },
        body: JSON.stringify({
-      rName: rName.innerHTML,
-      cTime: cTime.innerHTML,
-      pTime: pTime.innerHTML,
-      tTime: tTime.innerHTML,
-      servings: servings.innerHTML,
+      rName: rName.value,
+      cTime: cTime.value,
+      pTime: pTime.value,
+      tTime: tTime.value,
+      servings: servings.value,
     })
   })
   .then(function (data) {
