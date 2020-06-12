@@ -1,7 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 
-const db = require('./dataAccess/getRecipe');
+const db = require('./controllers/database-controller');
 
 const app = express();
 const port = 3307;
