@@ -15,7 +15,7 @@
     <form name="dataInput" onsubmit="event.preventDefault(); sendData()">
       <separator> FOR RECIPE <br><br> </separator>
       <label for="rName">Recipe Name:</label><br>
-      <input type="text" id="rName" name="rName"><br><br>
+      <input type="text" id="rName" name="rName" required><br><br>
       <label for="cookTime">Cook Time:</label><br>
       <input type="text" id="cookTime" name="cookTime"><br><br>
       <label for="prepTime">Preparation Time:</label><br>
@@ -27,11 +27,23 @@
       <br>
       <separator> FOR INGREDIENTS <br><br> </separator>
       <label for="iName">Ingredient Name:</label><br>
-      <input type="text" id="iName" name="iName"><br><br>
+      <input type="text" id="iName" name="iName" required><br><br>
       <label for="iColor">Ingredient Color:</label><br>
       <input type="text" id="iColor" name="iColor"><br><br>
-      <label for="iCategory">Ingredient Category:</label><br>
-      <input type="text" id="iCategory" name="iCategory"><br><br>
+      <!-- DROPDOWN MENU FOR INGREDIENT CATEGORY -->
+      <label for="iCategory">Ingredient Category</label>
+      <select name="iCategory" id="iCategory" required>
+        <option value="" disabled selected>Select your option</option>
+        <option value="vegetable">Vegetable</option>
+        <option value="fat">Fat</option>
+        <option value="noodle">Noodle</option>
+        <option value="bread">Bread</option>
+        <option value="dairy">Dairy</option>
+        <option value="protein">Protein</option>
+      </select>
+      <br><br>
+      <!-- <label for="iCategory">Ingredient Category:</label><br>
+      <input type="text" id="iCategory" name="iCategory"><br><br> -->
 
       <input type="submit" value="Submit" id="submit">
   </insL>
@@ -43,3 +55,4 @@
 </html>
 <!--recipe name, cook time, prep time, total time, servings, directions, ingredients -->
 <!-- data fields for ingredients: name, color and category(dropdown for this one) -->
+<!-- fat, noodle, bread, dairy, protein -->
