@@ -5,6 +5,9 @@ const cTime = document.getElementById('cookTime');
 const pTime = document.getElementById('prepTime');
 const tTime = document.getElementById('totalTime');
 const servings = document.getElementById('servings');
+const iName = document.getElementById('iName');
+const iColor = document.getElementById('iColor');
+const iCategory = document.getElementById('iCategory');
 const submit = document.getElementById('submit');
 
 // submit.addEventListener("click", function() {
@@ -21,7 +24,10 @@ function sendData() {
     '"cTime": "' + cTime.value + '",' +
     '"pTime": "' + pTime.value + '",' +
     '"tTime": "' + tTime.value + '",' +
-    '"servings": "' + servings.value + '" ' +
+    '"servings": "' + servings.value + '",' +
+    '"iName": "' + iName.value + '",' +
+    '"iColor": "' + iColor.value + '",' +
+    '"iCategory": "'b+ iCategory.value + '"' +
     '}'
 
   fetch('/recipe', {

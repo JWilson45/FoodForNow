@@ -13,7 +13,8 @@
     <h1>The Recipe Finder</h1>
     <h2>This is where you will add new recipes to the database</h2>
     <form name="dataInput" onsubmit="event.preventDefault(); sendData()">
-      <label for="rName">Recipe name:</label><br>
+      <separator> FOR RECIPE <br><br> </separator>
+      <label for="rName">Recipe Name:</label><br>
       <input type="text" id="rName" name="rName"><br><br>
       <label for="cookTime">Cook Time:</label><br>
       <input type="text" id="cookTime" name="cookTime"><br><br>
@@ -23,8 +24,17 @@
       <input type="text" id="totalTime" name="totalTime"><br><br>
       <label for="servings">Servings:</label><br>
       <input type="text" id="servings" name="servings"><br><br>
+      <br>
+      <separator> FOR INGREDIENTS <br><br> </separator>
+      <label for="iName">Ingredient Name:</label><br>
+      <input type="text" id="iName" name="iName"><br><br>
+      <label for="iColor">Ingredient Color:</label><br>
+      <input type="text" id="iColor" name="iColor"><br><br>
+      <label for="iCategory">Ingredient Category:</label><br>
+      <input type="text" id="iCategory" name="iCategory"><br><br>
+
       <input type="submit" value="Submit" id="submit">
-    </form>
+  </insL>
 
   <script src="/js/recipe.js"></script>
   <script src="/js/global.js"></script>
@@ -32,3 +42,4 @@
 
 </html>
 <!--recipe name, cook time, prep time, total time, servings, directions, ingredients -->
+<!-- data fields for ingredients: name, color and category(dropdown for this one) -->
