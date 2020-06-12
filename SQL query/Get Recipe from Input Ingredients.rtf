@@ -17,4 +17,4 @@ LEFT JOIN Ingredients i\
 ON i.IngredientsID = cf.IngredientsID\
 WHERE i.name IN ('chicken','sour cream') \
 GROUP BY r.name\
-HAVING COUNT(*) = 2 }
+HAVING COUNT(i.name) = 2 }
