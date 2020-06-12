@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
 
-    <title> Recipe Finder</title>
+    <title>Create New Recipe</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" href="/css/recipe.css">
@@ -12,7 +12,7 @@
   <body>
     <h1>The Recipe Finder</h1>
     <h2>This is where you will add new recipes to the database</h2>
-    <form action="/recipe" method="post">
+    <form name="dataInput" onsubmit="event.preventDefault(); test()">
       <label for="rName">Recipe name:</label><br>
       <input type="text" id="rName" name="rName"><br><br>
       <label for="cookTime">Cook Time:</label><br>
@@ -23,9 +23,10 @@
       <input type="text" id="totalTime" name="totalTime"><br><br>
       <label for="servings">Servings:</label><br>
       <input type="text" id="servings" name="servings"><br><br>
-      <input type="submit" value="Submit">
+      <input type="submit" value="Submit" id="submit">
     </form>
 
+  <script src="/js/recipe.js"></script>
   </body>
 
 </html>

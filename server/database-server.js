@@ -1,7 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 
-const db = require('./dataAccess/getRecipe');
+const db = require('./controllers/database-controller');
 
 const app = express();
 const port = 3307;
@@ -29,6 +29,10 @@ app.get('/jake', (req, res) => {
   })
 })
 
-app.route('/recipe').get(db.getRecipe)
+app.route('/recipe').get(db.getRecipe).post(db.inputRecipe)
+
+app.route('/').get(function() {
+  console.log('YE');
+})
 
 app.listen(port, () => console.log(`Server listening on port ${port}`));
