@@ -20,22 +20,26 @@ exports.getRecipe = function(req, res) {
     "cf.IngredientsID WHERE cf.recipeID = "+ id +";",
     function(err, result) {
       if (err) throw err;
-      // console.log(result);
-      //
-      // for (var i = 0; i < result.length; i++) {
-      //   console.log(result[i].name);
-      // }
 
       res.setHeader('Content-Type', 'application/json');
       res.status(200).send(result);
+
     })
   con.end();
 });
 }
 
-exports.inputRecipe = function (req, res) {
+exports.inputRecipe = function(req, res) {
   console.log('recieved');
   console.log(req.body);
+
+  console.log(req.body.rName);
+  console.log(req.body.cTime);
+  console.log(req.body.pTime);
+  console.log(req.body.tTime);
+  console.log(req.body.servings);
+
+  res.send('recieved');
 
   // con.connect(function(err) {
   //   if (err) throw err;
