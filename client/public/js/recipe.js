@@ -27,7 +27,7 @@ function sendData() {
     '"servings": "' + servings.value + '",' +
     '"iName": "' + iName.value + '",' +
     '"iColor": "' + iColor.value + '",' +
-    '"iCategory": "'b+ iCategory.value + '"' +
+    '"iCategory": "'+ iCategory.value + '"' +
     '}'
 
   fetch('/recipe', {
