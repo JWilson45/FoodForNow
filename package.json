@@ -1,0 +1,24 @@
+{
+  "name": "foodfornow",
+  "version": "0.0.1",
+  "description": "Make food easier to consume.",
+  "main": "./server/database-server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JWilson45/FoodForNow.git"
+  },
+  "author": "Jason Wilson",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/JWilson45/FoodForNow/issues"
+  },
+  "homepage": "https://github.com/JWilson45/FoodForNow#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "mysql": "^2.18.1"
+  }
+}
