@@ -11,7 +11,7 @@ import express from 'express'
 
 // var credentials = {key: privateKey, cert: certificate};
 const app = express();
-const HTTP_PORT = process.env.HTTP_PORT
+const HTTP_PORT = process.env.HTTP_PORT || 8080
 
 // your express configuration here
 

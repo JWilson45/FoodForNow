@@ -2,7 +2,7 @@
   "name": "foodfornow",
   "version": "0.0.1",
   "description": "Food",
-  "main": "./dist/main.js",
+  "main": "./dist/src/main.js",
   "scripts": {
     "test": "npx jest",
     "db": "brew services run mongodb",
