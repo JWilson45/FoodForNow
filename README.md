@@ -12,7 +12,7 @@ Will suggest recipes that match what you have in your kitchen. Users can enter t
 
 At some point it will give groceries shopping suggestions and show the meals that can be made if they pick up a certain ingredient. If you want to make a certain meal, you can have it add anything that you don't already have in your house. you can also add anything you want to the grouchier list... of course. And share that list with others
 
-Sharing will have to be seamless, if its hard to share lists with others then whats the point. It should export to textto iMessage or email or whatever and link to the app. it would be cool if it could export a bullet list to notes, or have an iMessage widget with an updating checklist. Have to have widgets for the home screen
+Sharing will have to be seamless, if its hard to share lists with others then whats the point. It should export to text    to iMessage or email or whatever and link to the app. it would be cool if it could export a bullet list to notes, or have an iMessage widget with an updating checklist. Have to have widgets for the home screen
 
 
 There will need to be a way to easily remove items from your kitchen, not making it a labor intensive task to go through every item in your kitchen if you have a lot.
