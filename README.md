@@ -2,7 +2,7 @@
 
 ## Summary of Idea
 
-Food for now will be a way to easily store recipes that you like, and all of the individual ingredients and proportions that are needed to recreate it.
+Food for now will be a way to easily store recipes that you like, and all of the individual ingredients and proportions that are needed to create it.
 
 Will be able to rename the ingredients, or name the ingredients whatever they want. If they choose to nickname it, the original name of the ingredient will be preserved. Then when matching a recipe with ingredients, it will use the actual ingredient name instead of the nickname. Maybe it will also look for the nickname. Suggest multiple recipes if they both match different recipes.
 
