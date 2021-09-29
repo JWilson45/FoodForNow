@@ -14,6 +14,9 @@ const app = express();
 const HTTP_PORT = process.env.HTTP_PORT || 8080
 
 // your express configuration here
+app.use(express.static('public'))
+
+
 
 const HTTP_SERVER = http.createServer(app);
 // var httpsServer = https.createServer(credentials, app);
