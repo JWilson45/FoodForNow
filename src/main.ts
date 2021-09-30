@@ -1,9 +1,9 @@
-import db from './models/database'
 // import 'fs'
 import http from 'http'
 // import 'https'
 import express from 'express'
 
+import { getUsers } from './controllers/user'
 // Load environment variables
 
 
@@ -19,11 +19,7 @@ app.use(express.static('public'))
 
 
 app.route('/users')
-.get((req, res) =>
-  {res.send('Users')
-})
-
-db()
+.get(getUsers)
 
 
 const HTTP_SERVER = http.createServer(app);
