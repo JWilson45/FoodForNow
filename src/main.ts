@@ -18,6 +18,11 @@ const HTTP_PORT = process.env.HTTP_PORT || 8080
 app.use(express.static('public'))
 
 
+app.route('/users')
+.get((req, res) =>
+  {res.send('Users')
+})
+
 db()
 
 

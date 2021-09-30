@@ -8,7 +8,7 @@ module.exports = {
         exec_mode : "cluster",
         env: {
           "NODE_ENV": "development",
-          "HTTP_PORT": 8080,
+          "HTTP_PORT": 6969,
           "HTTPS_PORT": 3443
         },
         env_production: {
