@@ -1,3 +1,4 @@
+import db from './models/database'
 // import 'fs'
 import http from 'http'
 // import 'https'
@@ -16,6 +17,8 @@ const HTTP_PORT = process.env.HTTP_PORT || 8080
 // your express configuration here
 app.use(express.static('public'))
 
+
+db()
 
 
 const HTTP_SERVER = http.createServer(app);
