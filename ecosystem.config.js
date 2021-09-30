@@ -2,13 +2,13 @@ module.exports = {
   apps : [
       {
         name: "Food For Now",
-        script: ".",
+        script: "tsc && ./dist/src/main.js",
         watch: true,
         instances : "1",
         exec_mode : "cluster",
         env: {
           "NODE_ENV": "development",
-          "HTTP_PORT": 6969,
+          "HTTP_PORT": 8080,
           "HTTPS_PORT": 3443
         },
         env_production: {
