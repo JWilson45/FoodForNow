@@ -1,6 +1,8 @@
 import db from "../models/database";
+import { Request, Response } from 'express'
 
-export async function getUsers(req: Request, res: any) {
+
+export async function getUsers(req: Request, res: Response) {
 
 
   const results = await db(gettheuser, res)
@@ -19,4 +21,9 @@ export async function getUsers(req: Request, res: any) {
   }
 
 
+}
+
+
+export function test(req: Request, res: Response) {
+  res.send('Hello from the default exported thing to make things super simple')
 }
