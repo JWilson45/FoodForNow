@@ -12,7 +12,7 @@ import User_Routes from "./routes/user_router";
 
 
 // Place routes into an iterable
-const routes = [
+const Routes = [
   User_Routes
 ]
 
@@ -37,7 +37,7 @@ const HTTP_PORT = process.env.HTTP_PORT || 8080
 const app = express();
 
 // for each route in the iterable, pass the express app to enable the routes
-routes.forEach(route => {
+Routes.forEach(route => {
   route(app)
 });
 
