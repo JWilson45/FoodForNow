@@ -9,11 +9,13 @@ import express from 'express'
  *
  *------------------------------------*/
 import User_Routes from "./routes/user_router";
+import Ingredient_Routes from "./routes/ingredient_router";
 
 
 // Place routes into an iterable
 const Routes = [
-  User_Routes
+  User_Routes,
+  Ingredient_Routes,
 ]
 
 
