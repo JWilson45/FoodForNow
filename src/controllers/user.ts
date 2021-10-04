@@ -2,7 +2,7 @@ import db from "../models/database";
 import { Request, Response } from 'express'
 
 
-export async function getUsers(req: Request, res: Response) {
+export async function getUser(req: Request, res: Response) {
 
 
   const results = await db(gettheuser, res)
