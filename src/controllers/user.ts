@@ -12,11 +12,11 @@ export async function getUsers(req: Request, res: Response) {
 
     async function gettheuser(collections: any) {
 
-    const users = await collections['user'].find({})
+    const user = await collections['user'].find({})
 
-    console.log(users);
+    console.log(user);
 
-    return users
+    return user
 
   }
 
