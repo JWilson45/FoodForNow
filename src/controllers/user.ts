@@ -5,16 +5,14 @@ import { Request, Response } from 'express'
 export async function getUser(req: Request, res: Response) {
 
 
-  const results = await db(gettheuser, res)
+  const results = await db(gettheuser)
 
   res.send(results)
 
 
     async function gettheuser(collections: any) {
 
-    const user = await collections['user'].find({})
-
-    console.log(user);
+    const user = await collections['user'].find({}).toArray()
 
     return user
 

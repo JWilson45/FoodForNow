@@ -5,14 +5,14 @@ import { Request, Response } from 'express'
 export async function getIngredient(req: Request, res: Response) {
 
 
-  const results = await db(gettheIngredient, res)
+  const results = await db(gettheIngredient)
 
   res.send(results)
 
 
     async function gettheIngredient(collections: any) {
 
-    const ingredient = await collections['ingredient'].find({})
+    const ingredient = await collections['ingredient'].find({}).toArray()
 
     console.log(ingredient);
 

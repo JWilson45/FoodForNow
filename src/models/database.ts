@@ -34,28 +34,28 @@ const uri: string =
   "mongodb+srv://node:node@foodfornow.7xizm.mongodb.net?retryWrites=true&writeConcern=majority";
 // Create a new MongoClient
 const client = new MongoClient(uri);
-export default async function run(command: Function, res: any) {
+export default async function run(command: Function) {
   try {
     // Connect the client to the server
     await client.connect();
     // Establish and verify connection
     const database = client.db('foodfornow');
 
-    // const collections = {
-    //   ingredient: database.collection('Ingredient'),
-    //   groceries: database.collection('Ingredient'),
-    //   meal: database.collection('meal'),
-    //   recipe: database.collection('Recipe'),
-    //   user: database.collection('User')
-    // }
+    const collections = {
+      ingredient: database.collection('Ingredient'),
+      groceries: database.collection('Ingredient'),
+      meal: database.collection('meal'),
+      recipe: database.collection('Recipe'),
+      user: database.collection('User')
+    }
 
 
-    const usercollection = database.collection('User');
+    // const usercollection = database.collection('User');
 
 
-    const result = await usercollection.find({}).toArray()
+    // const result = await usercollection.find({}).toArray()
 
-    res.send(result)
+    // res.send(result)
 
     //   (err, result) => {
     //
@@ -67,14 +67,14 @@ export default async function run(command: Function, res: any) {
     //   // }
     // })
 
-    // command(collections)
-
-    console.log("Connected successfully to server");
+    return await command(collections)
 
   } catch(error) {
     console.error(error)
   } finally {
     // Ensures that the client will close when you finish/error
     await client.close();
+    console.log("Connection Closed");
+
   }
 }
