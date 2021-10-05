@@ -28,10 +28,13 @@
 //   Mongoose.disconnect();
 // };
 
-const { MongoClient } = require("mongodb");
+import { MongoClient } from 'mongodb'
 // Connection URI
 const uri: string =
-  "mongodb+srv://node:node@foodfornow.7xizm.mongodb.net?retryWrites=true&writeConcern=majority";
+`mongodb+srv://${process.env.DATABASE_USERNAME}:${process.env.DATABASE_PASSWORD}@${process.env.DATABASE_LOCATION}`
+
+console.log(uri);
+
 // Create a new MongoClient
 const client = new MongoClient(uri);
 export default async function run(command: Function) {

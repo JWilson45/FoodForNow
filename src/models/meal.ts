@@ -10,7 +10,9 @@ class Meal {
   mealTime: string;
   owner: ObjectId
 
-  constructor(_id: string, name: string, description: string, recipes: Array<Object>, dateCreated: Date, dateUpdated: Date, mealTime: string, owner: ObjectId ) {
+  constructor(_id: string, name: string, description: string,
+    recipes: Array<Object>, dateCreated: Date, dateUpdated: Date,
+    mealTime: string, owner: ObjectId ) {
 
     // Create a new objectid object from a string... good for code reuse
     this._id = new ObjectId(_id)
