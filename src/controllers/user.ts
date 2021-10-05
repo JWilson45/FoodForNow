@@ -17,7 +17,7 @@ export async function getUser(req: Request, res: Response) {
 
 
   async function gettheuser(collections: any) {
-    
+
     const userList: Array<User> = []
 
     await collections['user'].find({}).forEach((doc) => {

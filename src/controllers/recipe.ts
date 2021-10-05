@@ -10,7 +10,7 @@ export async function getRecipe(req: Request, res: Response) {
   res.send(results)
 
 
-    async function gettherecipe(collections: any) {
+  async function gettherecipe(collections: any) {
 
     const recipe = await collections['recipe'].find({}).toArray()
 
