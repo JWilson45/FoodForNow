@@ -44,28 +44,10 @@ export default async function run(command: Function) {
     const collections = {
       ingredient: database.collection('Ingredient'),
       groceries: database.collection('Ingredient'),
-      meal: database.collection('meal'),
+      meal: database.collection('Meal'),
       recipe: database.collection('Recipe'),
       user: database.collection('User')
     }
-
-
-    // const usercollection = database.collection('User');
-
-
-    // const result = await usercollection.find({}).toArray()
-
-    // res.send(result)
-
-    //   (err, result) => {
-    //
-    //   // if (err) {
-    //   //   res.sendStatus(500)
-    //   //   console.error(err)
-    //   // } else {
-    //   //   res.send(result)
-    //   // }
-    // })
 
     return await command(collections)
 
