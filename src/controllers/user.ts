@@ -16,14 +16,14 @@ export async function getUser(req: Request, res: Response) {
   res.send(results)
 
 
-    async function gettheuser(collections: any) {
-
+  async function gettheuser(collections: any) {
+    
     const userList: Array<User> = []
 
     await collections['user'].find({}).forEach((doc) => {
 
-        userList.push(new User(doc._id, doc.fisrtname, doc.lastname, doc.username,
-          doc.displayname, doc.email, doc.password, doc.sex, doc.gender))
+      userList.push(new User(doc._id, doc.fisrtname, doc.lastname, doc.username,
+        doc.displayname, doc.email, doc.password, doc.sex, doc.gender))
 
     })
 

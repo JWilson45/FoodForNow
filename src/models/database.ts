@@ -51,7 +51,7 @@ export default async function run(command: Function) {
 
     return await command(collections)
 
-  } catch(error) {
+  } catch (error) {
     console.error(error)
   } finally {
     // Ensures that the client will close when you finish/error
