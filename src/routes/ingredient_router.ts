@@ -1,9 +1,10 @@
-import { getIngredient, test } from '../controllers/ingredient'
+import { getIngredient } from '../controllers/ingredient'
+
+const ROUTE = "/ingredients"
 
 export default function ingredientRoutes(app) {
 
-  app.get('/test', test)
-
-  app.get('/ingredient', getIngredient)
+  app.get(ROUTE, getIngredient)
+  // app.post(ROUTE, createIngredient)
 
 }

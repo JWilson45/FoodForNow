@@ -5,7 +5,7 @@ class Ingredient {
   name: string;
   //image: image,
   description: string;
-  calories: number
+  calories: number;
 
   constructor(_id: string, name: string, description: string, calories: number) {
 

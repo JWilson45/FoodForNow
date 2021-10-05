@@ -1,4 +1,12 @@
 import { ObjectId } from "mongodb";
+import Ingredient from './ingredient'
+
+// Interface that extends ingredient so we can store all ingredient data and
+// amount + unit in the ingredients key value pair
+interface RecipeIngredients extends Ingredient {
+  amount: string
+  unit: string
+}
 
 class Recipe {
   _id: ObjectId;
@@ -7,18 +15,18 @@ class Recipe {
   alias: string;
   description: string;
   instructions: Array<string>;
-  ingredients: Array<Object>
+  ingredients: Array<RecipeIngredients>;
   isPublic: boolean;
-  dateCreated: Date
+  dateCreated: Date;
   dateUpdated: Date;
   type: string;
-  mealTime: string
+  mealTime: string;
 
 
   constructor(_id: string, owner: string, name: string, alias: string,
-    description: string, instructions: Array<string>, ingredients: Array<Object>, 
-    isPublic: boolean,dateCreated: Date, dateUpdated: Date,
-    type: string, mealTime: string) {
+    description: string, instructions: Array<string>,
+    ingredients: Array<RecipeIngredients>, isPublic: boolean,dateCreated: Date,
+    dateUpdated: Date, type: string, mealTime: string) {
 
     // Create a new objectid object from a string... good for code reuse
     this._id = new ObjectId(_id)
@@ -36,7 +44,5 @@ class Recipe {
   }
 
 }
-
-
 
 export default Recipe

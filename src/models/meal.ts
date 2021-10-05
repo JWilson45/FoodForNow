@@ -1,16 +1,17 @@
 import { ObjectId } from "mongodb";
+import Recipe from './recipe'
 
 class Meal {
   _id: ObjectId;
   name: string;
   description: string;
-  recipes: Array<Object>;
+  recipes: Array<Recipe>;
   dateCreated: Date;
   dateUpdated: Date;
   mealTime: string;
   owner: ObjectId
 
-  constructor(_id: string, name: string, description: string, recipes: Array<Object>,
+  constructor(_id: string, name: string, description: string, recipes: Array<Recipe>,
     dateCreated: Date, dateUpdated: Date, mealTime: string, owner: ObjectId ) {
 
     // Create a new objectid object from a string... good for code reuse

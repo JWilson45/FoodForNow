@@ -22,8 +22,3 @@ export async function getIngredient(req: Request, res: Response) {
 
 
 }
-
-
-export function test(req: Request, res: Response) {
-  res.send('Hello from the default exported thing to make things super simple')
-}
