@@ -1,5 +1,6 @@
 import { MongoClient } from 'mongodb'
 // Connection URI
+// The process.env property returns an object containing the user environment
 const uri: string =
   `mongodb+srv://${process.env.DATABASE_USERNAME}:${process.env.DATABASE_PASSWORD}@${process.env.DATABASE_LOCATION}`
 
