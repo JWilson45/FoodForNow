@@ -35,41 +35,44 @@ export async function createNewUser(req: Request, res: Response) {
 
   const body = req.body
 
+
+// check the body for request errors
   if (!body) {
     res.status(300).send("Body is required for this route.")
     return
   } else {
     let message: string = "Required fields left blank: ["
-    let errored: boolean = false
+    let badRequest: boolean = false
 
     if (!body.firstname) {
       message += " firstname "
-      errored = true
+      badRequest = true
     }
     if (!body.lastname) {
       message += " lastname "
-      errored = true
+      badRequest = true
     }
     if (!body.username) {
       message += " username "
-      errored = true
+      badRequest = true
     }
     if (!body.password) {
       message += " password "
-      errored = true
+      badRequest = true
     }
     if (!body.email) {
       message += " email "
-      errored = true
+      badRequest = true
     }
 
     console.log(body);
 
 
 
-    if (errored === true) {
+    if (badRequest === true) {
       message += "]"
       res.status(300).send(message)
+      return
     }
   }
 
