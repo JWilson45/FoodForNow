@@ -1,9 +1,9 @@
-import { getUser, test } from '../controllers/user'
+import { getUser, createNewUser } from '../controllers/user'
 
 export default function userRoutes(app) {
 
-  app.get('/test', test)
-
-  app.get('/user', getUser)
+  app.route('/user')
+  .get(getUser)
+  .post(createNewUser)
 
 }

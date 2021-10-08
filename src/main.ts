@@ -45,13 +45,14 @@ const HTTP_PORT = process.env.HTTP_PORT || 8080
 
 const app = express();
 
+// your express configuration here
+app.use(express.static('public'))
+app.use(express.json());
+
 // for each route in the iterable, pass the express app to enable the routes
 Routes.forEach(route => {
   route(app)
 });
-
-// your express configuration here
-app.use(express.static('public'))
 
 
 const HTTP_SERVER = http.createServer(app);

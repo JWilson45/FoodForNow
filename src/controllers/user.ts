@@ -4,10 +4,6 @@ import { Request, Response } from 'express'
 import User from "../models/user";
 
 
-const jason = new User('6153c5f91647639b2fa518b5', "Jason", "Wilson", "jwil", 'jwil', 'password', 'json', true, 'USPS')
-
-console.log(jason);
-
 export async function getUser(req: Request, res: Response) {
 
 
@@ -17,7 +13,7 @@ export async function getUser(req: Request, res: Response) {
 
 
   async function gettheuser(collections: any) {
-    
+
     const userList: Array<User> = []
 
     await collections['user'].find({}).forEach((doc) => {
@@ -35,7 +31,78 @@ export async function getUser(req: Request, res: Response) {
 
 }
 
+export async function createNewUser(req: Request, res: Response) {
 
-export function test(req: Request, res: Response) {
-  res.send('Hello from the default exported thing to make things super simple')
+  const body = req.body
+
+  if (!body) {
+    res.status(300).send("Body is required for this route.")
+    return
+  } else {
+    let message: string = "Required fields left blank: ["
+    let errored: boolean = false
+
+    if (!body.firstname) {
+      message += " firstname "
+      errored = true
+    }
+    if (!body.lastname) {
+      message += " lastname "
+      errored = true
+    }
+    if (!body.username) {
+      message += " username "
+      errored = true
+    }
+    if (!body.password) {
+      message += " password "
+      errored = true
+    }
+    if (!body.email) {
+      message += " email "
+      errored = true
+    }
+
+    console.log(body);
+
+
+
+    if (errored === true) {
+      message += "]"
+      res.status(300).send(message)
+    }
+  }
+
+  console.log(req.body);
+
+
+  const NEW_USER = {
+    firstname: body.firstname, // required
+    lastname: body.lastname,  // required
+    username: body.username, // required
+    displayname: body.displayname || body.username,
+    email: body.email, // required
+    password: body.password, // required
+    sex: body.sex || false,
+    gender: body.gender || 'FexEx',
+    profilepicture: null
+  }
+
+  const result = await db(uploadUser)
+
+  console.log(result);
+
+  res.send(result)
+
+
+  async function uploadUser(collections: any) {
+    const result = await collections['user'].insertOne(NEW_USER)
+
+    return result
+  }
+
+  //   new User(body._id, body.firstname, body.lastname,
+  // body.username, body.displayname, body.email, body.password, body.sex, body.gender)
+
+
 }
