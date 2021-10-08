@@ -1,7 +1,7 @@
 import { MongoClient } from 'mongodb'
 // Connection URI
 const uri: string =
-`mongodb+srv://${process.env.DATABASE_USERNAME}:${process.env.DATABASE_PASSWORD}@${process.env.DATABASE_LOCATION}`
+  `mongodb+srv://${process.env.DATABASE_USERNAME}:${process.env.DATABASE_PASSWORD}@${process.env.DATABASE_LOCATION}`
 
 // Create a new MongoClient
 const client = new MongoClient(uri);

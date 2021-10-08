@@ -25,7 +25,7 @@ class Recipe {
 
   constructor(_id: string, owner: string, name: string, alias: string,
     description: string, instructions: Array<string>,
-    ingredients: Array<RecipeIngredients>, isPublic: boolean,dateCreated: Date,
+    ingredients: Array<RecipeIngredients>, isPublic: boolean, dateCreated: Date,
     dateUpdated: Date, type: string, mealTime: string) {
 
     // Create a new objectid object from a string... good for code reuse
