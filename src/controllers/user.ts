@@ -4,6 +4,12 @@ import { Request, Response } from 'express'
 import User from "../models/user";
 
 
+
+/**************************************************
+ *
+ *                  Get New User
+ *
+***************************************************/
 export async function getUser(req: Request, res: Response) {
 
 
@@ -31,12 +37,19 @@ export async function getUser(req: Request, res: Response) {
 
 }
 
+
+/**************************************************
+ *
+ *                  Create New User
+ *
+***************************************************/
+
 export async function createNewUser(req: Request, res: Response) {
 
   const body = req.body
 
 
-// check the body for request errors
+  // check the body for request errors
   if (!body) {
     res.status(300).send("Body is required for this route.")
     return
@@ -98,6 +111,8 @@ export async function createNewUser(req: Request, res: Response) {
   res.send(result)
 
 
+
+  // Database Interaction Function
   async function uploadUser(collections: any) {
     const result = await collections['user'].insertOne(NEW_USER)
 
