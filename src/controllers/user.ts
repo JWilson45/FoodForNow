@@ -7,7 +7,7 @@ import User from "../models/user";
 
 /**************************************************
  *
- *                  Get New User
+ *                    Get User
  *
 ***************************************************/
 export async function getUser(req: Request, res: Response) {
@@ -84,7 +84,7 @@ export async function createNewUser(req: Request, res: Response) {
 
     if (badRequest === true) {
       message += "]"
-      res.status(300).send(message)
+      res.status(400).send(message)
       return
     }
   }
@@ -122,5 +122,30 @@ export async function createNewUser(req: Request, res: Response) {
   //   new User(body._id, body.firstname, body.lastname,
   // body.username, body.displayname, body.email, body.password, body.sex, body.gender)
 
+
+}
+
+
+export async function deleteUser(req: Request, res: Response) {
+
+  const body = req.body
+
+  if(!body) {
+    res.status(300).send("Body is required for this route.")
+    return
+  }
+
+
+  const USER = {
+    _id :body._id
+  }
+
+  await db(removeUser)
+
+  res.send(200)
+
+  async function removeUser(collections: any) {
+    await collections['user'].deleteOne(USER)
+  }
 
 }

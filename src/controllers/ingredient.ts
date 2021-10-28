@@ -1,7 +1,11 @@
 import db from "../models/database";
 import { Request, Response } from 'express'
 
-
+/**************************************************
+ *
+ *                  Get Ingredient
+ *
+***************************************************/
 export async function getIngredient(req: Request, res: Response) {
 
 
@@ -20,5 +24,14 @@ export async function getIngredient(req: Request, res: Response) {
 
   }
 
+
+}
+
+/**************************************************
+ *
+ *               Create New Ingredient
+ *
+***************************************************/
+export async function createIngredient(req: Request, res: Response) {
 
 }
