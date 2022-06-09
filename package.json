@@ -4,6 +4,7 @@
   "description": "Food",
   "main": "./dist/src/main.js",
   "scripts": {
+    "build": "tsc",
     "test": "npx jest",
     "db": "brew services run mongodb",
     "prestart": "tsc",
