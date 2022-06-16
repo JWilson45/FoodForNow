@@ -20,3 +20,11 @@ There will need to be a way to easily remove items from your kitchen, not making
 Items in kitchen will be stored on users phone unless they allow us to store them in the cloud.
 
 Sign in with apple is the only simple sign in to start, also have a standard email password setup.
+
+
+## Start the React app
+
+```bash
+cd foodfornow/my-app
+npm start
+```
