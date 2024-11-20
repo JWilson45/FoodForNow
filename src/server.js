@@ -3,7 +3,6 @@ const express = require('express');
 // Load environment variables
 require('dotenv').config();
 
-
 /*-------------------------------------
  *
  *            Import Routes
@@ -37,6 +36,6 @@ app.use('/recipes', recipeRouter);
 
 // Start the HTTP server
 app.listen(PORT, async () => {
-  await connectDB()
+  await connectDB();
   console.log(`Server listening on port ${PORT}`);
 });
