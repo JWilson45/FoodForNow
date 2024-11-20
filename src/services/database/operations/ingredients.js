@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const Recipe = require('../models/recipe');
 
-async function getMostCommonRecipesForIngredient(ingredientId) {
+const getMostCommonRecipesForIngredient = async (ingredientId) => {
   try {
     const result = await Recipe.aggregate([
       {
@@ -37,7 +37,7 @@ async function getMostCommonRecipesForIngredient(ingredientId) {
     console.error('Error fetching common recipes:', error);
     throw error;
   }
-}
+};
 
 module.exports = {
   getMostCommonRecipesForIngredient,
