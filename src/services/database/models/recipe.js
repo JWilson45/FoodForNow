@@ -16,11 +16,12 @@ const RecipeIngredientSchema = new Schema({
     type: String,
     required: true,
     trim: true,
+    // Add enum if units are predefined for consistency:
     // enum: ['grams', 'cups', 'tablespoons', 'teaspoons', 'pieces', 'other'],
   },
   notes: {
     type: String,
-    trim: true,
+    trim: true, // Optional preparation notes like "chopped", "boiled"
   },
 });
 
@@ -51,7 +52,7 @@ const RecipeSchema = new Schema(
       required: true,
     },
     ingredients: {
-      type: [RecipeIngredientSchema], // Embedded sub-schema
+      type: [RecipeIngredientSchema],
       validate: {
         validator: (v) => Array.isArray(v) && v.length > 0,
         message: 'A recipe must have at least one ingredient.',
@@ -80,11 +81,11 @@ const RecipeSchema = new Schema(
       required: true,
     },
     prepTime: {
-      type: Number, // in minutes
+      type: Number,
       required: true,
     },
     cookTime: {
-      type: Number, // in minutes
+      type: Number,
       required: true,
     },
     calories: {
@@ -96,7 +97,7 @@ const RecipeSchema = new Schema(
     },
   },
   {
-    timestamps: true, // Automatically add createdAt and updatedAt fields
+    timestamps: true, // Automatically manage createdAt and updatedAt
   }
 );
 
@@ -105,7 +106,7 @@ RecipeSchema.virtual('totalTime').get(function () {
   return this.prepTime + this.cookTime;
 });
 
-// Index for querying performance
+// Indexing for performance optimization
 RecipeSchema.index({ owner: 1 });
 RecipeSchema.index({ isPublic: 1 });
 RecipeSchema.index({ tags: 1 });

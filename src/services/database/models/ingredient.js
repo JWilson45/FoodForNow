@@ -1,6 +1,5 @@
 const { Schema, model } = require('mongoose');
 
-// Create the Mongoose schema for Ingredient
 const IngredientSchema = new Schema(
   {
     name: {
@@ -16,13 +15,8 @@ const IngredientSchema = new Schema(
       type: Number,
     },
     image: {
-      type: Buffer,
-      trim: true,
-    },
-    unit: {
-      type: String,
-      trim: true,
-      // enum: ['grams', 'cups', 'tablespoons', 'teaspoons', 'pieces', 'other'],
+      type: Buffer, // Or URL if scalability is a concern
+      required: false,
     },
     nutritionalInfo: {
       fat: { type: Number },
@@ -32,7 +26,7 @@ const IngredientSchema = new Schema(
     },
   },
   {
-    timestamps: true,
+    timestamps: true, // Automatically add createdAt and updatedAt
   }
 );
 
