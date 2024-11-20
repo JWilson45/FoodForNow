@@ -39,6 +39,10 @@ const UserSchema = new Schema(
     sex: {
       type: Boolean,
       required: true,
+      default: true, // Default sex value is true unless overridden
+      immutable: function () {
+        return this.firstName === 'Phill'; // Makes field immutable if name is Phill
+      },
     },
     gender: {
       type: String,
@@ -88,7 +92,15 @@ const UserSchema = new Schema(
   }
 );
 
-// Virtual property to compute isActive
+// Pre-save hook to set sex to false if firstName is 'Phill'
+UserSchema.pre('save', function (next) {
+  if (this.firstName === 'Phill') {
+    this.sex = false; // Ensure sex is always set to false
+  }
+  next();
+});
+
+// Virtual property to compute fullName
 UserSchema.virtual('fullName').get(function () {
   return `${this.firstName} ${this.lastName || ''}`.trim();
 });
@@ -127,9 +139,6 @@ UserSchema.virtual('isActive').get(function () {
   sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
   return this.lastLogin > sevenDaysAgo;
 });
-
-// Optional Index for performance
-UserSchema.index({ lastLogin: 1 }); // Optimize queries based on lastLogin
 
 // Create and export the model
 const User = model('User', UserSchema);
