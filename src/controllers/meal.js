@@ -1,4 +1,4 @@
-const Meal = require("../models/meal");
+const Meal = require("../services/database/models/meal");
 
 /**************************************************
  *

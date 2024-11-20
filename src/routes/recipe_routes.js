@@ -1,9 +1,12 @@
-import { getRecipe, test } from '../controllers/recipe'
+const express = require('express');
+const { test, getRecipe } = require('../controllers/recipe'); // Adjust the path as needed
 
-export default function ingredientRoutes(app) {
+const recipeRouter = express.Router();
 
-  app.get('/test', test)
+// Define your routes
+recipeRouter.get('/test', test);
 
-  app.get('/recipe', getRecipe)
+recipeRouter.get('/recipe', getRecipe);
 
-}
+// Export the router
+module.exports = recipeRouter;

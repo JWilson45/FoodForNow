@@ -1,9 +1,11 @@
-import { getMeal, test } from '../controllers/meal'
+const express = require('express');
+const { getMeal, test } = require('../controllers/meal'); // Adjust the path as needed
 
-export default function mealRoutes(app) {
+const mealRouter = express.Router();
 
-  app.get('/test', test)
+// Define your routes
+mealRouter.get('/test', test);
+mealRouter.get('/meal', getMeal);
 
-  app.get('/meal', getMeal)
-
-}
+// Export the router
+module.exports = mealRouter;

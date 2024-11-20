@@ -1,4 +1,4 @@
-const Ingredient = require("../models/ingredient");
+const Ingredient = require("../services/database/models/ingredient");
 
 /**************************************************
  *
