@@ -16,15 +16,13 @@ const IngredientSchema = new Schema(
       type: Number,
     },
     image: {
-      type: Buffer, // Store image data as binary
-    },
-    quantity: {
-      type: Number,
-      default: 1,
+      type: Buffer,
+      trim: true,
     },
     unit: {
       type: String,
       trim: true,
+      // enum: ['grams', 'cups', 'tablespoons', 'teaspoons', 'pieces', 'other'],
     },
     nutritionalInfo: {
       fat: { type: Number },
@@ -34,11 +32,10 @@ const IngredientSchema = new Schema(
     },
   },
   {
-    timestamps: true, // Automatically add createdAt and updatedAt fields
+    timestamps: true,
   }
 );
 
-// Create and export the model
 const Ingredient = model('Ingredient', IngredientSchema);
 
 module.exports = Ingredient;

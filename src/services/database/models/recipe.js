@@ -1,9 +1,30 @@
 const { Schema, model, Types } = require('mongoose');
 
-// Import Ingredient schema (assuming it's defined in ingredient.js)
-const Ingredient = require('./ingredient');
+// Sub-schema for recipe-specific ingredient details
+const RecipeIngredientSchema = new Schema({
+  ingredientId: {
+    type: Types.ObjectId,
+    ref: 'Ingredient',
+    required: true,
+  },
+  amount: {
+    type: Number,
+    required: true,
+    min: [0, 'Amount must be a positive number'],
+  },
+  unit: {
+    type: String,
+    required: true,
+    trim: true,
+    // enum: ['grams', 'cups', 'tablespoons', 'teaspoons', 'pieces', 'other'],
+  },
+  notes: {
+    type: String,
+    trim: true,
+  },
+});
 
-// Create the Mongoose schema for Recipe
+// Main recipe schema
 const RecipeSchema = new Schema(
   {
     owner: {
@@ -23,40 +44,22 @@ const RecipeSchema = new Schema(
     description: {
       type: String,
       trim: true,
+      maxLength: 1000,
     },
     instructions: {
       type: [String],
       required: true,
     },
-    ingredients: [
-      {
-        ingredient: {
-          type: Ingredient.schema, // Assuming Ingredient is a Mongoose model
-          required: true,
-        },
-        amount: {
-          type: String,
-          required: true,
-          trim: true,
-        },
-        unit: {
-          type: String,
-          required: true,
-          trim: true,
-        },
+    ingredients: {
+      type: [RecipeIngredientSchema], // Embedded sub-schema
+      validate: {
+        validator: (v) => Array.isArray(v) && v.length > 0,
+        message: 'A recipe must have at least one ingredient.',
       },
-    ],
+    },
     isPublic: {
       type: Boolean,
       default: false,
-    },
-    dateCreated: {
-      type: Date,
-      default: Date.now,
-    },
-    dateUpdated: {
-      type: Date,
-      default: Date.now,
     },
     type: {
       type: String,
@@ -65,10 +68,12 @@ const RecipeSchema = new Schema(
     mealTime: {
       type: String,
       trim: true,
+      enum: ['breakfast', 'lunch', 'dinner', 'snack', 'dessert'],
     },
     cuisine: {
       type: String,
       trim: true,
+      enum: ['italian', 'chinese', 'mexican', 'indian', 'american', 'other'],
     },
     servings: {
       type: Number,
@@ -82,16 +87,12 @@ const RecipeSchema = new Schema(
       type: Number, // in minutes
       required: true,
     },
-    totalTime: {
-      type: Number, // in minutes
-      required: true,
-    },
     calories: {
       type: Number,
     },
     tags: {
       type: [String],
-      trim: true,
+      set: (tags) => tags.map((tag) => tag.trim().toLowerCase()),
     },
   },
   {
@@ -99,7 +100,18 @@ const RecipeSchema = new Schema(
   }
 );
 
-// Create and export the model
+// Virtual to compute total time
+RecipeSchema.virtual('totalTime').get(function () {
+  return this.prepTime + this.cookTime;
+});
+
+// Index for querying performance
+RecipeSchema.index({ owner: 1 });
+RecipeSchema.index({ isPublic: 1 });
+RecipeSchema.index({ tags: 1 });
+RecipeSchema.index({ 'ingredients.ingredientId': 1 });
+RecipeSchema.index({ isPublic: 1, tags: 1 });
+
 const Recipe = model('Recipe', RecipeSchema);
 
 module.exports = Recipe;
