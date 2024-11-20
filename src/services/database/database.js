@@ -1,19 +1,13 @@
 const mongoose = require('mongoose');
 
 // Connection URI
-const uri = `mongodb+srv://${encodeURIComponent(process.env.DATABASE_USERNAME)}:${encodeURIComponent(process.env.DATABASE_PASSWORD)}@${process.env.DATABASE_LOCATION}/?retryWrites=true&w=majority`;
+const uri = `mongodb+srv://${encodeURIComponent(process.env.DATABASE_USERNAME)}:${encodeURIComponent(process.env.DATABASE_PASSWORD)}@${process.env.DATABASE_URI}/?authSource=admin&retryWrites=true&w=majority&appName=FoodForNowRecipes`;
 
-async function connectDB() {
+const connectDB = async () => {
   console.log('Attempting to connect to MongoDB...');
   
   try {
-    await mongoose.connect(uri, {
-      useNewUrlParser: true,     // Parses MongoDB connection strings properly.
-      useUnifiedTopology: true,  // Uses the new Server Discover and Monitoring engine.
-      useCreateIndex: true,      // Ensures indexes are created.
-      useFindAndModify: false,   // Uses native findOneAndUpdate() instead of deprecated one.
-    });
-
+    await mongoose.connect(uri); // Simplified connection with defaults.
     console.log("Connected to MongoDB server via Mongoose");
   } catch (error) {
     console.error('Error connecting to MongoDB:', error);

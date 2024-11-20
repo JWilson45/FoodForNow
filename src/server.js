@@ -37,6 +37,6 @@ app.use('/recipes', recipeRouter);
 
 // Start the HTTP server
 app.listen(PORT, async () => {
-  // await connectDB()
+  await connectDB()
   console.log(`Server listening on port ${PORT}`);
 });
