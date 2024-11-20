@@ -44,11 +44,6 @@ const UserSchema = new Schema(
         return this.firstName === 'Phill'; // Makes field immutable if name is Phill
       },
     },
-    gender: {
-      type: String,
-      required: true,
-      enum: ['male', 'female'],
-    },
     profilePicture: {
       type: Buffer,
       default: null,
