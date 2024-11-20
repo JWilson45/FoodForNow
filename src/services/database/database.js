@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 // Connection URI
-const uri = `mongodb+srv://${encodeURIComponent(process.env.DATABASE_USERNAME)}:${encodeURIComponent(process.env.DATABASE_PASSWORD)}@${process.env.DATABASE_URI}/?authSource=admin&retryWrites=true&w=majority&appName=FoodForNowRecipes`;
+const uri = `mongodb+srv://${encodeURIComponent(process.env.DATABASE_USERNAME)}:${encodeURIComponent(process.env.DATABASE_PASSWORD)}@${process.env.DATABASE_URI}/FFN?authSource=admin&retryWrites=true&w=majority&appName=FoodForNowRecipes`;
 
 const connectDB = async () => {
   console.log('Attempting to connect to MongoDB...');
