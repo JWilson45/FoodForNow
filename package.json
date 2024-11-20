@@ -8,7 +8,8 @@
     "db": "brew services run mongodb",
     "killmsg": "echo \"Why would you kill me? I am dead now.\"",
     "dev": "node --watch ./src/server.js",
-    "start": "node ./src/server.js"
+    "start": "node ./src/server.js",
+    "format": "prettier --write ."
   },
   "repository": {
     "type": "git",
@@ -26,5 +27,8 @@
     "mongodb": "^6.10.0",
     "mongoose": "^8.8.2",
     "uuid": "^11.0.3"
+  },
+  "devDependencies": {
+    "prettier": "^3.3.3"
   }
 }
