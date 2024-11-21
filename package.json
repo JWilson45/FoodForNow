@@ -7,8 +7,8 @@
     "test": "npx jest",
     "db": "brew services run mongodb",
     "killmsg": "echo \"Why would you kill me? I am dead now.\"",
-    "dev": "node --watch ./src/server.js",
-    "start": "node ./src/server.js",
+    "dev": "node --watch --env-file=.env ./src/server.js",
+    "start": "node --env-file=.env ./src/server.js",
     "format": "prettier --write ."
   },
   "repository": {
@@ -22,10 +22,10 @@
   },
   "homepage": "https://github.com/JWilson45/FoodForNow#readme",
   "dependencies": {
-    "dotenv": "^16.4.5",
+    "bcrypt": "^5.1.1",
     "express": "^4.21.1",
-    "mongodb": "^6.10.0",
     "mongoose": "^8.8.2",
+    "morgan": "^1.10.0",
     "uuid": "^11.0.3"
   },
   "devDependencies": {

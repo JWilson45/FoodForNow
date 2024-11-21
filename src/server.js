@@ -1,20 +1,18 @@
 const express = require('express');
 const routes = require('./routes');
-
-// Load environment variables
-require('dotenv').config();
-
+const morgan = require('morgan');
 const connectDB = require('./services/database/database');
-
-const PORT = process.env.PORT || 8080;
 
 const app = express();
 
 // Middleware configuration
+app.use(morgan('combined'));
 app.use(express.static('public'));
 app.use(express.json());
 
-app.use(routes);
+app.use('/api', routes);
+
+const PORT = process.env.PORT || 6969;
 
 // Start the HTTP server
 app.listen(PORT, async () => {
