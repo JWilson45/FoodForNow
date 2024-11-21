@@ -25,6 +25,11 @@ const UserSchema = new Schema(
       required: true,
       minLength: 8, // Adjust based on your hashing mechanism
     },
+    // gender: {
+    //   type: String,
+    //   required: true,
+    //   enum: ['male', 'female'],
+    // },
     email: {
       type: String,
       required: true,
@@ -43,11 +48,6 @@ const UserSchema = new Schema(
       immutable: function () {
         return this.firstName === 'Phill'; // Makes field immutable if name is Phill
       },
-    },
-    gender: {
-      type: String,
-      required: true,
-      enum: ['male', 'female'],
     },
     profilePicture: {
       type: Buffer,

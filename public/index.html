@@ -1,40 +1,71 @@
 <!doctype html>
-<html lang="en" dir="ltr">
+<html lang="en">
   <head>
-    <meta charset="utf-8" />
-    <title>FoodForNow</title>
-    <style>
-      body {
-        background-image: url('images/man.png');
-        background-repeat: no-repeat;
-        background-attachment: fixed;
-        background-size: 100% 100%;
-      }
-
-      #ham {
-        position: absolute;
-        bottom: 8px;
-        right: 16px;
-        font-size: 18px;
-        width: 150px;
-        height: auto;
-      }
-    </style>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Food For Now</title>
+    <!-- Link to external CSS file -->
+    <link rel="stylesheet" href="styles.css" />
   </head>
-
   <body>
-    <h1>Food For Now</h1>
+    <!-- Navigation Menu -->
+    <nav>
+      <ul>
+        <li><a href="#home">Home</a></li>
+        <li><a href="#pantry">Pantry</a></li>
+        <li><a href="#recipes">Recipes</a></li>
+        <li><a href="#Meals">Meals</a></li>
+      </ul>
+    </nav>
 
-    <form>
-      <label for="username">Username:</label><br />
-      <input type="text" id="username" name="username" /><br />
-      <label for="password">Password:</label><br />
-      <input type="text" id="password" name="password" /><br />
-      <input type="submit" value="Terminate" />
+    <!-- Hero Section -->
+    <header id="home">
+      <h1><span id="easter-egg" title="Click me!">F</span>ood For Now</h1>
+      <p>Welcome to the future of food.</p>
+    </header>
+
+    <!-- Login Form -->
+    <form id="loginForm">
+      <label for="username">Username:</label>
+      <input
+        type="text"
+        id="username"
+        name="username"
+        placeholder="Enter username"
+      />
+
+      <label for="password">Password:</label>
+      <input
+        type="text"
+        id="password"
+        name="password"
+        placeholder="Enter password"
+      />
+
+      <!-- Password strength progress bar -->
+      <div class="progress-bar-container">
+        <div id="progressBar" class="progress-bar"></div>
+      </div>
+
+      <input type="submit" value="Enter" />
+
+      <!-- Social Media Login Options -->
+      <div class="social-login">
+        <button class="facebook">Facebook Login</button>
+        <button class="google">Google Login</button>
+      </div>
     </form>
-  </body>
 
-  <a>
-    <img src="images/ham.png" id="ham" />
-  </a>
+    <!-- Footer -->
+    <footer>
+      <p>&copy; 2024 FoodForNow. All Rights Reserved.</p>
+      <a href="#home">Back to Top</a>
+      <a href="https://github.com/JWilson45/FoodForNow" target="_blank"
+        >GitHub</a
+      >
+    </footer>
+
+    <!-- Link to external JavaScript file -->
+    <script src="scripts.js"></script>
+  </body>
 </html>
