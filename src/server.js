@@ -12,7 +12,7 @@ app.use(express.json());
 
 app.use('/api', routes);
 
-const PORT = process.env.PORT || 6969;
+const PORT = process.env.PORT || 9696;
 
 // Start the HTTP server
 app.listen(PORT, async () => {
