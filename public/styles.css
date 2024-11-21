@@ -1,0 +1,223 @@
+/* Reset styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Courier New', Courier, monospace;
+  background-image: url('/images/cyberbackground.jpeg'); /* Path to your image */
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  color: #00ffff;
+  height: 100vh;
+  overflow-x: hidden;
+  text-align: center;
+  cursor: url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/fonts/fontawesome-webfont.svg'),
+    auto;
+}
+
+/* Navigation Menu */
+nav {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  padding: 10px 20px;
+  z-index: 100;
+  box-shadow: 0 2px 10px #00ffff;
+}
+
+nav ul {
+  list-style: none;
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+nav ul li a {
+  text-decoration: none;
+  color: #00ffff;
+  font-size: 1.2rem;
+  transition: color 0.3s ease;
+}
+
+nav ul li a:hover {
+  color: #ff00ff;
+}
+
+/* Hero Section */
+header {
+  margin-top: 100px;
+  animation: fadeIn 2s ease-in-out;
+}
+
+header h1 {
+  font-size: 4rem;
+  text-transform: uppercase;
+  text-shadow:
+    0 0 10px #00ffff,
+    0 0 20px #ff00ff;
+  animation: glitch 2s infinite;
+}
+
+header p {
+  font-size: 1.5rem;
+  margin: 20px 0 40px;
+  text-shadow: 0 0 5px #00ffff;
+}
+
+/* Form Section */
+form {
+  background: rgba(0, 0, 0, 0.8);
+  border: 2px solid #ff00ff;
+  border-radius: 12px;
+  box-shadow:
+    0 0 10px #ff00ff,
+    0 0 30px #00ffff;
+  padding: 20px;
+  width: 90%;
+  max-width: 400px;
+  margin: 20px auto;
+  animation: fadeIn 2s ease-in-out;
+}
+
+label {
+  display: block;
+  margin-bottom: 8px;
+  color: #ff00ff;
+  text-shadow: 0 0 10px #ff00ff;
+}
+
+input[type='text'] {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 20px;
+  background: #111;
+  color: #00ffff;
+  border: none;
+  border-radius: 5px;
+  outline: none;
+  box-shadow: 0 0 5px #00ffff;
+}
+
+input[type='submit'] {
+  width: 100%;
+  padding: 12px;
+  background: linear-gradient(90deg, #ff00ff, #00ffff);
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  box-shadow:
+    0 0 10px #00ffff,
+    0 0 20px #ff00ff;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+input[type='submit']:hover {
+  transform: scale(1.1);
+  box-shadow:
+    0 0 20px #ff00ff,
+    0 0 40px #00ffff;
+}
+
+/* Social Media Buttons */
+.social-login button {
+  padding: 10px 20px;
+  margin: 10px;
+  background-color: #3b5998;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.social-login button.google {
+  background-color: #db4437;
+}
+
+.social-login button:hover {
+  background-color: #8b9dc3;
+}
+
+/* Footer Section */
+footer {
+  background: rgba(0, 0, 0, 0.9);
+  color: #00ffff;
+  text-align: center;
+  padding: 10px 20px;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  box-shadow: 0 -2px 10px #00ffff;
+}
+
+footer a {
+  color: #ff00ff;
+  text-decoration: none;
+  font-weight: bold;
+  margin: 0 10px;
+}
+
+footer a:hover {
+  text-shadow:
+    0 0 10px #ff00ff,
+    0 0 20px #00ffff;
+}
+
+/* Password Strength Progress Bar */
+.progress-bar-container {
+  width: 100%;
+  background-color: #333;
+  border-radius: 10px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.progress-bar {
+  height: 10px;
+  width: 0;
+  background-color: #ff00ff;
+  border-radius: 10px;
+  transition: width 0.3s ease;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes glitch {
+  0% {
+    text-shadow:
+      0 0 10px #00ffff,
+      0 0 20px #ff00ff;
+  }
+  50% {
+    text-shadow:
+      0 0 20px #ff00ff,
+      0 0 30px #00ffff;
+  }
+  100% {
+    text-shadow:
+      0 0 10px #00ffff,
+      0 0 20px #ff00ff;
+  }
+}
