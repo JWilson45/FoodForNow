@@ -1,47 +1,18 @@
 const bcrypt = require('bcrypt');
-const User = require('../database/models/user'); // Adjust the path as necessary
+const User = require('../database/models/user');
 
-/**
- * Create a new user
- * @param {Object} req - Express request object
- * @param {Object} res - Express response object
- */
 const createUser = async (req, res) => {
   try {
-    // Extract data from request body
     const {
       firstName,
       lastName,
       username,
       password,
       email,
-      sex,
       dateOfBirth,
       phoneNumber,
       profilePicture,
     } = req.body;
-
-    // Validate required fields
-    if (!firstName || !username || !password || !email || sex === undefined) {
-      return res.status(400).json({ error: 'Missing required fields' });
-    }
-
-    // Additional validations
-    if (password.length < 8) {
-      return res
-        .status(400)
-        .json({ error: 'Password must be at least 8 characters long' });
-    }
-
-    if (!/^\S+@\S+\.\S+$/.test(email)) {
-      return res.status(400).json({ error: 'Invalid email format' });
-    }
-
-    if (phoneNumber && !/^\d{10}$/.test(phoneNumber)) {
-      return res
-        .status(400)
-        .json({ error: 'Phone number must be exactly 10 digits' });
-    }
 
     // Check for existing username or email
     const existingUser = await User.findOne({
@@ -64,7 +35,6 @@ const createUser = async (req, res) => {
       username,
       hashedPassword,
       email,
-      sex,
       dateOfBirth,
       phoneNumber,
       profilePicture,
