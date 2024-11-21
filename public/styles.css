@@ -7,7 +7,7 @@
 
 body {
   font-family: 'Courier New', Courier, monospace;
-  background-image: url('/images/cyberbackground.jpeg'); /* Path to your image */
+  background-image: url('/images/background.png'); /* Path to your image */
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
