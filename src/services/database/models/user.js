@@ -74,7 +74,7 @@ const UserSchema = new Schema(
         validator: function (v) {
           if (!v) return true; // Optional address
           return Object.values(v).every(
-            (field) => field && field.trim().length > 0
+            (field) => typeof field === 'string' && field.trim().length > 0
           );
         },
         message: 'All address fields must be filled if address is provided',
