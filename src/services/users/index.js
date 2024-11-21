@@ -18,7 +18,7 @@ const createUser = async (req, res) => {
       sex,
       dateOfBirth,
       phoneNumber,
-      address,
+      // address,
       profilePicture,
     } = req.body;
 
@@ -44,6 +44,16 @@ const createUser = async (req, res) => {
         .json({ error: 'Phone number must be exactly 10 digits' });
     }
 
+    // In createUser function
+    // if (address) {
+    //   const { street, city, state, zipCode } = address; // Changed zipCode to zipCode
+    //   if (!street || !city || !state || !zipCode) {
+    //     return res.status(400).json({
+    //       error: 'All address fields must be filled if address is provided',
+    //     });
+    //   }
+    // }
+
     // Check for existing username or email
     const existingUser = await User.findOne({
       $or: [{ username }, { email }],
@@ -68,7 +78,7 @@ const createUser = async (req, res) => {
       sex,
       dateOfBirth,
       phoneNumber,
-      address,
+      // address,
       profilePicture,
     });
 
