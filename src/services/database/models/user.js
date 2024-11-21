@@ -1,17 +1,5 @@
 const { Schema, model } = require('mongoose');
 
-// Define Address Schema
-// const AddressSchema = new Schema(
-//   {
-//     street: { type: String, trim: true },
-//     city: { type: String, trim: true },
-//     state: { type: String, trim: true },
-//     zipCode: { type: String, trim: true },
-//     country: { type: String, trim: true },
-//   },
-//   { _id: false }
-// );
-
 // Create the Mongoose schema
 const UserSchema = new Schema(
   {
@@ -37,11 +25,11 @@ const UserSchema = new Schema(
       required: true,
       minLength: 8, // Adjust based on your hashing mechanism
     },
-    // gender: {
-    //   type: String,
-    //   required: true,
-    //   enum: ['male', 'female'],
-    // },
+    gender: {
+      type: String,
+      required: true,
+      enum: ['male', 'female'],
+    },
     email: {
       type: String,
       required: true,
@@ -74,18 +62,6 @@ const UserSchema = new Schema(
       trim: true,
       match: [/^\d{10}$/, 'Phone number must be exactly 10 digits'], // Adjust regex if necessary
     },
-    // address: {
-    //   type: AddressSchema,
-    //   validate: {
-    //     validator: function (v) {
-    //       if (!v) return true; // Optional address
-    //       return Object.values(v).every(
-    //         (field) => typeof field === 'string' && field.trim().length > 0
-    //       );
-    //     },
-    //     message: 'All address fields must be filled if address is provided',
-    //   },
-    // },
     lastLogin: {
       type: Date,
       default: Date.now,
