@@ -14,16 +14,6 @@ const createUser = async (req, res) => {
       profilePicture,
     } = req.body;
 
-    // Check for existing username or email
-    const existingUser = await User.findOne({
-      $or: [{ username }, { email }],
-    });
-    if (existingUser) {
-      return res.status(409).json({
-        error: 'Username or email already exists',
-      });
-    }
-
     // Hash the password
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
@@ -56,9 +46,10 @@ const createUser = async (req, res) => {
     });
   } catch (error) {
     if (error.code === 11000) {
-      return res
-        .status(409)
-        .json({ error: 'Username or email already exists' });
+      return res.status(409).json({
+        error: 'User Already Exists',
+        keyPattern: error.errorResponse?.keyPattern,
+      });
     }
 
     if (error.name === 'ValidationError') {
