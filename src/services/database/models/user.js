@@ -25,6 +25,11 @@ const UserSchema = new Schema(
       required: true,
       minLength: 8, // Adjust based on your hashing mechanism
     },
+    // gender: {
+    //   type: String,
+    //   required: true,
+    //   enum: ['male', 'female'],
+    // },
     email: {
       type: String,
       required: true,
