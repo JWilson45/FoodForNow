@@ -1,12 +1,13 @@
-const express = require('express');
-const ingredientRouter = require('./ingredient');
-const recipeRouter = require('./recipe');
-const userRouter = require('./user');
+const express = require('express'); // Import the Express framework
+const ingredientRouter = require('./ingredient'); // Import the ingredient-related routes
+const recipeRouter = require('./recipe'); // Import the recipe-related routes
+const userRouter = require('./user'); // Import the user-related routes
 
-const routes = express.Router();
+const routes = express.Router(); // Create a new router instance
 
-routes.use('/ingredients', ingredientRouter);
-routes.use('/recipes', recipeRouter);
-routes.use('/users', userRouter);
+// Register sub-routers for specific resource paths
+routes.use('/ingredients', ingredientRouter); // Routes for ingredient-related operations
+routes.use('/recipes', recipeRouter); // Routes for recipe-related operations
+routes.use('/users', userRouter); // Routes for user-related operations
 
-module.exports = routes;
+module.exports = routes; // Export the router to be used in the main application
