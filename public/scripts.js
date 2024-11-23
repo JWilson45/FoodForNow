@@ -53,26 +53,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // Form submission handler
-  const form = document.getElementById('loginForm');
-  if (form) {
-    form.addEventListener('submit', function (e) {
-      e.preventDefault(); // Prevent default form submission
-
-      const username = document.getElementById('username').value;
-      const password = document.getElementById('password').value;
-
-      if (username && password) {
-        alert('Login successful!');
-      } else {
-        alert('Please fill out all fields.');
-      }
-    });
-  }
-
-  // Signup Form Submission
+  // Signup form submission logic (unchanged)
   const signupForm = document.getElementById('signupForm');
-
   if (signupForm) {
     signupForm.addEventListener('submit', async (event) => {
       event.preventDefault();
