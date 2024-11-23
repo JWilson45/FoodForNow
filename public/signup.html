@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Food For Now</title>
+    <title>Sign Up - Food For Now</title>
     <!-- Link to external CSS file -->
     <link rel="stylesheet" href="styles.css" />
   </head>
@@ -15,52 +15,59 @@
         <li><a href="index.html#pantry">Pantry</a></li>
         <li><a href="index.html#recipes">Recipes</a></li>
         <li><a href="index.html#Meals">Meals</a></li>
-        <li><a href="signup.html">Sign Up</a></li>
       </ul>
     </nav>
 
-    <!-- Hero Section -->
-    <header id="home">
-      <h1><span id="easter-egg" title="Click me!">F</span>ood For Now</h1>
-      <p>Welcome to the future of food.</p>
-    </header>
+    <!-- Signup Form -->
+    <form id="signupForm">
+      <h2>Sign Up</h2>
 
-    <!-- Login Form -->
-    <form id="loginForm">
+      <label for="firstName">First Name:</label>
+      <input
+        type="text"
+        id="firstName"
+        name="firstName"
+        placeholder="Enter your first name"
+        required
+      />
+
       <label for="username">Username:</label>
       <input
         type="text"
         id="username"
         name="username"
-        placeholder="Enter username"
+        placeholder="Choose a username"
+        minlength="3"
+        maxlength="30"
+        required
       />
 
       <label for="password">Password:</label>
       <input
-        type="text"
+        type="password"
         id="password"
         name="password"
-        placeholder="Enter password"
+        placeholder="Create a password"
+        minlength="8"
+        required
       />
 
-      <!-- Password strength progress bar -->
-      <div class="progress-bar-container">
-        <div id="progressBar" class="progress-bar"></div>
-      </div>
+      <label for="email">Email:</label>
+      <input
+        type="email"
+        id="email"
+        name="email"
+        placeholder="Enter your email"
+        required
+      />
 
-      <input type="submit" value="Enter" />
-
-      <!-- Social Media Login Options -->
-      <div class="social-login">
-        <button class="facebook">Facebook Login</button>
-        <button class="google">Google Login</button>
-      </div>
+      <input type="submit" value="Sign Up" />
     </form>
 
     <!-- Footer -->
     <footer>
       <p>&copy; 2024 FoodForNow. All Rights Reserved.</p>
-      <a href="#home">Back to Top</a>
+      <a href="index.html#home">Back to Top</a>
       <a href="https://github.com/JWilson45/FoodForNow" target="_blank"
         >GitHub</a
       >

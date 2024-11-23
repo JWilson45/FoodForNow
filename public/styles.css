@@ -221,3 +221,101 @@ footer a:hover {
       0 0 20px #ff00ff;
   }
 }
+
+/* Signup Form Specific Styles */
+form#signupForm {
+  background: rgba(
+    0,
+    0,
+    0,
+    0.9
+  ); /* Slightly darker background for distinction */
+  border: 2px solid #00ffff;
+  border-radius: 15px;
+  padding: 25px;
+  width: 90%;
+  max-width: 450px;
+  margin: 40px auto; /* Spaced out from other content */
+  box-shadow:
+    0 0 15px #ff00ff,
+    0 0 25px #00ffff;
+}
+
+form#signupForm h2 {
+  color: #ff00ff;
+  text-transform: uppercase;
+  font-size: 1.8rem;
+  margin-bottom: 20px;
+  text-shadow:
+    0 0 10px #00ffff,
+    0 0 20px #ff00ff;
+}
+
+form#signupForm label {
+  display: block;
+  margin-bottom: 10px;
+  color: #00ffff;
+  font-size: 1rem;
+  text-shadow: 0 0 5px #00ffff;
+}
+
+form#signupForm input[type='text'],
+form#signupForm input[type='email'],
+form#signupForm input[type='password'] {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 20px;
+  border: none;
+  border-radius: 5px;
+  background: #111;
+  color: #00ffff;
+  font-size: 1rem;
+  outline: none;
+  box-shadow: 0 0 5px #00ffff;
+  transition:
+    box-shadow 0.3s ease,
+    background-color 0.3s ease;
+}
+
+form#signupForm input[type='text']:focus,
+form#signupForm input[type='email']:focus,
+form#signupForm input[type='password']:focus {
+  background-color: #222;
+  box-shadow:
+    0 0 10px #00ffff,
+    0 0 20px #ff00ff;
+}
+
+form#signupForm input[type='submit'] {
+  width: 100%;
+  padding: 12px;
+  background: linear-gradient(90deg, #ff00ff, #00ffff);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-top: 10px;
+  box-shadow:
+    0 0 15px #00ffff,
+    0 0 30px #ff00ff;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+form#signupForm input[type='submit']:hover {
+  transform: scale(1.05);
+  box-shadow:
+    0 0 25px #ff00ff,
+    0 0 50px #00ffff;
+}
+
+/* Add subtle hover effect for the fields */
+form#signupForm input[type='text']:hover,
+form#signupForm input[type='email']:hover,
+form#signupForm input[type='password']:hover {
+  background-color: #222;
+}
