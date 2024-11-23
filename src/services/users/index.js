@@ -1,57 +1,18 @@
 const bcrypt = require('bcrypt');
-const User = require('../database/models/user'); // Adjust the path as necessary
+const User = require('../database/models/user');
 
-/**
- * Create a new user
- * @param {Object} req - Express request object
- * @param {Object} res - Express response object
- */
 const createUser = async (req, res) => {
   try {
-    // Extract data from request body
     const {
       firstName,
       lastName,
       username,
       password,
       email,
-      sex,
       dateOfBirth,
       phoneNumber,
       profilePicture,
     } = req.body;
-
-    // Validate required fields
-    if (!firstName || !username || !password || !email || sex === undefined) {
-      return res.status(400).json({ error: 'Missing required fields' });
-    }
-
-    // Additional validations
-    if (password.length < 8) {
-      return res
-        .status(400)
-        .json({ error: 'Password must be at least 8 characters long' });
-    }
-
-    if (!/^\S+@\S+\.\S+$/.test(email)) {
-      return res.status(400).json({ error: 'Invalid email format' });
-    }
-
-    if (phoneNumber && !/^\d{10}$/.test(phoneNumber)) {
-      return res
-        .status(400)
-        .json({ error: 'Phone number must be exactly 10 digits' });
-    }
-
-    // Check for existing username or email
-    const existingUser = await User.findOne({
-      $or: [{ username }, { email }],
-    });
-    if (existingUser) {
-      return res.status(409).json({
-        error: 'Username or email already exists',
-      });
-    }
 
     // Hash the password
     const salt = await bcrypt.genSalt(10);
@@ -64,7 +25,6 @@ const createUser = async (req, res) => {
       username,
       hashedPassword,
       email,
-      sex,
       dateOfBirth,
       phoneNumber,
       profilePicture,
@@ -86,9 +46,10 @@ const createUser = async (req, res) => {
     });
   } catch (error) {
     if (error.code === 11000) {
-      return res
-        .status(409)
-        .json({ error: 'Username or email already exists' });
+      return res.status(409).json({
+        error: 'User Already Exists',
+        keyPattern: error.errorResponse?.keyPattern,
+      });
     }
 
     if (error.name === 'ValidationError') {
@@ -102,4 +63,41 @@ const createUser = async (req, res) => {
   }
 };
 
-module.exports = createUser;
+const signInUser = async (req, res) => {
+  console.log('hi');
+
+  try {
+    const { username, password } = req.body;
+
+    // Check if the user exists in the database
+    const user = await User.findOne({ username });
+    if (!user) {
+      return res.status(404).json({ error: 'Invalid username or password' });
+    }
+
+    // Compare the provided password with the hashed password in the database
+    const isPasswordValid = await bcrypt.compare(password, user.hashedPassword);
+    if (!isPasswordValid) {
+      return res.status(401).json({ error: 'Invalid username or password' });
+    }
+
+    // Generate a response for successful sign-in
+    res.status(200).json({
+      message: 'Sign-in successful',
+      user: {
+        id: user._id,
+        fullName: user.fullName,
+        email: user.maskedEmail,
+        recentlyLoggedIn: user.recentlyLoggedIn,
+        isActive: user.isActive,
+      },
+    });
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .json({ error: 'An unexpected error occurred while signing in' });
+  }
+};
+
+module.exports = { createUser, signInUser };
