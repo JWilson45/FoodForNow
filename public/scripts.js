@@ -179,3 +179,18 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 });
+
+document.addEventListener('DOMContentLoaded', () => {
+  const showPasswordCheckbox = document.getElementById('showPassword');
+  const passwordInput = document.getElementById('password');
+
+  if (showPasswordCheckbox && passwordInput) {
+    showPasswordCheckbox.addEventListener('change', () => {
+      if (showPasswordCheckbox.checked) {
+        passwordInput.type = 'text';
+      } else {
+        passwordInput.type = 'password';
+      }
+    });
+  }
+});
