@@ -7,15 +7,50 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Password strength check
-  const passwordInput = document.getElementById('password');
-  const progressBar = document.getElementById('progressBar');
+  // Password strength check for all pages
+  const passwordInput = document.querySelector('#password');
+  const progressBar = document.querySelector('#progressBar');
 
   if (passwordInput && progressBar) {
     passwordInput.addEventListener('input', function () {
       const strength = getPasswordStrength(passwordInput.value);
       updateProgressBar(strength);
     });
+  }
+
+  // Function to determine password strength
+  function getPasswordStrength(password) {
+    let strength = 0;
+
+    if (password.length >= 8) strength++; // Minimum length
+    if (/[a-z]/.test(password)) strength++; // Lowercase letter
+    if (/[A-Z]/.test(password)) strength++; // Uppercase letter
+    if (/[0-9]/.test(password)) strength++; // Numeric digit
+    if (/[^a-zA-Z0-9]/.test(password)) strength++; // Special character
+
+    return strength;
+  }
+
+  // Function to update the progress bar
+  function updateProgressBar(strength) {
+    const strengthLevels = ['weak', 'medium', 'strong', 'very-strong'];
+
+    if (progressBar) {
+      progressBar.className = `progress-bar ${strengthLevels[strength - 1] || ''}`;
+      progressBar.style.width = `${(strength / 5) * 100}%`;
+
+      if (strength === 5) {
+        progressBar.textContent = 'Very Strong';
+      } else if (strength === 4) {
+        progressBar.textContent = 'Strong';
+      } else if (strength === 3) {
+        progressBar.textContent = 'Medium';
+      } else if (strength > 0) {
+        progressBar.textContent = 'Weak';
+      } else {
+        progressBar.textContent = '';
+      }
+    }
   }
 
   // Form submission handler

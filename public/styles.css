@@ -192,6 +192,23 @@ footer a:hover {
   transition: width 0.3s ease;
 }
 
+/* Strength levels */
+.progress-bar.weak {
+  background-color: red;
+}
+
+.progress-bar.medium {
+  background-color: orange;
+}
+
+.progress-bar.strong {
+  background-color: yellowgreen;
+}
+
+.progress-bar.very-strong {
+  background-color: green;
+}
+
 /* Animations */
 @keyframes fadeIn {
   from {
