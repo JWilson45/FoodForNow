@@ -5,6 +5,13 @@
   box-sizing: border-box;
 }
 
+/* Ensure the body and html elements only scroll when necessary */
+html, body {
+  height: 100%;
+  margin: 0;
+  overflow: hidden; /* Prevent unnecessary scrolling by default */
+}
+
 body {
   font-family: 'Courier New', Courier, monospace;
   background-image: url('/images/background.png');
@@ -16,6 +23,10 @@ body {
   overflow-x: hidden;
   text-align: center;
   cursor: url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/fonts/fontawesome-webfont.svg'), auto;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  overflow-y: auto; /* Enable vertical scrolling only when necessary */
 }
 
 /* Navigation Menu */
