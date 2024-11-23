@@ -31,6 +31,13 @@ const UserSchema = new Schema(
       immutable: true,
       enum: ['male', 'female'],
     },
+    // Including gender as a field in the user model might be unnecessary:
+    // 1. It may not be relevant to the app's functionality and could clutter the database.
+    // 2. Collecting gender raises privacy concerns and increases compliance burdens (e.g., GDPR, CCPA).
+    // 3. A simple "male/female" option excludes non-binary and diverse identities, which can alienate users.
+    // 4. It can unintentionally introduce bias into algorithms or decision-making processes.
+    // 5. Maintaining inclusivity and localization for gender fields is complex and error-prone.
+    // Consider making it optional or focusing on user preferences (e.g., pronouns) if needed.
     email: {
       type: String,
       required: true,
