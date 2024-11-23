@@ -1,27 +1,25 @@
+<!-- signup.html -->
 <!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Sign Up - Food For Now</title>
-    <!-- Link to external CSS file -->
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <!-- Navigation Menu -->
-    <nav>
-      <ul>
-        <li><a href="index.html">Home</a></li>
-        <li><a href="index.html#pantry">Pantry</a></li>
-        <li><a href="index.html#recipes">Recipes</a></li>
-        <li><a href="index.html#Meals">Meals</a></li>
-      </ul>
-    </nav>
+    <!-- Placeholder for the universal header -->
+    <div id="header-placeholder"></div>
+
+    <!-- Hero Section -->
+    <header id="home">
+      <h1><span id="easter-egg" title="Click me!">F</span>ood For Now</h1>
+      <p>Welcome to the future of food.</p>
+    </header>
 
     <!-- Signup Form -->
     <form id="signupForm">
       <h2>Sign Up</h2>
-
       <label for="firstName">First Name:</label>
       <input
         type="text"
@@ -30,7 +28,6 @@
         placeholder="Enter your first name"
         required
       />
-
       <label for="username">Username:</label>
       <input
         type="text"
@@ -41,7 +38,6 @@
         maxlength="30"
         required
       />
-
       <label for="password">Password:</label>
       <input
         type="password"
@@ -51,12 +47,9 @@
         minlength="8"
         required
       />
-
-      <!-- Password strength progress bar -->
       <div class="progress-bar-container">
         <div id="progressBar" class="progress-bar"></div>
       </div>
-
       <label for="email">Email:</label>
       <input
         type="email"
@@ -65,11 +58,9 @@
         placeholder="Enter your email"
         required
       />
-
       <input type="submit" value="Sign Up" />
     </form>
 
-    <!-- Footer -->
     <footer>
       <p>&copy; 2024 FoodForNow. All Rights Reserved.</p>
       <a href="index.html#home">Back to Top</a>
@@ -78,7 +69,6 @@
       >
     </footer>
 
-    <!-- Link to external JavaScript file -->
     <script src="scripts.js"></script>
   </body>
 </html>
