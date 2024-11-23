@@ -63,4 +63,41 @@ const createUser = async (req, res) => {
   }
 };
 
-module.exports = createUser;
+const signInUser = async (req, res) => {
+  console.log('hi');
+
+  try {
+    const { username, password } = req.body;
+
+    // Check if the user exists in the database
+    const user = await User.findOne({ username });
+    if (!user) {
+      return res.status(404).json({ error: 'Invalid username or password' });
+    }
+
+    // Compare the provided password with the hashed password in the database
+    const isPasswordValid = await bcrypt.compare(password, user.hashedPassword);
+    if (!isPasswordValid) {
+      return res.status(401).json({ error: 'Invalid username or password' });
+    }
+
+    // Generate a response for successful sign-in
+    res.status(200).json({
+      message: 'Sign-in successful',
+      user: {
+        id: user._id,
+        fullName: user.fullName,
+        email: user.maskedEmail,
+        recentlyLoggedIn: user.recentlyLoggedIn,
+        isActive: user.isActive,
+      },
+    });
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .json({ error: 'An unexpected error occurred while signing in' });
+  }
+};
+
+module.exports = { createUser, signInUser };

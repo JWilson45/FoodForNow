@@ -1,5 +1,6 @@
 const Joi = require('joi');
 
+// User registration validation schema
 const userValidationSchema = Joi.object({
   firstName: Joi.string().required().trim(),
   lastName: Joi.string().optional().trim(),
@@ -13,4 +14,10 @@ const userValidationSchema = Joi.object({
   profilePicture: Joi.binary().optional(),
 });
 
-module.exports = { userValidationSchema };
+// User login validation schema
+const userLoginValidationSchema = Joi.object({
+  username: Joi.string().required().trim().min(3).max(30),
+  password: Joi.string().required().min(8),
+});
+
+module.exports = { userValidationSchema, userLoginValidationSchema };
