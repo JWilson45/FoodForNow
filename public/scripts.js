@@ -62,11 +62,36 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
           const errorData = await response.json();
 
-          // Handle field-specific validation errors
+          // Handle validation errors
           if (errorData.errors && Array.isArray(errorData.errors)) {
             displayFieldErrors(errorData.errors);
-          } else {
-            // Fallback for unknown errors
+          }
+          // Handle "User Already Exists" error
+          else if (
+            errorData.error === 'User Already Exists' &&
+            errorData.keyPattern?.username
+          ) {
+            const usernameField = document.getElementById('username');
+            if (usernameField) {
+              usernameField.classList.add('error');
+              let errorMessage = usernameField.nextElementSibling;
+              if (
+                !errorMessage ||
+                !errorMessage.classList.contains('error-message')
+              ) {
+                errorMessage = document.createElement('div');
+                errorMessage.classList.add('error-message');
+                usernameField.parentNode.insertBefore(
+                  errorMessage,
+                  usernameField.nextSibling
+                );
+              }
+              errorMessage.textContent =
+                'This username is already taken. Please choose another.';
+            }
+          }
+          // Handle unknown errors
+          else {
             alert(`Signup failed: ${errorData.message || 'Unknown error'}`);
           }
         }
