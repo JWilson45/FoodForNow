@@ -7,15 +7,18 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Password strength check for all pages
-  const passwordInput = document.querySelector('#password');
-  const progressBar = document.querySelector('#progressBar');
+  // Password strength check for the signup page
+  const signupForm = document.getElementById('signupForm');
+  if (signupForm) {
+    const passwordInput = signupForm.querySelector('#password');
+    const progressBar = signupForm.querySelector('#progressBar');
 
-  if (passwordInput && progressBar) {
-    passwordInput.addEventListener('input', function () {
-      const strength = getPasswordStrength(passwordInput.value);
-      updateProgressBar(strength);
-    });
+    if (passwordInput && progressBar) {
+      passwordInput.addEventListener('input', () => {
+        const strength = getPasswordStrength(passwordInput.value);
+        updateProgressBar(progressBar, strength);
+      });
+    }
   }
 
   // Function to determine password strength
@@ -32,29 +35,26 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Function to update the progress bar
-  function updateProgressBar(strength) {
+  function updateProgressBar(progressBar, strength) {
     const strengthLevels = ['weak', 'medium', 'strong', 'very-strong'];
 
-    if (progressBar) {
-      progressBar.className = `progress-bar ${strengthLevels[strength - 1] || ''}`;
-      progressBar.style.width = `${(strength / 5) * 100}%`;
+    progressBar.className = `progress-bar ${strengthLevels[strength - 1] || ''}`;
+    progressBar.style.width = `${(strength / 5) * 100}%`;
 
-      if (strength === 5) {
-        progressBar.textContent = 'Very Strong';
-      } else if (strength === 4) {
-        progressBar.textContent = 'Strong';
-      } else if (strength === 3) {
-        progressBar.textContent = 'Medium';
-      } else if (strength > 0) {
-        progressBar.textContent = 'Weak';
-      } else {
-        progressBar.textContent = '';
-      }
+    if (strength === 5) {
+      progressBar.textContent = 'Very Strong';
+    } else if (strength === 4) {
+      progressBar.textContent = 'Strong';
+    } else if (strength === 3) {
+      progressBar.textContent = 'Medium';
+    } else if (strength > 0) {
+      progressBar.textContent = 'Weak';
+    } else {
+      progressBar.textContent = '';
     }
   }
 
-  // Signup form submission logic (unchanged)
-  const signupForm = document.getElementById('signupForm');
+  // Signup form submission logic
   if (signupForm) {
     signupForm.addEventListener('submit', async (event) => {
       event.preventDefault();
