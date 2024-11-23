@@ -319,3 +319,17 @@ form#signupForm input[type='email']:hover,
 form#signupForm input[type='password']:hover {
   background-color: #222;
 }
+
+/* Error styling for input fields */
+input.error {
+  border: 2px solid red;
+  background-color: #ffe6e6;
+}
+
+/* Styling for error messages */
+.error-message {
+  color: red;
+  font-size: 0.9rem;
+  margin-top: 5px;
+  font-weight: bold;
+}

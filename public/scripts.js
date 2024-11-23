@@ -37,10 +37,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Signup Form Submission
   const signupForm = document.getElementById('signupForm');
+
   if (signupForm) {
     signupForm.addEventListener('submit', async (event) => {
       event.preventDefault();
-      console.log('Signup form submitted'); // Check if this logs in the browser console
 
       const formData = {
         firstName: document.getElementById('firstName').value.trim(),
@@ -56,19 +56,53 @@ document.addEventListener('DOMContentLoaded', () => {
           body: JSON.stringify(formData),
         });
 
-        console.log('Response status:', response.status); // Log response status for debugging
-
         if (response.ok) {
           alert('Signup successful!');
           window.location.href = 'index.html';
         } else {
           const errorData = await response.json();
-          alert(`Signup failed: ${errorData.message || 'Unknown error'}`);
+
+          // Handle field-specific validation errors
+          if (errorData.errors && Array.isArray(errorData.errors)) {
+            displayFieldErrors(errorData.errors);
+          } else {
+            // Fallback for unknown errors
+            alert(`Signup failed: ${errorData.message || 'Unknown error'}`);
+          }
         }
       } catch (error) {
         console.error('Error during signup:', error);
         alert('An error occurred. Please try again.');
       }
     });
+  }
+
+  // Function to display validation errors for specific fields
+  function displayFieldErrors(errors) {
+    errors.forEach((error) => {
+      const field = document.getElementById(error.field);
+      if (field) {
+        // Add error styling to the field
+        field.classList.add('error');
+        // Show the error message below the field
+        let errorMessage = field.nextElementSibling;
+        if (
+          !errorMessage ||
+          !errorMessage.classList.contains('error-message')
+        ) {
+          errorMessage = document.createElement('div');
+          errorMessage.classList.add('error-message');
+          field.parentNode.insertBefore(errorMessage, field.nextSibling);
+        }
+        errorMessage.textContent = error.message;
+      }
+    });
+
+    // Scroll to the first error field for visibility
+    const firstErrorField = document.querySelector('.error');
+    if (firstErrorField) {
+      firstErrorField.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      firstErrorField.focus();
+    }
   }
 });
