@@ -181,18 +181,21 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 document.addEventListener('DOMContentLoaded', () => {
-  const showPasswordCheckbox = document.getElementById('showPassword');
-  const passwordInput = document.getElementById('password');
+  // Handle "Show Password" functionality for both login and signup forms
+  const togglePasswordVisibility = (checkboxId, passwordInputId) => {
+    const checkbox = document.getElementById(checkboxId);
+    const passwordInput = document.getElementById(passwordInputId);
 
-  if (showPasswordCheckbox && passwordInput) {
-    showPasswordCheckbox.addEventListener('change', () => {
-      if (showPasswordCheckbox.checked) {
-        passwordInput.type = 'text';
-      } else {
-        passwordInput.type = 'password';
-      }
-    });
-  }
+    if (checkbox && passwordInput) {
+      checkbox.addEventListener('change', () => {
+        passwordInput.type = checkbox.checked ? 'text' : 'password';
+      });
+    }
+  };
+
+  // Apply the "Show Password" toggle for the login and signup pages
+  togglePasswordVisibility('showPassword', 'password'); // Login page
+  togglePasswordVisibility('showSignupPassword', 'password'); // Signup page
 });
 
 document.addEventListener('DOMContentLoaded', () => {

@@ -20,6 +20,7 @@
     <!-- Signup Form -->
     <form id="signupForm">
       <h2>Sign Up</h2>
+
       <label for="firstName">First Name:</label>
       <input
         type="text"
@@ -28,6 +29,7 @@
         placeholder="Enter your first name"
         required
       />
+
       <label for="username">Username:</label>
       <input
         type="text"
@@ -38,6 +40,7 @@
         maxlength="30"
         required
       />
+
       <label for="password">Password:</label>
       <input
         type="password"
@@ -47,9 +50,17 @@
         minlength="8"
         required
       />
+
+      <!-- Show Password Checkbox -->
+      <label>
+        <input type="checkbox" id="showSignupPassword" />
+        Show Password
+      </label>
+
       <div class="progress-bar-container">
         <div id="progressBar" class="progress-bar"></div>
       </div>
+
       <label for="email">Email:</label>
       <input
         type="email"
@@ -58,6 +69,7 @@
         placeholder="Enter your email"
         required
       />
+
       <input type="submit" value="Sign Up" />
     </form>
 
