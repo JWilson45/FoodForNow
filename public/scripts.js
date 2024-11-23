@@ -42,6 +42,9 @@ document.addEventListener('DOMContentLoaded', () => {
     signupForm.addEventListener('submit', async (event) => {
       event.preventDefault();
 
+      // Clear previous errors
+      clearAllErrors();
+
       const formData = {
         firstName: document.getElementById('firstName').value.trim(),
         username: document.getElementById('username').value.trim(),
@@ -66,64 +69,92 @@ document.addEventListener('DOMContentLoaded', () => {
           if (errorData.errors && Array.isArray(errorData.errors)) {
             displayFieldErrors(errorData.errors);
           }
-          // Handle "User Already Exists" error
-          else if (
-            errorData.error === 'User Already Exists' &&
-            errorData.keyPattern?.username
-          ) {
-            const usernameField = document.getElementById('username');
-            if (usernameField) {
-              usernameField.classList.add('error');
-              let errorMessage = usernameField.nextElementSibling;
-              if (
-                !errorMessage ||
-                !errorMessage.classList.contains('error-message')
-              ) {
-                errorMessage = document.createElement('div');
-                errorMessage.classList.add('error-message');
-                usernameField.parentNode.insertBefore(
-                  errorMessage,
-                  usernameField.nextSibling
-                );
-              }
-              errorMessage.textContent =
-                'This username is already taken. Please choose another.';
-            }
+          // Handle "User Already Exists" or unique constraint errors
+          else if (errorData.error && errorData.keyPattern) {
+            displayUniqueConstraintError(errorData.keyPattern);
           }
           // Handle unknown errors
           else {
-            alert(`Signup failed: ${errorData.message || 'Unknown error'}`);
+            displayGlobalError(
+              `Signup failed: ${errorData.message || 'Unknown error'}`
+            );
           }
         }
       } catch (error) {
         console.error('Error during signup:', error);
-        alert('An error occurred. Please try again.');
+        displayGlobalError('An error occurred. Please try again.');
       }
     });
   }
 
-  // Function to display validation errors for specific fields
+  // Clear all errors from the form
+  function clearAllErrors() {
+    document.querySelectorAll('.error').forEach((field) => {
+      field.classList.remove('error');
+    });
+
+    document.querySelectorAll('.error-message').forEach((errorMessage) => {
+      errorMessage.remove();
+    });
+  }
+
+  // Display field-specific validation errors
   function displayFieldErrors(errors) {
     errors.forEach((error) => {
       const field = document.getElementById(error.field);
       if (field) {
-        // Add error styling to the field
-        field.classList.add('error');
-        // Show the error message below the field
-        let errorMessage = field.nextElementSibling;
-        if (
-          !errorMessage ||
-          !errorMessage.classList.contains('error-message')
-        ) {
-          errorMessage = document.createElement('div');
-          errorMessage.classList.add('error-message');
-          field.parentNode.insertBefore(errorMessage, field.nextSibling);
-        }
-        errorMessage.textContent = error.message;
+        field.classList.add('error'); // Add error styling
+        showErrorBelowField(field, error.message);
       }
     });
 
-    // Scroll to the first error field for visibility
+    focusFirstError();
+  }
+
+  // Display unique constraint errors (e.g., "User Already Exists")
+  function displayUniqueConstraintError(keyPattern) {
+    Object.keys(keyPattern).forEach((fieldKey) => {
+      const field = document.getElementById(fieldKey);
+      if (field) {
+        field.classList.add('error'); // Add error styling
+
+        // Determine the specific error message for the field
+        const errorMessage =
+          fieldKey === 'username'
+            ? 'This username is already in use. Please choose another.'
+            : fieldKey === 'email'
+              ? 'This email is already in use. Please choose another.'
+              : `This ${fieldKey} is already in use. Please choose another.`;
+
+        showErrorBelowField(field, errorMessage);
+      }
+    });
+
+    focusFirstError();
+  }
+
+  // Display global error message
+  function displayGlobalError(message) {
+    const form = document.getElementById('signupForm');
+    const globalError = document.createElement('div');
+    globalError.classList.add('error-message', 'global-error');
+    globalError.textContent = message;
+    form.insertBefore(globalError, form.firstChild);
+  }
+
+  // Show an error message below a specific field
+  function showErrorBelowField(field, message) {
+    let errorMessage = field.nextElementSibling;
+    if (!errorMessage || !errorMessage.classList.contains('error-message')) {
+      errorMessage = document.createElement('div');
+      errorMessage.classList.add('error-message');
+      field.parentNode.insertBefore(errorMessage, field.nextSibling);
+    }
+    errorMessage.textContent = message;
+  }
+
+  // Focus on the first field with an error
+  function focusFirstError() {
     const firstErrorField = document.querySelector('.error');
     if (firstErrorField) {
       firstErrorField.scrollIntoView({ behavior: 'smooth', block: 'center' });
