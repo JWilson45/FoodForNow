@@ -7,11 +7,9 @@ ENV NODE_ENV=production
 # Create and set the application directory
 WORKDIR /app
 
-# Copy package.json and package-lock.json for dependencies installation
+# Copy and install dependencies
 COPY package*.json ./
-
-# Install all dependencies (including devDependencies for the build step)
-RUN npm ci
+RUN npm ci --omit=dev
 
 # Copy application source files
 COPY . .
@@ -19,22 +17,21 @@ COPY . .
 # Stage 2: Runtime
 FROM node:22.11.0-alpine AS runtime
 
-# Set the environment to production for runtime
+# Set environment to production
 ENV NODE_ENV=production
 
 # Create and set the application directory
 WORKDIR /app
 
-# Copy production dependencies and application source files from the builder stage
+# Copy only what is necessary for runtime
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package.json ./package.json
 COPY --from=builder /app/src ./src
 
-# Set a non-root user
-USER node
-
 # Expose application port
-EXPOSE 2700
+EXPOSE 8080
+
+ENV PORT=8080
 
 # Healthcheck for container health
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s \
