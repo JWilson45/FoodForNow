@@ -1,0 +1,94 @@
+/* forms.css */
+
+/* Form Section */
+form {
+  background: rgba(0, 0, 0, 0.8);
+  border: 2px solid #ff00ff;
+  border-radius: 12px;
+  box-shadow:
+    0 0 10px #ff00ff,
+    0 0 30px #00ffff;
+  padding: 20px;
+  width: 90%;
+  max-width: 400px;
+  margin: 20px auto;
+  animation: fadeIn 2s ease-in-out;
+}
+
+label {
+  display: block;
+  margin-bottom: 8px;
+  color: #ff00ff;
+  text-shadow: 0 0 10px #ff00ff;
+}
+
+/* Shared Input Styles */
+input[type='text'],
+input[type='email'],
+input[type='password'] {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 20px;
+  background: #111;
+  color: #00ffff;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  outline: none;
+  box-shadow: 0 0 5px #00ffff;
+  transition:
+    box-shadow 0.3s ease,
+    background-color 0.3s ease;
+}
+
+input[type='text']:hover,
+input[type='email']:hover,
+input[type='password']:hover {
+  background-color: #222;
+}
+
+input[type='text']:focus,
+input[type='email']:focus,
+input[type='password']:focus {
+  background-color: #222;
+  box-shadow:
+    0 0 10px #00ffff,
+    0 0 20px #ff00ff;
+}
+
+/* Submit Button */
+input[type='submit'] {
+  width: 100%;
+  padding: 12px;
+  background: linear-gradient(90deg, #ff00ff, #00ffff);
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  box-shadow:
+    0 0 10px #00ffff,
+    0 0 20px #ff00ff;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+input[type='submit']:hover {
+  transform: scale(1.1);
+  box-shadow:
+    0 0 20px #ff00ff,
+    0 0 40px #00ffff;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

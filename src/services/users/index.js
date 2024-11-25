@@ -64,8 +64,6 @@ const createUser = async (req, res) => {
 };
 
 const signInUser = async (req, res) => {
-  console.log('hi');
-
   try {
     const { username, password } = req.body;
 
