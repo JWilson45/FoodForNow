@@ -13,7 +13,7 @@ app.use(express.json()); // Parse incoming JSON requests
 // Register API routes under the '/api' path
 app.use('/api', routes);
 
-const PORT = process.env.PORT || 6969; // Define the server port (default to 6969 if not set in environment variables)
+const PORT = process.env.PORT || 9696;
 
 // Start the HTTP server
 app.listen(PORT, async () => {

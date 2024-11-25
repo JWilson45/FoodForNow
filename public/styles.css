@@ -5,9 +5,16 @@
   box-sizing: border-box;
 }
 
+/* Ensure the body and html elements only scroll when necessary */
+html, body {
+  height: 100%;
+  margin: 0;
+  overflow: hidden; /* Prevent unnecessary scrolling by default */
+}
+
 body {
   font-family: 'Courier New', Courier, monospace;
-  background-image: url('/images/background.png'); /* Path to your image */
+  background-image: url('/images/background.png');
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
@@ -15,8 +22,11 @@ body {
   height: 100vh;
   overflow-x: hidden;
   text-align: center;
-  cursor: url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/fonts/fontawesome-webfont.svg'),
-    auto;
+  cursor: url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/fonts/fontawesome-webfont.svg'), auto;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  overflow-y: auto; /* Enable vertical scrolling only when necessary */
 }
 
 /* Navigation Menu */
@@ -57,9 +67,7 @@ header {
 header h1 {
   font-size: 4rem;
   text-transform: uppercase;
-  text-shadow:
-    0 0 10px #00ffff,
-    0 0 20px #ff00ff;
+  text-shadow: 0 0 10px #00ffff, 0 0 20px #ff00ff;
   animation: glitch 2s infinite;
 }
 
@@ -74,9 +82,7 @@ form {
   background: rgba(0, 0, 0, 0.8);
   border: 2px solid #ff00ff;
   border-radius: 12px;
-  box-shadow:
-    0 0 10px #ff00ff,
-    0 0 30px #00ffff;
+  box-shadow: 0 0 10px #ff00ff, 0 0 30px #00ffff;
   padding: 20px;
   width: 90%;
   max-width: 400px;
@@ -91,7 +97,10 @@ label {
   text-shadow: 0 0 10px #ff00ff;
 }
 
-input[type='text'] {
+/* Shared Input Styles */
+input[type='text'],
+input[type='email'],
+input[type='password'] {
   width: 100%;
   padding: 12px;
   margin-bottom: 20px;
@@ -99,10 +108,26 @@ input[type='text'] {
   color: #00ffff;
   border: none;
   border-radius: 5px;
+  font-size: 1rem;
   outline: none;
   box-shadow: 0 0 5px #00ffff;
+  transition: box-shadow 0.3s ease, background-color 0.3s ease;
 }
 
+input[type='text']:hover,
+input[type='email']:hover,
+input[type='password']:hover {
+  background-color: #222;
+}
+
+input[type='text']:focus,
+input[type='email']:focus,
+input[type='password']:focus {
+  background-color: #222;
+  box-shadow: 0 0 10px #00ffff, 0 0 20px #ff00ff;
+}
+
+/* Submit Button */
 input[type='submit'] {
   width: 100%;
   padding: 12px;
@@ -114,65 +139,13 @@ input[type='submit'] {
   cursor: pointer;
   text-transform: uppercase;
   letter-spacing: 2px;
-  box-shadow:
-    0 0 10px #00ffff,
-    0 0 20px #ff00ff;
-  transition:
-    transform 0.3s ease,
-    box-shadow 0.3s ease;
+  box-shadow: 0 0 10px #00ffff, 0 0 20px #ff00ff;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 input[type='submit']:hover {
   transform: scale(1.1);
-  box-shadow:
-    0 0 20px #ff00ff,
-    0 0 40px #00ffff;
-}
-
-/* Social Media Buttons */
-.social-login button {
-  padding: 10px 20px;
-  margin: 10px;
-  background-color: #3b5998;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.social-login button.google {
-  background-color: #db4437;
-}
-
-.social-login button:hover {
-  background-color: #8b9dc3;
-}
-
-/* Footer Section */
-footer {
-  background: rgba(0, 0, 0, 0.9);
-  color: #00ffff;
-  text-align: center;
-  padding: 10px 20px;
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-  box-shadow: 0 -2px 10px #00ffff;
-}
-
-footer a {
-  color: #ff00ff;
-  text-decoration: none;
-  font-weight: bold;
-  margin: 0 10px;
-}
-
-footer a:hover {
-  text-shadow:
-    0 0 10px #ff00ff,
-    0 0 20px #00ffff;
+  box-shadow: 0 0 20px #ff00ff, 0 0 40px #00ffff;
 }
 
 /* Password Strength Progress Bar */
@@ -189,35 +162,20 @@ footer a:hover {
   width: 0;
   background-color: #ff00ff;
   border-radius: 10px;
-  transition: width 0.3s ease;
+  transition: width 0.4s ease, background-color 0.4s ease;
 }
 
-/* Animations */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+.progress-bar.weak {
+  background-color: red;
 }
 
-@keyframes glitch {
-  0% {
-    text-shadow:
-      0 0 10px #00ffff,
-      0 0 20px #ff00ff;
-  }
-  50% {
-    text-shadow:
-      0 0 20px #ff00ff,
-      0 0 30px #00ffff;
-  }
-  100% {
-    text-shadow:
-      0 0 10px #00ffff,
-      0 0 20px #ff00ff;
-  }
+.progress-bar.medium {
+  background-color: orange;
 }
+
+.progress-bar.strong {
+  background-color: yellowgreen;
+}
+
+.progress-bar.very-strong {
+  background-color

@@ -1,11 +1,3 @@
-#     Updated Base Image: Switched to node:22.11.0-alpine for a lightweight and modern Node.js version.
-#     Multi-Stage Build: Split into builder and runtime stages for smaller and more secure production images.
-#     npm ci: Used for cleaner, deterministic installations.
-#     Local Tool Installation: Typescript and ts-node installed locally to avoid global dependency pollution.
-#     Non-Root User: Runs the application as a non-root user to enhance security.
-#     Clean .env: Improved safety by maintaining separation of build and runtime.
-#     Best Practices: Optimized Docker layers to reduce image size and improve caching.
-
 # Stage 1: Build
 FROM node:22.11.0-alpine AS builder
 
@@ -15,47 +7,35 @@ ENV NODE_ENV=production
 # Create and set the application directory
 WORKDIR /app
 
-# Copy package.json and package-lock.json for dependencies installation
+# Copy and install dependencies
 COPY package*.json ./
-
-# Install dependencies with npm ci for a clean install
 RUN npm ci --omit=dev
 
-# Install global tools locally to avoid global pollution and run as root
-RUN npx npm@8 install typescript ts-node
-
-# Change to non-root user for better security
-USER node
-
 # Copy application source files
-COPY --chown=node:node . .
-
-# Build the application
-RUN npm run build
+COPY . .
 
 # Stage 2: Runtime
 FROM node:22.11.0-alpine AS runtime
 
-# Set the environment to production for runtime
+# Set environment to production
 ENV NODE_ENV=production
 
 # Create and set the application directory
 WORKDIR /app
 
-# Copy dependencies and built application from the builder stage
+# Copy only what is necessary for runtime
 COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/build ./build
-
-# Copy environment config and necessary files
-COPY --chown=node:node .env .env
-COPY --chown=node:node ./config ./config
-COPY --chown=node:node ./public ./public
-
-# Set a non-root user
-USER node
+COPY --from=builder /app/package.json ./package.json
+COPY --from=builder /app/src ./src
 
 # Expose application port
-EXPOSE 2700
+EXPOSE 8080
+
+ENV PORT=8080
+
+# Healthcheck for container health
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s \
+  CMD curl -f http://localhost:2700/health || exit 1
 
 # Run the application
-CMD ["node", "build/server.js"]
+CMD ["node", "."]

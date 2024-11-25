@@ -27,7 +27,8 @@ const UserSchema = new Schema(
     },
     gender: {
       type: String,
-      required: true,
+      required: false,
+      immutable: true,
       enum: ['male', 'female'],
     },
     // Including gender as a field in the user model might be unnecessary:
