@@ -27,21 +27,7 @@ export function initPasswordStrengthChecker() {
   }
 
   function updateProgressBar(progressBar, strength) {
-    const strengthLevels = ['weak', 'medium', 'strong', 'very-strong'];
-
-    progressBar.className = `progress-bar ${strengthLevels[strength - 1] || ''}`;
+    progressBar.className = `progress-bar`;
     progressBar.style.width = `${(strength / 5) * 100}%`;
-
-    if (strength === 5) {
-      progressBar.textContent = 'Very Strong';
-    } else if (strength === 4) {
-      progressBar.textContent = 'Strong';
-    } else if (strength === 3) {
-      progressBar.textContent = 'Medium';
-    } else if (strength > 0) {
-      progressBar.textContent = 'Weak';
-    } else {
-      progressBar.textContent = '';
-    }
   }
 }
