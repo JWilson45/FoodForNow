@@ -12,9 +12,11 @@ export function initSignup() {
 
       const formData = {
         firstName: document.getElementById('firstName').value.trim(),
+        lastName: document.getElementById('lastName').value.trim(),
         username: document.getElementById('username').value.trim(),
         password: document.getElementById('password').value,
         email: document.getElementById('email').value.trim(),
+        dateOfBirth: document.getElementById('dateOfBirth').value.trim(),
       };
 
       try {

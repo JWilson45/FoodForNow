@@ -2,12 +2,12 @@
 
 /* General Styles */
 form {
-  background: rgba(0, 0, 0, 0.8);
-  border: 2px solid #ff00ff;
+  background: rgba(0, 0, 0, 0.8); /* Dark, semi-transparent background */
+  border: 2px solid #007aff; /* Blue border */
   border-radius: 12px;
   box-shadow:
-    0 0 10px #ff00ff,
-    0 0 30px #00ffff;
+    0 0 10px rgba(0, 122, 255, 0.4),
+    0 0 30px rgba(0, 122, 255, 0.4); /* Soft blue glow */
   padding: 20px;
   width: 90%;
   max-width: 400px;
@@ -15,11 +15,12 @@ form {
   animation: fadeIn 2s ease-in-out;
 }
 
+/* Label Styles */
 label {
   display: block;
   margin-bottom: 8px;
-  color: #ff00ff;
-  text-shadow: 0 0 10px #ff00ff;
+  color: #d1d1d6; /* Light gray text */
+  font-weight: 600;
 }
 
 /* Shared Input and Textarea Styles */
@@ -27,51 +28,57 @@ input[type='text'],
 input[type='email'],
 input[type='password'],
 input[type='number'],
+input[type='date'],
 textarea {
   width: 100%;
   padding: 12px;
   margin-bottom: 20px;
-  background: #111;
-  color: #00ffff;
-  border: none;
-  border-radius: 5px;
+  background: #333333; /* Dark background for input fields */
+  color: #ffffff; /* White text */
+  border: 1px solid #555555; /* Light border */
+  border-radius: 10px;
   font-size: 1rem;
   outline: none;
-  box-shadow: 0 0 5px #00ffff;
+  box-shadow: 0 0 5px rgba(0, 122, 255, 0.3); /* Blue glow on focus */
   transition:
     box-shadow 0.3s ease,
     background-color 0.3s ease;
 }
 
+input[type='date'] {
+  padding: 12px 10px;
+  font-size: 1rem;
+}
+
 input:hover,
 textarea:hover {
-  background-color: #222;
+  background-color: #444444; /* Darker gray on hover */
 }
 
 input:focus,
 textarea:focus {
-  background-color: #222;
+  background-color: #444444; /* Focused background */
   box-shadow:
-    0 0 10px #00ffff,
-    0 0 20px #ff00ff;
+    0 0 10px rgba(0, 122, 255, 0.7),
+    0 0 20px rgba(0, 122, 255, 0.7); /* Blue glow on focus */
 }
 
-/* Shared Button Styles */
+/* Button Styles */
 button,
 input[type='submit'] {
   width: 100%;
   padding: 12px;
-  background: linear-gradient(90deg, #ff00ff, #00ffff);
+  background: #007aff; /* Apple Blue */
   color: #fff;
   border: none;
-  border-radius: 5px;
+  border-radius: 10px;
   font-size: 1rem;
   cursor: pointer;
   text-transform: uppercase;
   letter-spacing: 2px;
   box-shadow:
-    0 0 10px #00ffff,
-    0 0 20px #ff00ff;
+    0 0 10px rgba(0, 122, 255, 0.4),
+    0 0 20px rgba(0, 122, 255, 0.4); /* Blue glow */
   transition:
     transform 0.3s ease,
     box-shadow 0.3s ease;
@@ -81,16 +88,16 @@ button:hover,
 input[type='submit']:hover {
   transform: scale(1.1);
   box-shadow:
-    0 0 20px #ff00ff,
-    0 0 40px #00ffff;
+    0 0 20px rgba(0, 122, 255, 0.7),
+    0 0 40px rgba(0, 122, 255, 0.7); /* Glowing effect */
 }
 
 button:active,
 input[type='submit']:active {
   transform: scale(1);
   box-shadow:
-    0 0 10px #ff00ff,
-    0 0 20px #00ffff;
+    0 0 10px rgba(0, 122, 255, 0.5),
+    0 0 20px rgba(0, 122, 255, 0.5); /* Slight shrink on click */
 }
 
 /* Animations */
