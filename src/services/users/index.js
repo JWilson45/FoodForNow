@@ -1,5 +1,6 @@
 const bcrypt = require('bcrypt');
 const User = require('../database/models/user');
+const jwt = require('jsonwebtoken');
 
 const createUser = async (req, res) => {
   try {
@@ -42,10 +43,13 @@ const createUser = async (req, res) => {
         email: newUser.maskedEmail,
         recentlyLoggedIn: newUser.recentlyLoggedIn,
         isActive: newUser.isActive,
+        username: newUser.username,
       },
     });
   } catch (error) {
     if (error.code === 11000) {
+      console.log(error.errorResponse);
+
       return res.status(409).json({
         error: 'User Already Exists',
         keyPattern: error.errorResponse?.keyPattern,
@@ -67,19 +71,33 @@ const signInUser = async (req, res) => {
   try {
     const { username, password } = req.body;
 
-    // Check if the user exists in the database
+    // Find the user by username
     const user = await User.findOne({ username });
     if (!user) {
       return res.status(404).json({ error: 'Invalid username or password' });
     }
 
-    // Compare the provided password with the hashed password in the database
+    // Validate the password
     const isPasswordValid = await bcrypt.compare(password, user.hashedPassword);
     if (!isPasswordValid) {
       return res.status(401).json({ error: 'Invalid username or password' });
     }
 
-    // Generate a response for successful sign-in
+    // Generate a JWT token
+    const token = jwt.sign(
+      { userId: user._id, username: user.username },
+      process.env.JWT_SECRET_KEY,
+      { expiresIn: '1h' }
+    );
+
+    // Set the token as an HTTP-only cookie
+    res.cookie('authToken', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 3600000,
+    });
+
     res.status(200).json({
       message: 'Sign-in successful',
       user: {
@@ -88,13 +106,12 @@ const signInUser = async (req, res) => {
         email: user.maskedEmail,
         recentlyLoggedIn: user.recentlyLoggedIn,
         isActive: user.isActive,
+        username: user.username,
       },
     });
   } catch (error) {
-    console.error(error);
-    res
-      .status(500)
-      .json({ error: 'An unexpected error occurred while signing in' });
+    console.error('Error during sign-in:', error.message);
+    res.status(500).json({ error: 'Internal server error' });
   }
 };
 

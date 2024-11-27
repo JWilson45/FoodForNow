@@ -2,13 +2,16 @@ const express = require('express'); // Import the Express framework
 const routes = require('./routes'); // Import application routes
 const morgan = require('morgan'); // Import Morgan for HTTP request logging
 const connectDB = require('./services/database/database'); // Import the database connection function
+const cookieParser = require('cookie-parser');
 
 const app = express(); // Create an Express application instance
 
 // Middleware configuration
+app.use(cookieParser());
+app.use(express.json()); // Parse incoming JSON requests
+app.use(express.urlencoded({ extended: true }));
 app.use(morgan('combined')); // Log HTTP requests in the 'combined' format
 app.use(express.static('public')); // Serve static files from the 'public' directory
-app.use(express.json()); // Parse incoming JSON requests
 
 // Register API routes under the '/api' path
 app.use('/api', routes);
