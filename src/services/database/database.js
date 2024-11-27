@@ -1,7 +1,15 @@
 const mongoose = require('mongoose');
+const checkEnvVars = require('../../utilities/checkEnvVars');
+
+// Check for required environment variables
+checkEnvVars(['DATABASE_USERNAME', 'DATABASE_PASSWORD', 'DATABASE_URI']);
 
 // Connection URI
-const uri = `mongodb+srv://${encodeURIComponent(process.env.DATABASE_USERNAME)}:${encodeURIComponent(process.env.DATABASE_PASSWORD)}@${process.env.DATABASE_URI}/FFN?authSource=admin&retryWrites=true&w=majority&appName=FoodForNowRecipes`;
+const uri = `mongodb+srv://${encodeURIComponent(
+  process.env.DATABASE_USERNAME
+)}:${encodeURIComponent(
+  process.env.DATABASE_PASSWORD
+)}@${process.env.DATABASE_URI}/FFN?authSource=admin&retryWrites=true&w=majority&appName=FoodForNowRecipes`;
 
 const connectDB = async () => {
   console.log('Attempting to connect to MongoDB...');
