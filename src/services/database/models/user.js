@@ -15,7 +15,6 @@ const UserSchema = new Schema(
     username: {
       type: String,
       required: true,
-      unique: true,
       trim: true,
       minLength: 3,
       maxLength: 30,
@@ -129,6 +128,12 @@ UserSchema.virtual('isActive').get(function () {
   sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
   return this.lastLogin > sevenDaysAgo;
 });
+
+// Add a unique index for case-insensitive usernames
+UserSchema.index(
+  { username: 1 },
+  { unique: true, collation: { locale: 'en', strength: 2 } }
+);
 
 // Create and export the model
 const User = model('User', UserSchema);
