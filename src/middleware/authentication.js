@@ -1,4 +1,8 @@
 const jwt = require('jsonwebtoken');
+const checkEnvVars = require('../utilities/checkEnvVars');
+
+// Check for required environment variables
+checkEnvVars(['JWT_SECRET_KEY']);
 
 const authenticateUser = (req, res, next) => {
   try {
