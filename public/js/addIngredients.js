@@ -1,22 +1,12 @@
-function clearAllErrors() {
-  // Remove all error messages
-  const errorMessages = document.querySelectorAll('.error-message');
-  errorMessages.forEach((msg) => msg.remove());
-
-  // Remove error classes from fields
-  const errorFields = document.querySelectorAll('.error');
-  errorFields.forEach((field) => field.classList.remove('error'));
-}
-
 export function initAddIngredient() {
   const ingredientForm = document.getElementById('ingredientForm');
 
   if (ingredientForm) {
     ingredientForm.addEventListener('submit', async (event) => {
-      event.preventDefault();
+      event.preventDefault(); // Prevent default form submission
 
       // Clear previous errors
-      clearAllErrors();
+      clearIngredientErrors();
 
       // Collect form data
       const formData = new FormData(ingredientForm);
@@ -45,6 +35,11 @@ export function initAddIngredient() {
         // image: formData.get('image'), // This may need special handling
       };
 
+      if (!data.name) {
+        displayIngredientError('Please provide a name for the ingredient.');
+        return;
+      }
+
       try {
         const response = await fetch('/api/ingredients', {
           method: 'POST',
@@ -57,58 +52,57 @@ export function initAddIngredient() {
           ingredientForm.reset();
         } else {
           const errorData = await response.json();
-
-          // Handle validation errors
           if (errorData.errors && Array.isArray(errorData.errors)) {
-            displayFieldErrors(errorData.errors);
+            displayIngredientErrors(errorData.errors);
           } else {
-            displayGlobalError(
-              `Failed to add ingredient: ${errorData.error || 'Unknown error'}`
+            displayIngredientError(
+              errorData.error ||
+                'An error occurred while adding the ingredient.'
             );
           }
         }
       } catch (error) {
         console.error('Error adding ingredient:', error);
-        displayGlobalError('An error occurred. Please try again.');
+        displayIngredientError(
+          'An unexpected error occurred. Please try again.'
+        );
       }
     });
   }
 
-  // Helper function to clear previous errors
-  function clearAllErrors() {
-    // Remove all error messages
-    const errorMessages = ingredientForm.querySelectorAll('.error-message');
-    errorMessages.forEach((msg) => msg.remove());
-
-    // Remove error classes from fields
-    const errorFields = ingredientForm.querySelectorAll('.error');
-    errorFields.forEach((field) => field.classList.remove('error'));
+  // Function to clear ingredient errors
+  function clearIngredientErrors() {
+    const errorContainer = document.querySelector('.ingredient-error-message');
+    if (errorContainer) {
+      errorContainer.remove();
+    }
   }
 
-  // Helper function to display field-specific errors
-  function displayFieldErrors(errors) {
+  // Function to display a single ingredient error message
+  function displayIngredientError(message) {
+    clearIngredientErrors(); // Clear existing errors
+    const errorMessage = document.createElement('div');
+    errorMessage.classList.add('ingredient-error-message');
+    errorMessage.style.color = 'red';
+    errorMessage.style.marginTop = '10px';
+    errorMessage.textContent = message;
+    ingredientForm.appendChild(errorMessage);
+  }
+
+  // Function to display multiple field-specific errors
+  function displayIngredientErrors(errors) {
+    clearIngredientErrors(); // Clear existing errors
+    const errorContainer = document.createElement('div');
+    errorContainer.classList.add('ingredient-error-message');
+    errorContainer.style.color = 'red';
+    errorContainer.style.marginTop = '10px';
+
     errors.forEach((error) => {
-      const fieldName = error.field;
-      const message = error.message;
-
-      const field = ingredientForm.querySelector(`[name="${fieldName}"]`);
-
-      if (field) {
-        field.classList.add('error');
-
-        const errorMessage = document.createElement('div');
-        errorMessage.classList.add('error-message');
-        errorMessage.textContent = message;
-        field.parentNode.insertBefore(errorMessage, field.nextSibling);
-      }
+      const errorItem = document.createElement('p');
+      errorItem.textContent = `${error.field}: ${error.message}`;
+      errorContainer.appendChild(errorItem);
     });
-  }
 
-  // Helper function to display global errors
-  function displayGlobalError(message) {
-    const globalErrorContainer = document.createElement('div');
-    globalErrorContainer.classList.add('global-error');
-    globalErrorContainer.textContent = message;
-    ingredientForm.prepend(globalErrorContainer);
+    ingredientForm.appendChild(errorContainer);
   }
 }
