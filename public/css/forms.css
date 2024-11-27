@@ -98,3 +98,37 @@ input[type='submit']:hover {
     opacity: 1;
   }
 }
+
+/* Button Styles */
+button {
+  width: 100%;
+  padding: 12px;
+  background: linear-gradient(90deg, #ff00ff, #00ffff);
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  box-shadow:
+    0 0 10px #00ffff,
+    0 0 20px #ff00ff;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+button:hover {
+  transform: scale(1.1);
+  box-shadow:
+    0 0 20px #ff00ff,
+    0 0 40px #00ffff;
+}
+
+button:active {
+  transform: scale(1);
+  box-shadow:
+    0 0 10px #ff00ff,
+    0 0 20px #00ffff;
+}
