@@ -1,30 +1,66 @@
 export function initAddIngredient() {
   const ingredientForm = document.getElementById('ingredientForm');
+  const toggleButton = document.getElementById('toggleNutritionFacts');
+  const nutritionFactsContent = document.getElementById(
+    'nutritionFactsContent'
+  );
+
+  if (toggleButton && nutritionFactsContent) {
+    toggleButton.addEventListener('click', () => {
+      // Check the current state of the collapsible section
+      const isExpanded = toggleButton.getAttribute('aria-expanded') === 'true';
+
+      // Toggle the expanded state and content visibility
+      toggleButton.setAttribute('aria-expanded', !isExpanded);
+      nutritionFactsContent.style.display = isExpanded ? 'none' : 'block';
+
+      // Update the button text
+      toggleButton.textContent = isExpanded
+        ? 'Nutritional Information ▼'
+        : 'Nutritional Information ▲';
+    });
+  }
 
   if (ingredientForm) {
     ingredientForm.addEventListener('submit', async (event) => {
-      event.preventDefault();
+      event.preventDefault(); // Prevent default form submission
 
       // Clear previous errors
-      clearAllErrors();
+      clearIngredientErrors();
 
       // Collect form data
       const formData = new FormData(ingredientForm);
+
       const data = {
-        name: formData.get('name').trim(),
-        description: formData.get('description').trim(),
-        calories: parseFloat(formData.get('calories')) || 0,
+        name: formData.get('name')?.trim() || '',
+        description: formData.get('description')?.trim() || undefined,
+        calories: formData.get('calories')
+          ? parseFloat(formData.get('calories'))
+          : undefined,
         nutritionalInfo: {
-          fat: parseFloat(formData.get('nutritionalInfo.fat')) || 0,
-          protein: parseFloat(formData.get('nutritionalInfo.protein')) || 0,
-          carbohydrates:
-            parseFloat(formData.get('nutritionalInfo.carbohydrates')) || 0,
-          fiber: parseFloat(formData.get('nutritionalInfo.fiber')) || 0,
+          fat: formData.get('fat')
+            ? parseFloat(formData.get('fat'))
+            : undefined,
+          protein: formData.get('protein')
+            ? parseFloat(formData.get('protein'))
+            : undefined,
+          carbohydrates: formData.get('carbohydrates')
+            ? parseFloat(formData.get('carbohydrates'))
+            : undefined,
+          fiber: formData.get('fiber')
+            ? parseFloat(formData.get('fiber'))
+            : undefined,
         },
-        image: formData.get('image'), // Optional: handle image separately if needed
       };
 
+      // Validate required fields
+      if (!data.name) {
+        displayIngredientError('Please provide a name for the ingredient.');
+        return;
+      }
+
       try {
+        // Make the POST request to add the ingredient
         const response = await fetch('/api/ingredients', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -33,72 +69,62 @@ export function initAddIngredient() {
 
         if (response.ok) {
           alert('Ingredient added successfully!');
-          ingredientForm.reset();
+          ingredientForm.reset(); // Clear the form on success
         } else {
           const errorData = await response.json();
-
-          // Handle validation errors
           if (errorData.errors && Array.isArray(errorData.errors)) {
-            displayFieldErrors(errorData.errors);
+            // Display field-specific errors
+            displayIngredientErrors(errorData.errors);
           } else {
-            displayGlobalError(
-              `Failed to add ingredient: ${errorData.message || 'Unknown error'}`
+            // Display a general error message
+            displayIngredientError(
+              errorData.error ||
+                'An error occurred while adding the ingredient.'
             );
           }
         }
       } catch (error) {
         console.error('Error adding ingredient:', error);
-        displayGlobalError('An error occurred. Please try again.');
+        displayIngredientError(
+          'An unexpected error occurred. Please try again.'
+        );
       }
     });
   }
 
-  // Helper functions
-  function clearAllErrors() {
-    document.querySelectorAll('.error').forEach((field) => {
-      field.classList.remove('error');
-    });
-
-    document.querySelectorAll('.error-message').forEach((errorMessage) => {
-      errorMessage.remove();
-    });
-  }
-
-  function displayFieldErrors(errors) {
-    errors.forEach((error) => {
-      const field = document.getElementById(error.field);
-      if (field) {
-        field.classList.add('error'); // Add error styling
-        showErrorBelowField(field, error.message);
-      }
-    });
-
-    focusFirstError();
-  }
-
-  function displayGlobalError(message) {
-    const form = document.getElementById('ingredientForm');
-    const globalError = document.createElement('div');
-    globalError.classList.add('error-message', 'global-error');
-    globalError.textContent = message;
-    form.insertBefore(globalError, form.firstChild);
-  }
-
-  function showErrorBelowField(field, message) {
-    let errorMessage = field.nextElementSibling;
-    if (!errorMessage || !errorMessage.classList.contains('error-message')) {
-      errorMessage = document.createElement('div');
-      errorMessage.classList.add('error-message');
-      field.parentNode.insertBefore(errorMessage, field.nextSibling);
+  // Clear any existing error messages
+  function clearIngredientErrors() {
+    const errorContainer = document.querySelector('.ingredient-error-message');
+    if (errorContainer) {
+      errorContainer.remove();
     }
+  }
+
+  // Display a single error message (e.g., general or global errors)
+  function displayIngredientError(message) {
+    clearIngredientErrors(); // Clear existing errors
+    const errorMessage = document.createElement('div');
+    errorMessage.classList.add('ingredient-error-message');
+    errorMessage.style.color = 'red';
+    errorMessage.style.marginTop = '10px';
     errorMessage.textContent = message;
+    ingredientForm.appendChild(errorMessage);
   }
 
-  function focusFirstError() {
-    const firstErrorField = document.querySelector('.error');
-    if (firstErrorField) {
-      firstErrorField.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      firstErrorField.focus();
-    }
+  // Display multiple field-specific errors
+  function displayIngredientErrors(errors) {
+    clearIngredientErrors(); // Clear existing errors
+    const errorContainer = document.createElement('div');
+    errorContainer.classList.add('ingredient-error-message');
+    errorContainer.style.color = 'red';
+    errorContainer.style.marginTop = '10px';
+
+    errors.forEach((error) => {
+      const errorItem = document.createElement('p');
+      errorItem.textContent = `${error.field}: ${error.message}`;
+      errorContainer.appendChild(errorItem);
+    });
+
+    ingredientForm.appendChild(errorContainer);
   }
 }
