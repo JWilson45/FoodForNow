@@ -1,3 +1,13 @@
+function clearAllErrors() {
+  // Remove all error messages
+  const errorMessages = document.querySelectorAll('.error-message');
+  errorMessages.forEach((msg) => msg.remove());
+
+  // Remove error classes from fields
+  const errorFields = document.querySelectorAll('.error');
+  errorFields.forEach((field) => field.classList.remove('error'));
+}
+
 export function initAddIngredient() {
   const ingredientForm = document.getElementById('ingredientForm');
 
@@ -10,18 +20,29 @@ export function initAddIngredient() {
 
       // Collect form data
       const formData = new FormData(ingredientForm);
+
       const data = {
-        name: formData.get('name').trim(),
-        description: formData.get('description').trim(),
-        calories: parseFloat(formData.get('calories')) || 0,
+        name: formData.get('name')?.trim() || '',
+        description: formData.get('description')?.trim() || undefined,
+        calories: formData.get('calories')
+          ? parseFloat(formData.get('calories'))
+          : undefined,
         nutritionalInfo: {
-          fat: parseFloat(formData.get('nutritionalInfo.fat')) || 0,
-          protein: parseFloat(formData.get('nutritionalInfo.protein')) || 0,
-          carbohydrates:
-            parseFloat(formData.get('nutritionalInfo.carbohydrates')) || 0,
-          fiber: parseFloat(formData.get('nutritionalInfo.fiber')) || 0,
+          fat: formData.get('fat')
+            ? parseFloat(formData.get('fat'))
+            : undefined,
+          protein: formData.get('protein')
+            ? parseFloat(formData.get('protein'))
+            : undefined,
+          carbohydrates: formData.get('carbohydrates')
+            ? parseFloat(formData.get('carbohydrates'))
+            : undefined,
+          fiber: formData.get('fiber')
+            ? parseFloat(formData.get('fiber'))
+            : undefined,
         },
-        image: formData.get('image'), // Optional: handle image separately if needed
+        // Handle image if necessary
+        // image: formData.get('image'), // This may need special handling
       };
 
       try {
@@ -42,7 +63,7 @@ export function initAddIngredient() {
             displayFieldErrors(errorData.errors);
           } else {
             displayGlobalError(
-              `Failed to add ingredient: ${errorData.message || 'Unknown error'}`
+              `Failed to add ingredient: ${errorData.error || 'Unknown error'}`
             );
           }
         }
@@ -53,52 +74,41 @@ export function initAddIngredient() {
     });
   }
 
-  // Helper functions
+  // Helper function to clear previous errors
   function clearAllErrors() {
-    document.querySelectorAll('.error').forEach((field) => {
-      field.classList.remove('error');
-    });
+    // Remove all error messages
+    const errorMessages = ingredientForm.querySelectorAll('.error-message');
+    errorMessages.forEach((msg) => msg.remove());
 
-    document.querySelectorAll('.error-message').forEach((errorMessage) => {
-      errorMessage.remove();
-    });
+    // Remove error classes from fields
+    const errorFields = ingredientForm.querySelectorAll('.error');
+    errorFields.forEach((field) => field.classList.remove('error'));
   }
 
+  // Helper function to display field-specific errors
   function displayFieldErrors(errors) {
     errors.forEach((error) => {
-      const field = document.getElementById(error.field);
+      const fieldName = error.field;
+      const message = error.message;
+
+      const field = ingredientForm.querySelector(`[name="${fieldName}"]`);
+
       if (field) {
-        field.classList.add('error'); // Add error styling
-        showErrorBelowField(field, error.message);
+        field.classList.add('error');
+
+        const errorMessage = document.createElement('div');
+        errorMessage.classList.add('error-message');
+        errorMessage.textContent = message;
+        field.parentNode.insertBefore(errorMessage, field.nextSibling);
       }
     });
-
-    focusFirstError();
   }
 
+  // Helper function to display global errors
   function displayGlobalError(message) {
-    const form = document.getElementById('ingredientForm');
-    const globalError = document.createElement('div');
-    globalError.classList.add('error-message', 'global-error');
-    globalError.textContent = message;
-    form.insertBefore(globalError, form.firstChild);
-  }
-
-  function showErrorBelowField(field, message) {
-    let errorMessage = field.nextElementSibling;
-    if (!errorMessage || !errorMessage.classList.contains('error-message')) {
-      errorMessage = document.createElement('div');
-      errorMessage.classList.add('error-message');
-      field.parentNode.insertBefore(errorMessage, field.nextSibling);
-    }
-    errorMessage.textContent = message;
-  }
-
-  function focusFirstError() {
-    const firstErrorField = document.querySelector('.error');
-    if (firstErrorField) {
-      firstErrorField.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      firstErrorField.focus();
-    }
+    const globalErrorContainer = document.createElement('div');
+    globalErrorContainer.classList.add('global-error');
+    globalErrorContainer.textContent = message;
+    ingredientForm.prepend(globalErrorContainer);
   }
 }
