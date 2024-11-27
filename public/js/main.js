@@ -6,12 +6,14 @@ import { initPasswordStrengthChecker } from './passwordStrength.js';
 import { initTogglePassword } from './togglePassword.js';
 import { loadHeader } from './loadHeader.js';
 import { initEasterEgg } from './easterEgg.js';
+import { initAddIngredient } from './addIngredients.js';
 
 document.addEventListener('DOMContentLoaded', () => {
-  loadHeader();
-  initEasterEgg();
-  initLogin();
-  initSignup();
-  initPasswordStrengthChecker();
-  initTogglePassword();
+  loadHeader(); // Loads the header
+  initEasterEgg(); // Initializes easter egg functionality
+  initLogin(); // Initializes login form functionality
+  initSignup(); // Initializes signup form functionality
+  initPasswordStrengthChecker(); // Initializes password strength checker
+  initTogglePassword(); // Initializes password toggle feature
+  initAddIngredient(); // Initializes ingredient form functionality
 });

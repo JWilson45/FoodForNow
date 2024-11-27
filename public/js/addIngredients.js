@@ -1,5 +1,25 @@
 export function initAddIngredient() {
   const ingredientForm = document.getElementById('ingredientForm');
+  const toggleButton = document.getElementById('toggleNutritionFacts');
+  const nutritionFactsContent = document.getElementById(
+    'nutritionFactsContent'
+  );
+
+  if (toggleButton && nutritionFactsContent) {
+    toggleButton.addEventListener('click', () => {
+      // Check the current state of the collapsible section
+      const isExpanded = toggleButton.getAttribute('aria-expanded') === 'true';
+
+      // Toggle the expanded state and content visibility
+      toggleButton.setAttribute('aria-expanded', !isExpanded);
+      nutritionFactsContent.style.display = isExpanded ? 'none' : 'block';
+
+      // Update the button text
+      toggleButton.textContent = isExpanded
+        ? 'Nutritional Information ▼'
+        : 'Nutritional Information ▲';
+    });
+  }
 
   if (ingredientForm) {
     ingredientForm.addEventListener('submit', async (event) => {
@@ -31,16 +51,16 @@ export function initAddIngredient() {
             ? parseFloat(formData.get('fiber'))
             : undefined,
         },
-        // Handle image if necessary
-        // image: formData.get('image'), // This may need special handling
       };
 
+      // Validate required fields
       if (!data.name) {
         displayIngredientError('Please provide a name for the ingredient.');
         return;
       }
 
       try {
+        // Make the POST request to add the ingredient
         const response = await fetch('/api/ingredients', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -49,12 +69,14 @@ export function initAddIngredient() {
 
         if (response.ok) {
           alert('Ingredient added successfully!');
-          ingredientForm.reset();
+          ingredientForm.reset(); // Clear the form on success
         } else {
           const errorData = await response.json();
           if (errorData.errors && Array.isArray(errorData.errors)) {
+            // Display field-specific errors
             displayIngredientErrors(errorData.errors);
           } else {
+            // Display a general error message
             displayIngredientError(
               errorData.error ||
                 'An error occurred while adding the ingredient.'
@@ -70,7 +92,7 @@ export function initAddIngredient() {
     });
   }
 
-  // Function to clear ingredient errors
+  // Clear any existing error messages
   function clearIngredientErrors() {
     const errorContainer = document.querySelector('.ingredient-error-message');
     if (errorContainer) {
@@ -78,7 +100,7 @@ export function initAddIngredient() {
     }
   }
 
-  // Function to display a single ingredient error message
+  // Display a single error message (e.g., general or global errors)
   function displayIngredientError(message) {
     clearIngredientErrors(); // Clear existing errors
     const errorMessage = document.createElement('div');
@@ -89,7 +111,7 @@ export function initAddIngredient() {
     ingredientForm.appendChild(errorMessage);
   }
 
-  // Function to display multiple field-specific errors
+  // Display multiple field-specific errors
   function displayIngredientErrors(errors) {
     clearIngredientErrors(); // Clear existing errors
     const errorContainer = document.createElement('div');
