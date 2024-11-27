@@ -1,11 +1,10 @@
-/* progressbar.css */
-
 /* Progress Bar Container */
 .progress-bar-container {
   width: 100%;
-  background-color: #333;
+  background-color: #222;
   border-radius: 10px;
-  margin: 20px 0; /* Consolidated margin */
+  margin: 20px 0;
+  border: 1px solid #444;
 }
 
 /* Progress Bar */
@@ -21,7 +20,7 @@
 
 /* Password Strength Variants */
 .progress-bar.weak {
-  background-color: #ff4d4d; /* Red, softer for better UX */
+  background-color: #ff4d4d; /* Light Red */
 }
 
 .progress-bar.medium {
@@ -29,9 +28,9 @@
 }
 
 .progress-bar.strong {
-  background-color: #90ee90; /* Light green */
+  background-color: #90ee90; /* Light Green */
 }
 
 .progress-bar.very-strong {
-  background-color: #32cd32; /* Strong green */
+  background-color: #32cd32; /* Strong Green */
 }
