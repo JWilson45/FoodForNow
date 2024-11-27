@@ -24,7 +24,7 @@
     </header>
 
     <!-- Signup Form -->
-    <form id="signupForm">
+    <form id="signupForm" autocomplete="on">
       <h2>Sign Up</h2>
 
       <label for="firstName">First Name:</label>
@@ -58,11 +58,14 @@
       />
 
       <!-- Show Password Checkbox -->
-      <label>
-        <input type="checkbox" id="showSignupPassword" />
-        Show Password
-      </label>
+      <div>
+        <label for="showSignupPassword">
+          <input type="checkbox" id="showSignupPassword" />
+          Show Password
+        </label>
+      </div>
 
+      <!-- Password Strength Progress Bar -->
       <div class="progress-bar-container">
         <div id="progressBar" class="progress-bar"></div>
       </div>
@@ -76,7 +79,7 @@
         required
       />
 
-      <input type="submit" value="Sign Up" />
+      <button type="submit">Sign Up</button>
     </form>
 
     <!-- Placeholder for the universal footer -->
