@@ -1,6 +1,6 @@
 /* forms.css */
 
-/* Form Section */
+/* General Styles */
 form {
   background: rgba(0, 0, 0, 0.8);
   border: 2px solid #ff00ff;
@@ -22,10 +22,12 @@ label {
   text-shadow: 0 0 10px #ff00ff;
 }
 
-/* Shared Input Styles */
+/* Shared Input and Textarea Styles */
 input[type='text'],
 input[type='email'],
-input[type='password'] {
+input[type='password'],
+input[type='number'],
+textarea {
   width: 100%;
   padding: 12px;
   margin-bottom: 20px;
@@ -41,22 +43,21 @@ input[type='password'] {
     background-color 0.3s ease;
 }
 
-input[type='text']:hover,
-input[type='email']:hover,
-input[type='password']:hover {
+input:hover,
+textarea:hover {
   background-color: #222;
 }
 
-input[type='text']:focus,
-input[type='email']:focus,
-input[type='password']:focus {
+input:focus,
+textarea:focus {
   background-color: #222;
   box-shadow:
     0 0 10px #00ffff,
     0 0 20px #ff00ff;
 }
 
-/* Submit Button */
+/* Shared Button Styles */
+button,
 input[type='submit'] {
   width: 100%;
   padding: 12px;
@@ -76,11 +77,20 @@ input[type='submit'] {
     box-shadow 0.3s ease;
 }
 
+button:hover,
 input[type='submit']:hover {
   transform: scale(1.1);
   box-shadow:
     0 0 20px #ff00ff,
     0 0 40px #00ffff;
+}
+
+button:active,
+input[type='submit']:active {
+  transform: scale(1);
+  box-shadow:
+    0 0 10px #ff00ff,
+    0 0 20px #00ffff;
 }
 
 /* Animations */

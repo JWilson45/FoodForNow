@@ -23,25 +23,17 @@ export function initPasswordStrengthChecker() {
     if (/[0-9]/.test(password)) strength++;
     if (/[^a-zA-Z0-9]/.test(password)) strength++;
 
-    return strength;
+    return Math.min(strength, 5); // Ensure strength does not exceed 5
   }
 
   function updateProgressBar(progressBar, strength) {
-    const strengthLevels = ['weak', 'medium', 'strong', 'very-strong'];
-
-    progressBar.className = `progress-bar ${strengthLevels[strength - 1] || ''}`;
+    const classes = ['weak', 'medium', 'strong', 'very-strong'];
+    progressBar.className = 'progress-bar'; // Reset to base class
     progressBar.style.width = `${(strength / 5) * 100}%`;
-
-    if (strength === 5) {
-      progressBar.textContent = 'Very Strong';
-    } else if (strength === 4) {
-      progressBar.textContent = 'Strong';
-    } else if (strength === 3) {
-      progressBar.textContent = 'Medium';
-    } else if (strength > 0) {
-      progressBar.textContent = 'Weak';
-    } else {
-      progressBar.textContent = '';
+    if (strength > 0 && strength <= 4) {
+      progressBar.classList.add(classes[strength - 1]);
+    } else if (strength === 5) {
+      progressBar.classList.add('very-strong');
     }
   }
 }
