@@ -16,4 +16,12 @@ document.addEventListener('DOMContentLoaded', () => {
   initPasswordStrengthChecker(); // Initializes password strength checker
   initTogglePassword(); // Initializes password toggle feature
   initAddIngredient(); // Initializes ingredient form functionality
+
+  // Dynamically adjust form margin to prevent overlap with the header
+  const header = document.querySelector('nav'); // Assuming <nav> is the header element
+  const headerHeight = header ? header.offsetHeight : 0; // Get the height of the header
+  const form = document.querySelector('form'); // Select the first form on the page
+  if (form) {
+    form.style.marginTop = `${headerHeight + 20}px`; // Add 20px margin below the header
+  }
 });
