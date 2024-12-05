@@ -1,21 +1,42 @@
 // main.js
 
+// Import utility functions
+import { loadHeader } from './loadHeader.js';
+import { initEasterEgg } from './easterEgg.js';
+
+// Import form-related initializers
 import { initLogin } from './login.js';
 import { initSignup } from './signup.js';
 import { initPasswordStrengthChecker } from './passwordStrength.js';
 import { initTogglePassword } from './togglePassword.js';
-import { loadHeader } from './loadHeader.js';
-import { initEasterEgg } from './easterEgg.js';
 import { initAddIngredient } from './addIngredients.js';
+import { initAddRecipe } from './addRecipe.js';
 
 document.addEventListener('DOMContentLoaded', () => {
-  loadHeader(); // Loads the header
-  initEasterEgg(); // Initializes easter egg functionality
-  initLogin(); // Initializes login form functionality
-  initSignup(); // Initializes signup form functionality
-  initPasswordStrengthChecker(); // Initializes password strength checker
-  initTogglePassword(); // Initializes password toggle feature
-  initAddIngredient(); // Initializes ingredient form functionality
+  // Load the header across all pages
+  loadHeader();
+
+  // Global functionality
+  initEasterEgg();
+
+  // Page-specific initializations
+  if (document.getElementById('loginForm')) {
+    initLogin();
+  }
+
+  if (document.getElementById('signupForm')) {
+    initSignup();
+    initPasswordStrengthChecker();
+    initTogglePassword();
+  }
+
+  if (document.getElementById('ingredientForm')) {
+    initAddIngredient();
+  }
+
+  if (document.getElementById('recipeForm')) {
+    initAddRecipe();
+  }
 
   // Dynamically adjust form margin to prevent overlap with the header
   const header = document.querySelector('nav'); // Assuming <nav> is the header element
