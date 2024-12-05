@@ -1,13 +1,11 @@
-/* forms.css */
-
-/* General Styles */
+/* General Styles for Forms */
 form {
-  background: rgba(0, 0, 0, 0.8); /* Dark, semi-transparent background */
-  border: 2px solid #007aff; /* Blue border */
+  background: rgba(0, 0, 0, 0.8);
+  border: 2px solid #007aff;
   border-radius: 12px;
   box-shadow:
     0 0 10px rgba(0, 122, 255, 0.4),
-    0 0 30px rgba(0, 122, 255, 0.4); /* Soft blue glow */
+    0 0 30px rgba(0, 122, 255, 0.4);
   padding: 20px;
   width: 90%;
   max-width: 400px;
@@ -19,93 +17,52 @@ form {
 label {
   display: block;
   margin-bottom: 8px;
-  color: #d1d1d6; /* Light gray text */
+  color: #d1d1d6;
   font-weight: 600;
 }
 
-/* Shared Input and Textarea Styles */
-input[type='text'],
-input[type='email'],
-input[type='password'],
-input[type='number'],
-input[type='date'],
+/* Input and Textarea Styles */
+input,
 textarea {
   width: 100%;
   padding: 12px;
   margin-bottom: 20px;
-  background: #333333; /* Dark background for input fields */
-  color: #ffffff; /* White text */
-  border: 1px solid #555555; /* Light border */
+  background: #333;
+  color: #fff;
+  border: 1px solid #555;
   border-radius: 10px;
   font-size: 1rem;
   outline: none;
-  box-shadow: 0 0 5px rgba(0, 122, 255, 0.3); /* Blue glow on focus */
+  box-shadow: 0 0 5px rgba(0, 122, 255, 0.3);
   transition:
     box-shadow 0.3s ease,
     background-color 0.3s ease;
 }
 
-input[type='date'] {
-  padding: 12px 10px;
-  font-size: 1rem;
+input:focus,
+textarea:focus {
+  background-color: #444;
+  box-shadow:
+    0 0 10px rgba(0, 122, 255, 0.7),
+    0 0 20px rgba(0, 122, 255, 0.7);
 }
 
 input:hover,
 textarea:hover {
-  background-color: #444444; /* Darker gray on hover */
+  background-color: #444;
 }
 
-input:focus,
-textarea:focus {
-  background-color: #444444; /* Focused background */
-  box-shadow:
-    0 0 10px rgba(0, 122, 255, 0.7),
-    0 0 20px rgba(0, 122, 255, 0.7); /* Blue glow on focus */
+/* Nutrition Fieldset */
+fieldset {
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid #d1d1d6;
+  padding: 20px;
+  margin-top: 20px;
+  box-shadow: 0 0 10px rgba(0, 122, 255, 0.2);
 }
 
-/* Button Styles */
-button,
-input[type='submit'] {
-  width: 100%;
-  padding: 12px;
-  background: #007aff; /* Apple Blue */
-  color: #fff;
-  border: none;
-  border-radius: 10px;
-  font-size: 1rem;
-  cursor: pointer;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  box-shadow:
-    0 0 10px rgba(0, 122, 255, 0.4),
-    0 0 20px rgba(0, 122, 255, 0.4); /* Blue glow */
-  transition:
-    transform 0.3s ease,
-    box-shadow 0.3s ease;
-}
-
-button:hover,
-input[type='submit']:hover {
-  transform: scale(1.1);
-  box-shadow:
-    0 0 20px rgba(0, 122, 255, 0.7),
-    0 0 40px rgba(0, 122, 255, 0.7); /* Glowing effect */
-}
-
-button:active,
-input[type='submit']:active {
-  transform: scale(1);
-  box-shadow:
-    0 0 10px rgba(0, 122, 255, 0.5),
-    0 0 20px rgba(0, 122, 255, 0.5); /* Slight shrink on click */
-}
-
-/* Animations */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+fieldset label {
+  display: block;
+  margin-bottom: 8px;
+  color: #d1d1d6;
 }

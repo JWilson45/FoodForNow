@@ -25,124 +25,85 @@ body {
   overflow-y: auto;
 }
 
-/* Common styles for buttons, inputs, and fields */
-.button,
-input[type='text'],
-input[type='email'],
-input[type='password'],
-input[type='number'],
-input[type='date'],
-textarea,
-.nutrition-fieldset input[type='number'],
-.submit {
-  padding: 12px;
-  margin-bottom: 20px;
-  border-radius: 10px;
-  font-size: 1rem;
-  transition:
-    box-shadow 0.3s ease,
-    background-color 0.3s ease;
-}
-
-input,
-textarea,
-.nutrition-fieldset input[type='number'] {
-  width: 100%;
-  background: #333;
-  color: #fff;
-  border: 1px solid #555;
-  outline: none;
-  box-shadow: 0 0 5px rgba(0, 122, 255, 0.3);
-}
-
-input:focus,
-textarea:focus,
-.nutrition-fieldset input[type='number']:focus {
-  background-color: #444;
-  box-shadow:
-    0 0 10px #007aff,
-    0 0 20px #007aff;
-}
-
-input:hover,
-textarea:hover,
-.nutrition-fieldset input[type='number']:hover {
-  background-color: #444;
-}
-
-/* Submit Button Styles */
-.submit {
-  background-color: #007aff;
-  color: white;
-  border: none;
-  border-radius: 30px;
-  font-weight: 600;
-  cursor: pointer;
-  text-transform: uppercase;
-  width: 100%;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-}
-
-.submit:hover {
-  background-color: #0051a8;
-  transform: translateY(-2px);
-}
-
-.submit:active {
-  transform: translateY(1px);
-}
-
-/* General Form Styles */
-form {
+/* General Container Styling */
+.container {
+  max-width: 1200px;
+  margin: 20px auto;
+  padding: 20px;
   background: rgba(0, 0, 0, 0.8);
   border: 2px solid #007aff;
   border-radius: 12px;
   box-shadow:
     0 0 10px rgba(0, 122, 255, 0.4),
     0 0 30px rgba(0, 122, 255, 0.4);
-  padding: 20px;
-  width: 90%;
-  max-width: 400px;
-  margin: 20px auto;
   animation: fadeIn 2s ease-in-out;
 }
 
-/* Form Label Styling */
-label {
-  display: block;
-  margin-bottom: 8px;
-  color: #d1d1d6;
-  font-weight: 600;
+/* Flexbox Grid */
+.flex-container {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 20px;
 }
 
-/* Nutritional Information Fieldset */
-.nutrition-fieldset {
-  background: rgba(255, 255, 255, 0.1);
-  border: 2px solid #d1d1d6;
+/* General Card Styling */
+.card {
+  flex: 0 1 calc(50% - 20px);
+  box-sizing: border-box;
   padding: 20px;
-  margin-top: 20px;
-  box-shadow: 0 0 10px rgba(0, 122, 255, 0.2);
+  border: 2px solid #007aff;
+  border-radius: 12px;
+  background-color: rgba(0, 0, 0, 0.9);
+  color: #ffffff;
+  box-shadow:
+    0 0 10px rgba(0, 122, 255, 0.4),
+    0 0 30px rgba(0, 122, 255, 0.4);
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
 }
 
-.nutrition-fieldset label {
-  display: block;
-  margin-bottom: 8px;
-  color: #d1d1d6;
+.card:hover {
+  transform: scale(1.05);
+  box-shadow:
+    0 0 20px rgba(0, 122, 255, 0.7),
+    0 0 40px rgba(0, 122, 255, 0.7);
 }
 
-.nutrition-toggle-btn {
-  background: none;
+/* Button Styles */
+button,
+input[type='submit'] {
+  width: 100%;
+  padding: 12px;
+  background: #007aff;
+  color: #fff;
   border: none;
-  color: #007aff;
-  font-size: 1.1rem;
+  border-radius: 10px;
+  font-size: 1rem;
   cursor: pointer;
-  text-decoration: underline;
-  padding: 0;
-  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  box-shadow:
+    0 0 10px rgba(0, 122, 255, 0.4),
+    0 0 20px rgba(0, 122, 255, 0.4);
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
 }
 
-.nutrition-toggle-btn:hover {
-  color: #34b7f1;
+button:hover {
+  transform: scale(1.1);
+  box-shadow:
+    0 0 20px rgba(0, 122, 255, 0.7),
+    0 0 40px rgba(0, 122, 255, 0.7);
+}
+
+button:active {
+  transform: scale(1);
+  box-shadow:
+    0 0 10px rgba(0, 122, 255, 0.5),
+    0 0 20px rgba(0, 122, 255, 0.5);
 }
 
 /* Animations */

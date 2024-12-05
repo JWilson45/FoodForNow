@@ -61,7 +61,7 @@ export function initCookbook() {
   // Function to create a recipe card element
   function createRecipeCard(recipe) {
     const card = document.createElement('div');
-    card.classList.add('recipe-card');
+    card.classList.add('card');
 
     card.innerHTML = `
           <h3>${recipe.name}</h3>
