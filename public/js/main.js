@@ -11,6 +11,7 @@ import { initPasswordStrengthChecker } from './passwordStrength.js';
 import { initTogglePassword } from './togglePassword.js';
 import { initAddIngredient } from './addIngredients.js';
 import { initAddRecipe } from './addRecipe.js';
+import { initCookbook } from './cookbook.js'; // Import the cookbook initializer
 
 document.addEventListener('DOMContentLoaded', () => {
   // Load the header across all pages
@@ -36,6 +37,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (document.getElementById('recipeForm')) {
     initAddRecipe();
+  }
+
+  if (document.getElementById('cookbook')) {
+    initCookbook();
   }
 
   // Dynamically adjust form margin to prevent overlap with the header
