@@ -30,21 +30,6 @@ const recipeIngredientValidationSchema = Joi.object({
 
 // Define the recipe validation schema with detailed custom error messages
 const createRecipeValidationSchema = Joi.object({
-  // Owner is required and must be a valid ObjectId
-  owner: Joi.string()
-    .required()
-    .custom((value, helpers) => {
-      if (!mongoose.Types.ObjectId.isValid(value)) {
-        return helpers.message('Owner must be a valid ObjectId.');
-      }
-      return value;
-    })
-    .messages({
-      'string.base': 'Owner must be a string.',
-      'string.empty': 'Owner is required.',
-      'any.required': 'Owner is required.',
-    }),
-
   // Name is required, must be a string, and cannot be empty
   name: Joi.string().required().trim().messages({
     'string.base': 'Name must be a string.',
