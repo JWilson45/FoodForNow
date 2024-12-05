@@ -92,7 +92,8 @@ export function initCookbook() {
       .querySelector('.viewRecipeButton')
       .addEventListener('click', (event) => {
         const recipeId = event.target.dataset.recipeId;
-        alert(`View recipe with ID: ${recipeId}`);
+        // Redirect to recipe.html with the recipe ID as a query parameter
+        window.location.href = `recipe.html?id=${recipeId}`;
       });
 
     return card;
