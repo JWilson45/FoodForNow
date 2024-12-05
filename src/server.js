@@ -12,10 +12,14 @@ app.use(express.json()); // Parse incoming JSON requests and populate req.body
 app.use(express.urlencoded({ extended: true })); // Parse incoming URL-encoded data (e.g., form submissions)
 app.use(
   morgan('combined', {
-    skip: (req) => !req.url.startsWith('/api'), // Skip logging if the URL does not start with /api
+    skip: (req) => {
+      return !req.originalUrl.startsWith('/api');
+    },
   })
-); // Log HTTP requests conditionally
-app.use(express.static('public')); // Serve static files (like images, CSS, JS) from the 'public' directory
+);
+
+// Serve static files from the 'public' directory
+app.use(express.static('public'));
 
 // Register API routes under the '/api' path
 app.use('/api', routes); // All routes prefixed with '/api' will be handled by the imported routes

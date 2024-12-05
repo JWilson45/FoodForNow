@@ -17,7 +17,7 @@ checkEnvVars(['JWT_SECRET_KEY']);
 const authenticateUser = (req, res, next) => {
   try {
     // Retrieve the authentication token from cookies
-    const token = req.cookies.authToken;
+    const token = req.cookies.authToken || req.headers.authorization;
 
     // If no token is found, respond with a 401 status indicating authentication is required
     if (!token) {
