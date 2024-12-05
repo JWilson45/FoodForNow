@@ -1,13 +1,6 @@
-// Import the Express framework
 const express = require('express');
-
-// Import the validation middleware
 const validate = require('../../middleware/validate');
-
-// Import the validation schema for ingredients
-const { ingredientValidationSchema } = require('./validator');
-
-// Import the service function to handle ingredient creation
+const { createIngredientValidationSchema } = require('./validator');
 const { createIngredient } = require('../../services/ingredients');
 
 // Create a new router instance for handling ingredient-related routes
@@ -20,7 +13,7 @@ const ingredientRouter = express.Router();
  */
 ingredientRouter.post(
   '/', // Route path
-  validate(ingredientValidationSchema), // Middleware to validate the request body
+  validate(createIngredientValidationSchema), // Middleware to validate the request body
   createIngredient // Controller function to handle the logic
 );
 

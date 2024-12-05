@@ -5,6 +5,8 @@
  * @returns {Function} A middleware function for validating the request body.
  */
 const validate = (schema) => (req, res, next) => {
+  console.log(req.body);
+
   // Validate the request body against the schema
   const { error } = schema.validate(req.body, { abortEarly: false });
 

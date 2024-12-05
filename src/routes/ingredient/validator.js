@@ -2,7 +2,7 @@
 const Joi = require('joi');
 
 // Define the ingredient validation schema with detailed custom error messages
-const ingredientValidationSchema = Joi.object({
+const createIngredientValidationSchema = Joi.object({
   // Name is required, must be a string, and cannot be empty
   name: Joi.string().required().trim().messages({
     'string.base': 'Name must be a string.', // Error for invalid type
@@ -49,4 +49,4 @@ const ingredientValidationSchema = Joi.object({
 });
 
 // Export the ingredient validation schema for use in routes and middleware
-module.exports = { ingredientValidationSchema };
+module.exports = { createIngredientValidationSchema };
