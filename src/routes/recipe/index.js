@@ -10,13 +10,17 @@ const validate = require('../../middleware/validate');
 // Create a new router instance for handling recipe-related routes
 const recipeRouter = express.Router();
 
-// POST route to create a new recipe
-recipeRouter.post('/', validate(createRecipeValidationSchema), createRecipe);
+// POST route to create a new recipe (validates the body)
+recipeRouter.post(
+  '/',
+  validate(createRecipeValidationSchema, 'body'),
+  createRecipe
+);
 
-// GET route to fetch recipes for a specific user
+// GET route to fetch recipes for a specific user (validates params)
 recipeRouter.get(
   '/user/:userId',
-  validate(getUserRecipesValidationSchema),
+  validate(getUserRecipesValidationSchema, 'params'),
   getUserRecipes
 );
 
