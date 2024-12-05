@@ -1,37 +1,52 @@
-/* cookbook.css */
-
-/* Style for the main cookbook container */
+/* General Cookbook Container Styling */
 #cookbook {
   max-width: 1200px;
-  margin: 0 auto;
+  margin: 20px auto;
   padding: 20px;
+  background: rgba(0, 0, 0, 0.8); /* Dark, semi-transparent background */
+  border: 2px solid #007aff; /* Blue border */
+  border-radius: 12px;
+  box-shadow:
+    0 0 10px rgba(0, 122, 255, 0.4),
+    0 0 30px rgba(0, 122, 255, 0.4); /* Soft blue glow */
+  animation: fadeIn 2s ease-in-out;
+  color: #ffffff; /* Light text */
 }
 
-/* Style for the recipe container */
+/* Recipe Container */
 #recipeContainer {
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
+  gap: 20px;
 }
 
-/* Style for individual recipe cards */
+/* Individual Recipe Cards */
 .recipe-card {
-  flex: 0 1 calc(50% - 10px); /* Display two cards side by side with some spacing */
+  flex: 0 1 calc(50% - 20px);
   box-sizing: border-box;
-  border: 1px solid #ccc;
-  padding: 15px;
-  margin-bottom: 20px;
-  background-color: #fff;
+  padding: 20px;
+  border: 2px solid #007aff; /* Blue border */
+  border-radius: 12px;
+  background-color: rgba(0, 0, 0, 0.9); /* Match form's dark background */
+  color: #ffffff; /* White text */
+  box-shadow:
+    0 0 10px rgba(0, 122, 255, 0.4),
+    0 0 30px rgba(0, 122, 255, 0.4); /* Glow effect */
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
 }
 
-/* Adjust for smaller screens */
-@media (max-width: 768px) {
-  .recipe-card {
-    flex: 0 1 100%; /* Stack cards on smaller screens */
-  }
+/* Recipe Cards - Hover */
+.recipe-card:hover {
+  transform: scale(1.05);
+  box-shadow:
+    0 0 20px rgba(0, 122, 255, 0.7),
+    0 0 40px rgba(0, 122, 255, 0.7); /* Enhanced glow */
 }
 
-/* Style for the navigation buttons */
+/* Navigation Buttons */
 #navigationButtons {
   display: flex;
   justify-content: center;
@@ -40,15 +55,33 @@
 }
 
 #navigationButtons button {
-  padding: 10px 20px;
+  padding: 12px 24px;
   font-size: 16px;
+  font-weight: 600;
+  text-transform: uppercase;
+  border: none;
+  border-radius: 10px;
+  background: #007aff; /* Apple Blue */
+  color: #fff;
   cursor: pointer;
+  box-shadow:
+    0 0 10px rgba(0, 122, 255, 0.4),
+    0 0 20px rgba(0, 122, 255, 0.4); /* Blue glow */
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
 }
 
-/* Style for the "View Recipe" button inside recipe cards */
-.viewRecipeButton {
-  margin-top: 10px;
-  padding: 8px 16px;
-  font-size: 14px;
-  cursor: pointer;
+#navigationButtons button:hover {
+  transform: scale(1.1);
+  box-shadow:
+    0 0 20px rgba(0, 122, 255, 0.7),
+    0 0 40px rgba(0, 122, 255, 0.7); /* Glowing effect */
+}
+
+#navigationButtons button:active {
+  transform: scale(1);
+  box-shadow:
+    0 0 10px rgba(0, 122, 255, 0.5),
+    0 0 20px rgba(0, 122, 255, 0.5); /* Slight shrink on click */
 }
