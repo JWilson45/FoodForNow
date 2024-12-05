@@ -25,6 +25,7 @@ export function initCookbook() {
     })
     .then((data) => {
       recipes = data.recipes;
+      console.log('Fetched Recipes:', recipes); // Debugging log
       if (recipes.length === 0) {
         recipeContainer.innerHTML = '<p>No recipes found.</p>';
         prevButton.disabled = true;
@@ -45,6 +46,7 @@ export function initCookbook() {
 
     // Get the recipes to display
     const recipesToDisplay = recipes.slice(currentIndex, currentIndex + 2);
+    console.log('Recipes to Display:', recipesToDisplay); // Debugging log
 
     recipesToDisplay.forEach((recipe) => {
       const recipeCard = createRecipeCard(recipe);
@@ -63,23 +65,34 @@ export function initCookbook() {
 
     card.innerHTML = `
           <h3>${recipe.name}</h3>
-          <p><strong>Cuisine:</strong> ${recipe.cuisine || 'N/A'}</p>
-          <p><strong>Meal Time:</strong> ${recipe.mealTime || 'N/A'}</p>
           <p><strong>Servings:</strong> ${recipe.servings}</p>
           <p><strong>Prep Time:</strong> ${recipe.prepTime} minutes</p>
           <p><strong>Cook Time:</strong> ${recipe.cookTime} minutes</p>
-          <p><strong>Total Time:</strong> ${recipe.totalTime} minutes</p>
-          <p><strong>Description:</strong> ${recipe.description || 'No description provided.'}</p>
-          <button class="viewRecipeButton" data-recipe-id="${recipe.id}">View Recipe</button>
+          <p><strong>Ingredients:</strong></p>
+          <ul>
+            ${recipe.ingredients
+              .map(
+                (ingredient) =>
+                  `<li>${ingredient.amount} ${ingredient.unit} of Ingredient ID ${ingredient.ingredientId}</li>`
+              )
+              .join('')}
+          </ul>
+          <p><strong>Instructions:</strong></p>
+          <ol>
+            ${recipe.instructions.map((step) => `<li>${step}</li>`).join('')}
+          </ol>
+          <p><strong>Description:</strong> ${
+            recipe.description || 'No description provided.'
+          }</p>
+          <button class="viewRecipeButton" data-recipe-id="${recipe._id}">View Full Recipe</button>
         `;
 
-    // Event listener for "View Recipe" button (you can implement this feature later)
+    // Add event listener for "View Full Recipe" button
     card
       .querySelector('.viewRecipeButton')
       .addEventListener('click', (event) => {
         const recipeId = event.target.dataset.recipeId;
-        // Implement the logic to view the full recipe details
-        alert(`Viewing recipe ID: ${recipeId}`);
+        alert(`View recipe with ID: ${recipeId}`);
       });
 
     return card;
