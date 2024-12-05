@@ -8,12 +8,14 @@ export function initCookbook() {
   let currentIndex = 0; // Current index for pagination
 
   // Fetch recipes on page load
-  fetch('/api/recipes', {
+  fetch('http://localhost:8080/api/recipes', {
     method: 'GET',
     credentials: 'include', // Include auth cookie in the request
     headers: {
       'Content-Type': 'application/json',
+      'Cache-Control': 'no-cache', // Prevent caching
     },
+    cache: 'no-store', // Additional cache control
   })
     .then((response) => {
       if (!response.ok) {
@@ -60,16 +62,16 @@ export function initCookbook() {
     card.classList.add('recipe-card');
 
     card.innerHTML = `
-        <h3>${recipe.name}</h3>
-        <p><strong>Cuisine:</strong> ${recipe.cuisine || 'N/A'}</p>
-        <p><strong>Meal Time:</strong> ${recipe.mealTime || 'N/A'}</p>
-        <p><strong>Servings:</strong> ${recipe.servings}</p>
-        <p><strong>Prep Time:</strong> ${recipe.prepTime} minutes</p>
-        <p><strong>Cook Time:</strong> ${recipe.cookTime} minutes</p>
-        <p><strong>Total Time:</strong> ${recipe.totalTime} minutes</p>
-        <p><strong>Description:</strong> ${recipe.description || 'No description provided.'}</p>
-        <button class="viewRecipeButton" data-recipe-id="${recipe.id}">View Recipe</button>
-      `;
+          <h3>${recipe.name}</h3>
+          <p><strong>Cuisine:</strong> ${recipe.cuisine || 'N/A'}</p>
+          <p><strong>Meal Time:</strong> ${recipe.mealTime || 'N/A'}</p>
+          <p><strong>Servings:</strong> ${recipe.servings}</p>
+          <p><strong>Prep Time:</strong> ${recipe.prepTime} minutes</p>
+          <p><strong>Cook Time:</strong> ${recipe.cookTime} minutes</p>
+          <p><strong>Total Time:</strong> ${recipe.totalTime} minutes</p>
+          <p><strong>Description:</strong> ${recipe.description || 'No description provided.'}</p>
+          <button class="viewRecipeButton" data-recipe-id="${recipe.id}">View Recipe</button>
+        `;
 
     // Event listener for "View Recipe" button (you can implement this feature later)
     card
