@@ -6,7 +6,6 @@ const createRecipe = async (req, res) => {
   try {
     // Destructure the data from the request body (already validated in the route)
     const {
-      owner,
       name,
       alias,
       description,
@@ -25,7 +24,7 @@ const createRecipe = async (req, res) => {
 
     // Create a new instance of the Recipe model with the data
     const newRecipe = new Recipe({
-      owner,
+      owner: req.user.userId,
       name,
       alias,
       description,
@@ -92,4 +91,28 @@ const createRecipe = async (req, res) => {
   }
 };
 
-module.exports = { createRecipe }; // Export the function for use in other parts of the application
+// Function to get recipes for a specific user
+const getUserRecipes = async (req, res) => {
+  try {
+    // Extract the userId from the authenticated request
+    const userId = req.user.userId;
+
+    // Fetch recipes owned by this user from the database
+    const recipes = await Recipe.find({ owner: userId });
+
+    // Return the recipes in the response
+    res.status(200).json({
+      message: 'Recipes fetched successfully',
+      recipes,
+    });
+  } catch (error) {
+    console.error('Error fetching user recipes:', error);
+
+    // Handle unexpected errors
+    res.status(500).json({
+      error: 'An error occurred while fetching the recipes',
+    });
+  }
+};
+
+module.exports = { createRecipe, getUserRecipes };

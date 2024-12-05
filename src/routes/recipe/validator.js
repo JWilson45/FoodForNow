@@ -28,7 +28,7 @@ const recipeIngredientValidationSchema = Joi.object({
   }),
 });
 
-// Define the recipe validation schema with detailed custom error messages
+// Define the recipe creation validation schema
 const createRecipeValidationSchema = Joi.object({
   // Name is required, must be a string, and cannot be empty
   name: Joi.string().required().trim().messages({
@@ -144,4 +144,25 @@ const createRecipeValidationSchema = Joi.object({
     }),
 });
 
-module.exports = { createRecipeValidationSchema };
+// Define the user-specific recipes validation schema
+const getUserRecipesValidationSchema = Joi.object({
+  userId: Joi.string()
+    .required()
+    .custom((value, helpers) => {
+      // Validate that the string is a valid ObjectId
+      if (!mongoose.Types.ObjectId.isValid(value)) {
+        return helpers.message('userId must be a valid ObjectId');
+      }
+      return value;
+    })
+    .messages({
+      'string.base': 'userId must be a string.',
+      'string.empty': 'userId is required and cannot be empty.',
+      'any.required': 'userId is a required field.',
+    }),
+});
+
+module.exports = {
+  createRecipeValidationSchema,
+  getUserRecipesValidationSchema,
+};

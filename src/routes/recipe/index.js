@@ -1,7 +1,10 @@
 // Import the Express framework
 const express = require('express');
-const { createRecipe } = require('../../services/recipes');
-const { createRecipeValidationSchema } = require('./validator');
+const { createRecipe, getUserRecipes } = require('../../services/recipes');
+const {
+  createRecipeValidationSchema,
+  getUserRecipesValidationSchema,
+} = require('./validator');
 const validate = require('../../middleware/validate');
 
 // Create a new router instance for handling recipe-related routes
@@ -9,6 +12,13 @@ const recipeRouter = express.Router();
 
 // POST route to create a new recipe
 recipeRouter.post('/', validate(createRecipeValidationSchema), createRecipe);
+
+// GET route to fetch recipes for a specific user
+recipeRouter.get(
+  '/user/:userId',
+  validate(getUserRecipesValidationSchema),
+  getUserRecipes
+);
 
 /**
  * Catch-all route for the base `/` path of this router.
