@@ -10,7 +10,11 @@ const app = express(); // Create an Express application instance
 app.use(cookieParser()); // Enable cookie parsing middleware
 app.use(express.json()); // Parse incoming JSON requests and populate req.body
 app.use(express.urlencoded({ extended: true })); // Parse incoming URL-encoded data (e.g., form submissions)
-app.use(morgan('combined')); // Log HTTP requests using the 'combined' log format (standard log format)
+app.use(
+  morgan('combined', {
+    skip: (req) => !req.url.startsWith('/api'), // Skip logging if the URL does not start with /api
+  })
+); // Log HTTP requests conditionally
 app.use(express.static('public')); // Serve static files (like images, CSS, JS) from the 'public' directory
 
 // Register API routes under the '/api' path
