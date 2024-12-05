@@ -147,7 +147,6 @@ const createRecipeValidationSchema = Joi.object({
 // Define the user-specific recipes validation schema
 const getUserRecipesValidationSchema = Joi.object({
   userId: Joi.string()
-    .required()
     .custom((value, helpers) => {
       // Validate that the string is a valid ObjectId
       if (!mongoose.Types.ObjectId.isValid(value)) {
