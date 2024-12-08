@@ -23,36 +23,50 @@ const createIngredient = async (req, res) => {
     res.status(201).json({
       message: 'Ingredient created successfully',
       ingredient: {
-        id: newIngredient._id, // Return the ingredient's ID
-        name: newIngredient.name, // Return the ingredient's name
-        description: newIngredient.description, // Return the description
-        calories: newIngredient.calories, // Return the calorie count
-        nutritionalInfo: newIngredient.nutritionalInfo, // Return nutritional info
-        createdAt: newIngredient.createdAt, // Timestamp when the ingredient was created
-        updatedAt: newIngredient.updatedAt, // Timestamp of the last update
+        id: newIngredient._id,
+        name: newIngredient.name,
+        description: newIngredient.description,
+        calories: newIngredient.calories,
+        nutritionalInfo: newIngredient.nutritionalInfo,
+        createdAt: newIngredient.createdAt,
+        updatedAt: newIngredient.updatedAt,
       },
     });
   } catch (error) {
-    // Handle any specific errors
+    // Handle duplicate key error
     if (error.code === 11000) {
-      // MongoDB duplicate key error (ingredient already exists)
       return res.status(409).json({
         error: 'Ingredient already exists',
-        keyPattern: error.keyPattern, // Return the specific key that caused the conflict
+        keyPattern: error.keyPattern,
       });
     }
 
     // Handle Mongoose validation errors
     if (error.name === 'ValidationError') {
-      return res.status(400).json({ error: error.message }); // Return the validation error message
+      return res.status(400).json({ error: error.message });
     }
 
-    // General error handling for other unexpected issues
-    console.error(error); // Log the error for debugging purposes
+    // General error handling
+    console.error(error);
     res.status(500).json({
       error: 'An unexpected error occurred while creating the ingredient',
     });
   }
 };
 
-module.exports = { createIngredient }; // Export the function for use in other parts of the application
+// Controller function to get all ingredients
+const getIngredients = async (_, res) => {
+  try {
+    const ingredients = await Ingredient.find({}).lean();
+
+    // Return all ingredients as a JSON response
+    res.status(200).json({ ingredients });
+  } catch (error) {
+    console.error('Error fetching ingredients:', error);
+    res.status(500).json({
+      error: 'An error occurred while fetching the ingredients',
+    });
+  }
+};
+
+module.exports = { createIngredient, getIngredients };
