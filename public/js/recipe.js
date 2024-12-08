@@ -10,7 +10,7 @@ export function initRecipe() {
     return;
   }
 
-  // Fetch the recipe data from the server
+  // Fetch the recipe data from the server using the route with :id
   fetch(`http://localhost:8080/api/recipes/${recipeId}`, {
     method: 'GET',
     credentials: 'include',
@@ -25,7 +25,7 @@ export function initRecipe() {
       return response.json();
     })
     .then((data) => {
-      const recipe = data.recipe;
+      const { recipe } = data;
 
       if (!recipe) {
         recipeDetails.innerHTML = '<p>Recipe not found.</p>';
@@ -34,27 +34,27 @@ export function initRecipe() {
 
       // Create the HTML structure for the recipe details
       recipeDetails.innerHTML = `
-          <h2>${recipe.name}</h2>
-          <p><strong>Description:</strong> ${recipe.description || 'No description provided.'}</p>
-          <p><strong>Servings:</strong> ${recipe.servings}</p>
-          <p><strong>Prep Time:</strong> ${recipe.prepTime} minutes</p>
-          <p><strong>Cook Time:</strong> ${recipe.cookTime} minutes</p>
-          <p><strong>Ingredients:</strong></p>
-          <ul>
-            ${recipe.ingredients
-              .map(
-                (ingredient) =>
-                  `<li>${ingredient.amount} ${ingredient.unit} of Ingredient ID ${ingredient.ingredientId}</li>`
-              )
-              .join('')}
-          </ul>
-          <p><strong>Instructions:</strong></p>
-          <ol>
-            ${recipe.instructions.map((step) => `<li>${step}</li>`).join('')}
-          </ol>
-          <p><strong>Tags:</strong> ${recipe.tags.join(', ') || 'No tags provided.'}</p>
-          <button id="backButton">Back to Cookbook</button>
-        `;
+        <h2>${recipe.name}</h2>
+        <p><strong>Description:</strong> ${recipe.description || 'No description provided.'}</p>
+        <p><strong>Servings:</strong> ${recipe.servings}</p>
+        <p><strong>Prep Time:</strong> ${recipe.prepTime} minutes</p>
+        <p><strong>Cook Time:</strong> ${recipe.cookTime} minutes</p>
+        <p><strong>Ingredients:</strong></p>
+        <ul>
+          ${recipe.ingredients
+            .map(
+              (ingredient) =>
+                `<li>${ingredient.amount} ${ingredient.unit} of Ingredient ID ${ingredient.ingredientId}</li>`
+            )
+            .join('')}
+        </ul>
+        <p><strong>Instructions:</strong></p>
+        <ol>
+          ${recipe.instructions.map((step) => `<li>${step}</li>`).join('')}
+        </ol>
+        <p><strong>Tags:</strong> ${recipe.tags && recipe.tags.length > 0 ? recipe.tags.join(', ') : 'No tags provided.'}</p>
+        <button id="backButton">Back to Cookbook</button>
+      `;
 
       // Add event listener to the back button
       document.getElementById('backButton').addEventListener('click', () => {

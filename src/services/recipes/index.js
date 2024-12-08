@@ -115,4 +115,35 @@ const getUserRecipes = async (req, res) => {
   }
 };
 
-module.exports = { createRecipe, getUserRecipes };
+// Controller function to get a recipe by its ID
+const getRecipe = async (req, res) => {
+  try {
+    // Extract the recipe ID from the route parameters
+    const { id } = req.params;
+
+    // Find the recipe by its ID
+    const recipe = await Recipe.findById(id);
+
+    // If the recipe is not found, return a 404 status
+    if (!recipe) {
+      return res.status(404).json({
+        error: 'Recipe not found',
+      });
+    }
+
+    // Return the found recipe
+    res.status(200).json({
+      message: 'Recipe fetched successfully',
+      recipe,
+    });
+  } catch (error) {
+    console.error('Error fetching recipe:', error);
+
+    // Return a generic 500 error response for any unexpected errors
+    res.status(500).json({
+      error: 'An error occurred while fetching the recipe',
+    });
+  }
+};
+
+module.exports = { createRecipe, getUserRecipes, getRecipe };

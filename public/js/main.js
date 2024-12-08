@@ -24,6 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Page-specific initializations
   if (document.getElementById('loginForm')) {
     initLogin();
+    initTogglePassword(); // Call it here so login page also has the toggle password feature
   }
 
   if (document.getElementById('signupForm')) {
@@ -49,10 +50,10 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Dynamically adjust form margin to prevent overlap with the header
-  const header = document.querySelector('nav'); // Assuming <nav> is the header element
-  const headerHeight = header ? header.offsetHeight : 0; // Get the height of the header
-  const form = document.querySelector('form'); // Select the first form on the page
+  const header = document.querySelector('nav');
+  const headerHeight = header ? header.offsetHeight : 0;
+  const form = document.querySelector('form');
   if (form) {
-    form.style.marginTop = `${headerHeight + 20}px`; // Add 20px margin below the header
+    form.style.marginTop = `${headerHeight + 20}px`;
   }
 });

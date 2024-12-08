@@ -161,7 +161,25 @@ const getUserRecipesValidationSchema = Joi.object({
     }),
 });
 
+// Validation for a single recipe ID via params
+const getRecipeValidationSchema = Joi.object({
+  id: Joi.string()
+    .required()
+    .custom((value, helpers) => {
+      if (!mongoose.Types.ObjectId.isValid(value)) {
+        return helpers.message('id must be a valid ObjectId');
+      }
+      return value;
+    })
+    .messages({
+      'string.base': 'id must be a string.',
+      'string.empty': 'id is required and cannot be empty.',
+      'any.required': 'id is a required field.',
+    }),
+});
+
 module.exports = {
   createRecipeValidationSchema,
   getUserRecipesValidationSchema,
+  getRecipeValidationSchema,
 };

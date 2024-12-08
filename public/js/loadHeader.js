@@ -9,6 +9,7 @@ export function loadHeader() {
       .then((response) => response.text())
       .then((html) => {
         headerPlaceholder.innerHTML = html;
+        displayUsernameFromStorage();
       })
       .catch((error) => console.error('Error loading header:', error));
   }
@@ -20,5 +21,19 @@ export function loadHeader() {
         footerPlaceholder.innerHTML = html;
       })
       .catch((error) => console.error('Error loading footer:', error));
+  }
+}
+
+function displayUsernameFromStorage() {
+  const usernameDisplay = document.getElementById('user-display');
+  const loggedInUsername = localStorage.getItem('loggedInUsername');
+
+  if (usernameDisplay) {
+    if (loggedInUsername) {
+      usernameDisplay.textContent = `Logged in as: ${loggedInUsername}`;
+      usernameDisplay.style.fontWeight = 'bold';
+    } else {
+      usernameDisplay.textContent = '';
+    }
   }
 }

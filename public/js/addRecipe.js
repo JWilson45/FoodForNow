@@ -10,41 +10,50 @@ export function initAddRecipe() {
 
   let instructionCount = 0;
   let ingredientCount = 0;
+  let allIngredients = []; // Store fetched ingredients here
 
-  // Initialize with one instruction and one ingredient field
-  addInstructionField();
-  addIngredientField();
+  // Fetch ingredients on page load
+  fetch('/api/ingredients')
+    .then((res) => res.json())
+    .then((data) => {
+      allIngredients = data.ingredients || [];
+      // Initialize fields only after we have ingredients
+      addInstructionField();
+      addIngredientField(allIngredients);
+    })
+    .catch((err) => {
+      console.error('Error fetching ingredients:', err);
+      // If there's an error, still add fields but without dropdown functionality
+      addInstructionField();
+      addIngredientField([]);
+    });
 
-  // Event listener to add new instruction fields
   addInstructionButton.addEventListener('click', () => {
     addInstructionField();
   });
 
-  // Event listener to add new ingredient fields
   addIngredientButton.addEventListener('click', () => {
-    addIngredientField();
+    addIngredientField(allIngredients);
   });
 
-  // Function to add a new instruction input field
   function addInstructionField() {
     instructionCount++;
     const instructionDiv = document.createElement('div');
     instructionDiv.classList.add('instruction-item');
     instructionDiv.innerHTML = `
-        <label for="instruction${instructionCount}">Step ${instructionCount}:</label>
-        <input
-          type="text"
-          id="instruction${instructionCount}"
-          name="instructions"
-          placeholder="Enter instruction"
-          required
-          aria-required="true"
-        />
-        <button type="button" class="removeInstructionButton">Remove</button>
-      `;
+      <label for="instruction${instructionCount}">Step ${instructionCount}:</label>
+      <input
+        type="text"
+        id="instruction${instructionCount}"
+        name="instructions"
+        placeholder="Enter instruction"
+        required
+        aria-required="true"
+      />
+      <button type="button" class="removeInstructionButton">Remove</button>
+    `;
     instructionsContainer.appendChild(instructionDiv);
 
-    // Event listener to remove instruction fields
     instructionDiv
       .querySelector('.removeInstructionButton')
       .addEventListener('click', () => {
@@ -52,65 +61,105 @@ export function initAddRecipe() {
       });
   }
 
-  // Function to add a new ingredient input group
-  function addIngredientField() {
+  function addIngredientField(ingredientList) {
     ingredientCount++;
     const ingredientDiv = document.createElement('div');
     ingredientDiv.classList.add('ingredient-item');
+
+    // Create a unique datalist id
+    const datalistId = `ingredientsDatalist${ingredientCount}`;
+
+    // Construct the datalist options from the fetched ingredients
+    let optionsHtml = ingredientList
+      .map(
+        (ing) => `<option data-id="${ing._id}" value="${ing.name}"></option>`
+      )
+      .join('');
+
     ingredientDiv.innerHTML = `
-        <label for="ingredientId${ingredientCount}">Ingredient ${ingredientCount}:</label>
-        <input
-          type="text"
-          id="ingredientId${ingredientCount}"
-          name="ingredientIds"
-          placeholder="Enter ingredient ID"
-          required
-          aria-required="true"
-        />
-        <label for="amount${ingredientCount}">Amount:</label>
-        <input
-          type="number"
-          id="amount${ingredientCount}"
-          name="amounts"
-          placeholder="Enter amount"
-          min="0"
-          required
-          aria-required="true"
-        />
-        <label for="unit${ingredientCount}">Unit:</label>
-        <input
-          type="text"
-          id="unit${ingredientCount}"
-          name="units"
-          placeholder="Enter unit"
-          required
-          aria-required="true"
-        />
-        <label for="notes${ingredientCount}">Notes:</label>
-        <input
-          type="text"
-          id="notes${ingredientCount}"
-          name="notes"
-          placeholder="Enter notes (optional)"
-        />
-        <button type="button" class="removeIngredientButton">Remove</button>
-      `;
+      <label for="ingredientName${ingredientCount}">Ingredient ${ingredientCount}:</label>
+      <input
+        type="text"
+        id="ingredientName${ingredientCount}"
+        name="ingredientNames"
+        placeholder="Start typing ingredient name..."
+        list="${datalistId}"
+        required
+        aria-required="true"
+      />
+      <datalist id="${datalistId}">
+        ${optionsHtml}
+      </datalist>
+
+      <label for="amount${ingredientCount}">Amount:</label>
+      <input
+        type="number"
+        id="amount${ingredientCount}"
+        name="amounts"
+        placeholder="Enter amount"
+        min="0"
+        required
+        aria-required="true"
+      />
+
+      <label for="unit${ingredientCount}">Unit:</label>
+      <input
+        type="text"
+        id="unit${ingredientCount}"
+        name="units"
+        placeholder="Enter unit"
+        required
+        aria-required="true"
+      />
+
+      <label for="notes${ingredientCount}">Notes:</label>
+      <input
+        type="text"
+        id="notes${ingredientCount}"
+        name="notes"
+        placeholder="Enter notes (optional)"
+      />
+
+      <!-- Hidden field to store the ingredient ID after selection -->
+      <input type="hidden" name="ingredientIds" id="ingredientIdHidden${ingredientCount}" />
+
+      <button type="button" class="removeIngredientButton">Remove</button>
+    `;
+
     ingredientsContainer.appendChild(ingredientDiv);
 
-    // Event listener to remove ingredient fields
+    // Event listener to remove the ingredient field
     ingredientDiv
       .querySelector('.removeIngredientButton')
       .addEventListener('click', () => {
         ingredientsContainer.removeChild(ingredientDiv);
       });
+
+    // Attach an event to update hidden ID when the user picks an ingredient
+    const ingredientNameInput = ingredientDiv.querySelector(
+      `#ingredientName${ingredientCount}`
+    );
+    ingredientNameInput.addEventListener('input', () => {
+      const val = ingredientNameInput.value.toLowerCase();
+      const matchedIngredient = allIngredients.find(
+        (ing) => ing.name.toLowerCase() === val
+      );
+      const hiddenIdField = ingredientDiv.querySelector(
+        `#ingredientIdHidden${ingredientCount}`
+      );
+      if (matchedIngredient) {
+        hiddenIdField.value = matchedIngredient._id;
+      } else {
+        hiddenIdField.value = '';
+      }
+    });
   }
 
   // Handle form submission
   if (recipeForm) {
     recipeForm.addEventListener('submit', async (event) => {
-      event.preventDefault(); // Prevent default form submission
+      event.preventDefault();
 
-      // Collect form data
       const formData = new FormData(recipeForm);
 
       // Collect instructions
@@ -135,6 +184,12 @@ export function initAddRecipe() {
         const unit = item.querySelector(`input[name="units"]`).value.trim();
         const notes = item.querySelector(`input[name="notes"]`).value.trim();
 
+        if (!ingredientId) {
+          // If no ingredientId matched, show an alert or handle error
+          alert('One or more ingredients are not selected from the list.');
+          return;
+        }
+
         ingredients.push({
           ingredientId,
           amount,
@@ -143,7 +198,6 @@ export function initAddRecipe() {
         });
       });
 
-      // Build the data object
       const data = {
         name: formData.get('name').trim(),
         alias: formData.get('alias')?.trim() || undefined,
@@ -165,8 +219,6 @@ export function initAddRecipe() {
               .map((tag) => tag.trim())
           : undefined,
         isPublic: formData.get('isPublic') ? true : false,
-        // You can include the owner ID here if necessary
-        // owner: 'YOUR_OWNER_ID',
       };
 
       // Validate required fields
@@ -184,7 +236,6 @@ export function initAddRecipe() {
       }
 
       try {
-        // Make the POST request to add the recipe
         const response = await fetch('/api/recipes', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -193,25 +244,22 @@ export function initAddRecipe() {
 
         if (response.ok) {
           alert('Recipe created successfully!');
-          recipeForm.reset(); // Clear the form on success
-          // Reset dynamic fields
+          recipeForm.reset();
           instructionsContainer.innerHTML = '';
           ingredientsContainer.innerHTML = '';
           instructionCount = 0;
           ingredientCount = 0;
           addInstructionField();
-          addIngredientField();
+          addIngredientField(allIngredients);
         } else {
           const errorData = await response.json();
           if (errorData.errors && Array.isArray(errorData.errors)) {
-            // Display field-specific errors
             alert(
               errorData.errors
                 .map((error) => `${error.field}: ${error.message}`)
                 .join('\n')
             );
           } else {
-            // Display a general error message
             alert(
               errorData.error || 'An error occurred while creating the recipe.'
             );

@@ -1,7 +1,10 @@
 const express = require('express');
 const validate = require('../../middleware/validate');
 const { createIngredientValidationSchema } = require('./validator');
-const { createIngredient } = require('../../services/ingredients');
+const {
+  createIngredient,
+  getIngredients,
+} = require('../../services/ingredients');
 
 // Create a new router instance for handling ingredient-related routes
 const ingredientRouter = express.Router();
@@ -16,6 +19,8 @@ ingredientRouter.post(
   validate(createIngredientValidationSchema), // Middleware to validate the request body
   createIngredient // Controller function to handle the logic
 );
+
+ingredientRouter.get('/', getIngredients);
 
 /**
  * Catch-all route for the base `/` path of this router.
