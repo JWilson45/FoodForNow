@@ -1,28 +1,10 @@
 const Ingredient = require('../database/models/ingredient'); // Importing the Ingredient model
-const {
-  ingredientValidationSchema,
-} = require('../../routes/ingredient/validator'); // Importing the Joi validation schema for ingredients
 
 // Controller function to create a new ingredient
 const createIngredient = async (req, res) => {
   try {
-    // Validate the request body using Joi validation schema
-    const { error, value } = ingredientValidationSchema.validate(req.body, {
-      abortEarly: false, // Collect all errors, not just the first one
-    });
-
-    // If validation fails, return a 400 status with the error details
-    if (error) {
-      // Map over the validation errors and format them for the response
-      const errors = error.details.map((detail) => ({
-        field: detail.context.key, // Field name with validation error
-        message: detail.message, // Error message from Joi
-      }));
-      return res.status(400).json({ errors }); // Return the errors with a 400 status
-    }
-
     // Destructure the validated data from the request body
-    const { name, description, calories, image, nutritionalInfo } = value;
+    const { name, description, calories, image, nutritionalInfo } = req.body;
 
     // Create a new instance of the Ingredient model with the validated data
     const newIngredient = new Ingredient({
@@ -31,6 +13,7 @@ const createIngredient = async (req, res) => {
       calories,
       image,
       nutritionalInfo,
+      createdBy: req.user.userId,
     });
 
     // Save the ingredient instance to the database
