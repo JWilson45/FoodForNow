@@ -78,8 +78,10 @@ const signInUser = async (req, res) => {
   try {
     const { username, password } = req.body;
 
-    // Find the user by their username
-    const user = await User.findOne({ username });
+    const user = await User.findOne({ username }).collation({
+      locale: 'en',
+      strength: 2,
+    });
     if (!user) {
       return res.status(404).json({ error: 'Invalid username or password' });
     }
