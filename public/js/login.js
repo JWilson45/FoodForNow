@@ -30,8 +30,13 @@ export function initLogin() {
 
         if (response.ok) {
           const data = await response.json();
-          alert('Login successful!');
           console.log('User data:', data);
+          alert('Login successful!');
+
+          // Store the username in localStorage
+          if (data.user?.username) {
+            localStorage.setItem('loggedInUsername', data.user.username);
+          }
 
           // Redirect to homepage or dashboard
           window.location.href = '/';
