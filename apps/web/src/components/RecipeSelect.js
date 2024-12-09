@@ -18,7 +18,7 @@ const RecipeSelect = ({ onSelect, required, name, label }) => {
   return (
     <SearchableDropdown
       label={label || 'Select Recipe'}
-      apiEndpoint="/api/recipes/"
+      apiEndpoint="/recipes" // Specify the recipes endpoint
       onChange={handleSelect}
       required={required}
       placeholder="Search for a recipe..."

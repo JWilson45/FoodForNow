@@ -18,7 +18,7 @@ const IngredientSelect = ({ onSelect, required, name, label }) => {
   return (
     <SearchableDropdown
       label={label || 'Select Ingredient'}
-      apiEndpoint="/api/ingredients/"
+      apiEndpoint="/ingredients" // Specify the ingredients endpoint
       onChange={handleSelect}
       required={required}
       placeholder="Search for an ingredient..."

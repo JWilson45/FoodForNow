@@ -1,7 +1,7 @@
 'use client';
 
 import Head from 'next/head';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Label from '@/components/Label';
 import Input from '@/components/Input';
 import Textarea from '@/components/Textarea';
@@ -9,6 +9,7 @@ import Button from '@/components/Button';
 import Select from '@/components/Select';
 import Checkbox from '@/components/Checkbox';
 import IngredientSelect from '@/components/IngredientSelect';
+import config from '@/config'; // Ensure config.apiBaseUrl is imported
 
 export default function CreateRecipe() {
   const [instructions, setInstructions] = useState(['']);
@@ -29,9 +30,6 @@ export default function CreateRecipe() {
     tags: '',
     isPublic: false,
   });
-
-  // Fetch ingredients on component mount (if needed)
-  // If using SearchableDropdown, fetching is handled within it
 
   const addInstruction = () => setInstructions((prev) => [...prev, '']);
   const removeInstruction = (index) =>
@@ -124,8 +122,8 @@ export default function CreateRecipe() {
     };
 
     try {
-      const res = await fetch('/api/recipes/', {
-        // Ensure trailing slash
+      const res = await fetch(`${config.apiBaseUrl}/recipes`, {
+        // Use config.apiBaseUrl
         method: 'POST',
         credentials: 'include', // Include cookies in the request
         headers: {

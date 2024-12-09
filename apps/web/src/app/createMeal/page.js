@@ -1,7 +1,7 @@
 'use client';
 
 import Head from 'next/head';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Label from '@/components/Label';
 import Input from '@/components/Input';
 import Textarea from '@/components/Textarea';
@@ -11,7 +11,6 @@ import Checkbox from '@/components/Checkbox';
 import RecipeSelect from '@/components/RecipeSelect';
 
 export default function CreateMeal() {
-  const [recipes, setRecipes] = useState([]);
   const [recipeInputs, setRecipeInputs] = useState([{ recipeId: '' }]);
   const [formErrors, setFormErrors] = useState({});
   const [formData, setFormData] = useState({
@@ -25,28 +24,6 @@ export default function CreateMeal() {
     isVegan: false,
     cuisine: '',
   });
-
-  // Fetch recipes on component mount
-  useEffect(() => {
-    const fetchRecipes = async () => {
-      try {
-        const res = await fetch('/api/recipes/', {
-          // Ensure trailing slash
-          method: 'GET',
-          credentials: 'include', // Include cookies in the request
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        });
-        const data = await res.json();
-        setRecipes(data.recipes || []);
-      } catch (error) {
-        console.error('Error fetching recipes:', error);
-      }
-    };
-
-    fetchRecipes();
-  }, []);
 
   const addRecipeField = () => {
     setRecipeInputs((prev) => [...prev, { recipeId: '' }]);
@@ -99,8 +76,8 @@ export default function CreateMeal() {
     };
 
     try {
-      const res = await fetch('/api/meals/', {
-        // Ensure trailing slash
+      const res = await fetch(`${config.apiBaseUrl}/meals`, {
+        // Use config.apiBaseUrl
         method: 'POST',
         credentials: 'include', // Include cookies in the request
         headers: {

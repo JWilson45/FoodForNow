@@ -1,10 +1,9 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import Select from 'react-select';
 import PropTypes from 'prop-types';
-import axios from 'axios';
-import debounce from 'lodash/debounce';
+import config from '@/config'; // Ensure config.apiBaseUrl is correctly set
 
 /**
  * SearchableDropdown Component
@@ -15,7 +14,6 @@ import debounce from 'lodash/debounce';
  * @param {boolean} required - Whether the field is required.
  * @param {string} placeholder - Placeholder text for the dropdown.
  * @param {string} name - Name attribute for the input.
- * @param {Array} defaultOptions - Default options to display (optional).
  */
 const SearchableDropdown = ({
   label,
@@ -24,61 +22,51 @@ const SearchableDropdown = ({
   required = false,
   placeholder = 'Select...',
   name,
-  defaultOptions = [],
 }) => {
-  const [options, setOptions] = useState(defaultOptions);
+  const [options, setOptions] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [inputValue, setInputValue] = useState('');
-
-  const fetchOptions = async (input) => {
-    setIsLoading(true);
-    try {
-      const response = await axios.get(apiEndpoint, {
-        params: { search: input },
-        withCredentials: true, // Include cookies in the request
-      });
-      const data = response.data;
-      if (apiEndpoint.includes('ingredients')) {
-        setOptions(
-          data.ingredients.map((ing) => ({
-            value: ing.id, // Assuming 'id' is used instead of '_id'
-            label: ing.name,
-          }))
-        );
-      } else if (apiEndpoint.includes('recipes')) {
-        setOptions(
-          data.recipes.map((rec) => ({
-            value: rec.id, // Assuming 'id' is used instead of '_id'
-            label: rec.name,
-          }))
-        );
-      }
-    } catch (error) {
-      console.error(`Error fetching options from ${apiEndpoint}:`, error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  // Debounce the fetchOptions function to optimize API calls
-  const debouncedFetch = useCallback(debounce(fetchOptions, 500), [
-    apiEndpoint,
-  ]);
+  const [fetchError, setFetchError] = useState(null);
 
   useEffect(() => {
-    // Initial fetch without any search query
-    fetchOptions('');
-    // Cleanup debounce on unmount
-    return () => {
-      debouncedFetch.cancel();
-    };
-  }, [apiEndpoint, debouncedFetch]);
+    const fetchOptions = async () => {
+      setIsLoading(true);
+      try {
+        const response = await fetch(`${config.apiBaseUrl}${apiEndpoint}`, {
+          credentials: 'include', // Include cookies in the request
+        });
 
-  const handleInputChange = (newValue) => {
-    setInputValue(newValue);
-    debouncedFetch(newValue);
-    return newValue;
-  };
+        if (!response.ok) {
+          throw new Error(`Error fetching data: ${response.statusText}`);
+        }
+
+        const data = await response.json();
+
+        // Determine the key based on the endpoint
+        let dataKey = '';
+        if (apiEndpoint.includes('recipes')) {
+          dataKey = 'recipes';
+        } else if (apiEndpoint.includes('ingredients')) {
+          dataKey = 'ingredients';
+        } else {
+          throw new Error('Unsupported API endpoint for SearchableDropdown.');
+        }
+
+        setOptions(
+          (data[dataKey] || []).map((item) => ({
+            value: item.id || item._id, // Handle both 'id' and '_id'
+            label: item.name,
+          }))
+        );
+      } catch (error) {
+        console.error(error);
+        setFetchError('Failed to load options. Please try again later.');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchOptions();
+  }, [apiEndpoint]);
 
   const handleChange = (selectedOption) => {
     if (onChange) {
@@ -91,31 +79,33 @@ const SearchableDropdown = ({
       <label htmlFor={name} className="block text-gray-300 mb-1">
         {label} {required && <span className="text-red-500">*</span>}
       </label>
-      <Select
-        id={name}
-        name={name}
-        options={options}
-        isLoading={isLoading}
-        onChange={handleChange}
-        onInputChange={handleInputChange}
-        placeholder={placeholder}
-        isClearable
-        classNamePrefix="react-select"
-        className="text-black"
-        noOptionsMessage={() => 'No options found'}
-      />
+      {fetchError ? (
+        <p className="text-red-500">{fetchError}</p>
+      ) : (
+        <Select
+          id={name}
+          name={name}
+          options={options}
+          isLoading={isLoading}
+          onChange={handleChange}
+          placeholder={placeholder}
+          isClearable
+          classNamePrefix="react-select"
+          className="text-black"
+          noOptionsMessage={() => 'No options found'}
+        />
+      )}
     </div>
   );
 };
 
 SearchableDropdown.propTypes = {
   label: PropTypes.string.isRequired,
-  apiEndpoint: PropTypes.string.isRequired,
+  apiEndpoint: PropTypes.string.isRequired, // Now required
   onChange: PropTypes.func.isRequired,
   required: PropTypes.bool,
   placeholder: PropTypes.string,
   name: PropTypes.string.isRequired,
-  defaultOptions: PropTypes.array,
 };
 
 export default SearchableDropdown;
