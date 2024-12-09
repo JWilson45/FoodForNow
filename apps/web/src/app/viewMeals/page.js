@@ -1,9 +1,9 @@
-// /app/viewMeals/page.js
 'use client';
 
 import Head from 'next/head';
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
+import Button from '@/components/Button';
 
 export default function ViewMeals() {
   const [meals, setMeals] = useState([]);
@@ -78,7 +78,7 @@ export default function ViewMeals() {
                 <p className="text-gray-300">
                   <strong>Is Vegan:</strong> {meal.isVegan ? 'Yes' : 'No'}
                 </p>
-                <p className="text-gray-300">
+                <p className="text-gray-300 mb-2">
                   <strong>Description:</strong>{' '}
                   {meal.description || 'No description provided.'}
                 </p>
@@ -94,18 +94,18 @@ export default function ViewMeals() {
                   ))}
                 </ul>
                 <div className="mt-4 flex space-x-2">
-                  <button
+                  <Button
                     onClick={() => router.push(`/editMeal?id=${meal._id}`)}
                     className="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg transition-colors"
                   >
                     Edit Meal
-                  </button>
-                  <button
+                  </Button>
+                  <Button
                     onClick={() => handleDelete(meal._id)}
                     className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors"
                   >
                     Delete Meal
-                  </button>
+                  </Button>
                 </div>
               </div>
             ))
@@ -113,20 +113,26 @@ export default function ViewMeals() {
         </div>
         {/* Navigation Buttons */}
         <div className="flex justify-center items-center mt-6 space-x-4">
-          <button
+          <Button
             onClick={() => setCurrentIndex((i) => Math.max(i - 2, 0))}
             disabled={currentIndex === 0}
-            className={`px-4 py-2 bg-button-blue hover:bg-button-blue-hover text-white rounded-lg transition-colors ${currentIndex === 0 ? 'opacity-50 cursor-not-allowed' : ''}`}
+            className={`px-4 py-2 bg-button-blue hover:bg-button-blue-hover text-white rounded-lg transition-colors ${
+              currentIndex === 0 ? 'opacity-50 cursor-not-allowed' : ''
+            }`}
           >
             Previous
-          </button>
-          <button
+          </Button>
+          <Button
             onClick={() => setCurrentIndex((i) => i + 2)}
             disabled={currentIndex + 2 >= meals.length}
-            className={`px-4 py-2 bg-button-blue hover:bg-button-blue-hover text-white rounded-lg transition-colors ${currentIndex + 2 >= meals.length ? 'opacity-50 cursor-not-allowed' : ''}`}
+            className={`px-4 py-2 bg-button-blue hover:bg-button-blue-hover text-white rounded-lg transition-colors ${
+              currentIndex + 2 >= meals.length
+                ? 'opacity-50 cursor-not-allowed'
+                : ''
+            }`}
           >
             Next
-          </button>
+          </Button>
         </div>
       </main>
     </>

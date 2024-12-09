@@ -2,6 +2,11 @@
 
 import Head from 'next/head';
 import { useState, useEffect } from 'react';
+import Label from '@/components/Label';
+import Input from '@/components/Input';
+import Select from '@/components/Select';
+import Checkbox from '@/components/Checkbox';
+import Button from '@/components/Button';
 
 export default function CreateMeal() {
   const [recipes, setRecipes] = useState([]);
@@ -93,10 +98,10 @@ export default function CreateMeal() {
 
     if (res.ok) {
       alert('Meal created successfully!');
-      window.location.href = 'viewMeals';
+      window.location.href = '/viewMeals';
     } else if (res.status === 401) {
       alert('You must be logged in to create a meal.');
-      window.location.href = 'login';
+      window.location.href = '/signin';
     } else {
       const errData = await res.json();
       alert(errData.error || 'An error occurred while creating the meal.');
@@ -108,18 +113,24 @@ export default function CreateMeal() {
       <Head>
         <title>Create Meal</title>
       </Head>
-      <main className="form-container">
+      <main className="flex justify-center items-center p-6 bg-gray-900 min-h-screen">
         <form
           id="mealForm"
           onSubmit={handleSubmit}
-          className="meal-form"
           aria-labelledby="formTitle"
+          className="w-full max-w-2xl bg-black/80 border-2 border-button-blue rounded-xl p-8 shadow-custom animate-fadeIn space-y-6"
         >
-          <h2 id="formTitle">Create Meal</h2>
-          <div className="form-group">
-            <label htmlFor="mealName">Name:</label>
-            <input
-              type="text"
+          <h2
+            id="formTitle"
+            className="text-2xl font-bold text-center text-white"
+          >
+            Create Meal
+          </h2>
+
+          {/* Name */}
+          <div>
+            <Label htmlFor="mealName">Name:</Label>
+            <Input
               id="mealName"
               name="name"
               required
@@ -127,10 +138,13 @@ export default function CreateMeal() {
               onChange={(e) =>
                 setFormData({ ...formData, name: e.target.value })
               }
+              placeholder="Enter meal name"
             />
           </div>
-          <div className="form-group">
-            <label htmlFor="mealDescription">Description:</label>
+
+          {/* Description */}
+          <div>
+            <Label htmlFor="mealDescription">Description:</Label>
             <textarea
               id="mealDescription"
               name="description"
@@ -138,50 +152,57 @@ export default function CreateMeal() {
               onChange={(e) =>
                 setFormData({ ...formData, description: e.target.value })
               }
+              className="w-full p-3 bg-gray-700 text-white rounded-lg border border-gray-600 outline-none focus:bg-gray-600 focus:shadow-custom-hover transition"
+              placeholder="Enter meal description"
             ></textarea>
           </div>
-          <fieldset className="form-group">
-            <legend>Recipes:</legend>
-            <div id="recipesContainer">
-              {recipeInputs.map((recipeInput, i) => (
-                <div className="recipe-item" key={i}>
-                  <label htmlFor={`recipeName${i + 1}`}>Recipe {i + 1}:</label>
-                  <input
-                    type="text"
-                    id={`recipeName${i + 1}`}
-                    placeholder="Start typing recipe name..."
-                    required
-                    value={recipeInput.name}
-                    onChange={(e) => handleRecipeChange(i, e.target.value)}
-                    list={`recipesDatalist${i + 1}`}
-                  />
-                  <datalist id={`recipesDatalist${i + 1}`}>
-                    {recipes.map((r) => (
-                      <option key={r._id} value={r.name}></option>
-                    ))}
-                  </datalist>
-                  <button
+
+          {/* Recipes */}
+          <fieldset className="space-y-4">
+            <legend className="block mb-2 text-gray-300 font-semibold">
+              Recipes:
+            </legend>
+            {recipeInputs.map((recipeInput, i) => (
+              <div key={i} className="flex items-center space-x-2">
+                <Input
+                  id={`recipeName${i + 1}`}
+                  name={`recipeName${i + 1}`}
+                  required
+                  value={recipeInput.name}
+                  onChange={(e) => handleRecipeChange(i, e.target.value)}
+                  placeholder={`Recipe ${i + 1} name`}
+                  list={`recipesDatalist${i + 1}`}
+                  className="flex-1"
+                />
+                <datalist id={`recipesDatalist${i + 1}`}>
+                  {recipes.map((r) => (
+                    <option key={r._id} value={r.name}></option>
+                  ))}
+                </datalist>
+                {recipeInputs.length > 1 && (
+                  <Button
                     type="button"
-                    className="removeRecipeButton"
                     onClick={() => removeRecipeField(i)}
+                    className="px-2 py-1 bg-red-500 hover:bg-red-600"
                   >
                     Remove
-                  </button>
-                </div>
-              ))}
-            </div>
-            <button
+                  </Button>
+                )}
+              </div>
+            ))}
+            <Button
               type="button"
-              id="addRecipeButton"
-              className="btn btn-secondary"
               onClick={addRecipeField}
+              className="px-4 py-2 bg-button-blue hover:bg-button-blue-hover"
             >
               Add Recipe
-            </button>
+            </Button>
           </fieldset>
-          <div className="form-group">
-            <label htmlFor="mealMealTime">Meal Time:</label>
-            <select
+
+          {/* Meal Time */}
+          <div>
+            <Label htmlFor="mealMealTime">Meal Time:</Label>
+            <Select
               id="mealMealTime"
               name="mealTime"
               value={formData.mealTime}
@@ -195,11 +216,13 @@ export default function CreateMeal() {
               <option value="dinner">Dinner</option>
               <option value="snack">Snack</option>
               <option value="dessert">Dessert</option>
-            </select>
+            </Select>
           </div>
-          <div className="form-group">
-            <label htmlFor="mealServings">Servings:</label>
-            <input
+
+          {/* Servings */}
+          <div>
+            <Label htmlFor="mealServings">Servings:</Label>
+            <Input
               type="number"
               id="mealServings"
               name="servings"
@@ -209,11 +232,14 @@ export default function CreateMeal() {
               onChange={(e) =>
                 setFormData({ ...formData, servings: e.target.value })
               }
+              placeholder="Enter number of servings"
             />
           </div>
-          <div className="form-group">
-            <label htmlFor="mealCalories">Calories:</label>
-            <input
+
+          {/* Calories */}
+          <div>
+            <Label htmlFor="mealCalories">Calories:</Label>
+            <Input
               type="number"
               id="mealCalories"
               name="calories"
@@ -222,47 +248,50 @@ export default function CreateMeal() {
               onChange={(e) =>
                 setFormData({ ...formData, calories: e.target.value })
               }
+              placeholder="Enter calories"
             />
           </div>
-          <div className="form-group">
-            <label htmlFor="mealTags">Tags (comma-separated):</label>
-            <input
-              type="text"
+
+          {/* Tags */}
+          <div>
+            <Label htmlFor="mealTags">Tags (comma-separated):</Label>
+            <Input
               id="mealTags"
               name="tags"
               value={formData.tags}
               onChange={(e) =>
                 setFormData({ ...formData, tags: e.target.value })
               }
+              placeholder="e.g., spicy, quick, vegan"
             />
           </div>
-          <div className="form-group checkbox-group">
-            <label htmlFor="mealIsVegetarian">Is Vegetarian:</label>
-            <input
-              type="checkbox"
-              id="mealIsVegetarian"
-              name="isVegetarian"
-              checked={formData.isVegetarian}
-              onChange={(e) =>
-                setFormData({ ...formData, isVegetarian: e.target.checked })
-              }
-            />
-          </div>
-          <div className="form-group checkbox-group">
-            <label htmlFor="mealIsVegan">Is Vegan:</label>
-            <input
-              type="checkbox"
-              id="mealIsVegan"
-              name="isVegan"
-              checked={formData.isVegan}
-              onChange={(e) =>
-                setFormData({ ...formData, isVegan: e.target.checked })
-              }
-            />
-          </div>
-          <div className="form-group">
-            <label htmlFor="mealCuisine">Cuisine:</label>
-            <select
+
+          {/* Vegetarian */}
+          <Checkbox
+            id="mealIsVegetarian"
+            name="isVegetarian"
+            checked={formData.isVegetarian}
+            onChange={(e) =>
+              setFormData({ ...formData, isVegetarian: e.target.checked })
+            }
+            label="Is Vegetarian"
+          />
+
+          {/* Vegan */}
+          <Checkbox
+            id="mealIsVegan"
+            name="isVegan"
+            checked={formData.isVegan}
+            onChange={(e) =>
+              setFormData({ ...formData, isVegan: e.target.checked })
+            }
+            label="Is Vegan"
+          />
+
+          {/* Cuisine */}
+          <div>
+            <Label htmlFor="mealCuisine">Cuisine:</Label>
+            <Select
               id="mealCuisine"
               name="cuisine"
               value={formData.cuisine}
@@ -277,11 +306,16 @@ export default function CreateMeal() {
               <option value="indian">Indian</option>
               <option value="american">American</option>
               <option value="other">Other</option>
-            </select>
+            </Select>
           </div>
-          <button type="submit" id="submitMeal" className="btn btn-primary">
+
+          {/* Submit Button */}
+          <Button
+            type="submit"
+            className="w-full py-3 bg-button-blue hover:bg-button-blue-hover"
+          >
             Create Meal
-          </button>
+          </Button>
         </form>
       </main>
     </>
