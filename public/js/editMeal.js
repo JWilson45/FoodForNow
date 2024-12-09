@@ -136,7 +136,7 @@ export function initEditMeal() {
             </datalist>
             
             <input type="hidden" name="recipeIds" id="recipeIdHidden${recipeCount}" value="${existingRecipeId || ''}" />
-  
+
             <button type="button" class="removeRecipeButton">Remove</button>
           `;
 
