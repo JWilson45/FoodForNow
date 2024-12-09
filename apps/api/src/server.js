@@ -49,7 +49,7 @@ app.use((_, res) => {
 app.use(errorHandler);
 
 // Start Server after Database Connection
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 9696;
 app.listen(PORT, async () => {
   await connectDB(); // Ensure database is connected before starting the server
   console.log(`Server is running on port ${PORT}`);

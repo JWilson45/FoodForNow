@@ -1,6 +1,6 @@
 // /src/config.js
 const config = {
-  apiBaseUrl: 'http://localhost:8080/api',
+  apiBaseUrl: 'http://localhost:9696/api',
 };
 
 export default config;
