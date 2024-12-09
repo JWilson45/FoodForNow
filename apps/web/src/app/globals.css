@@ -43,4 +43,16 @@ body {
   .form-textarea {
     @apply w-full p-3 bg-gray-700 text-white rounded-lg border border-gray-600 outline-none focus:bg-gray-600 focus:shadow-custom-hover transition;
   }
+
+  .btn {
+    @apply px-4 py-2 rounded-lg text-white;
+  }
+
+  .btn-primary {
+    @apply bg-button-blue hover:bg-button-blue-hover;
+  }
+
+  .btn-secondary {
+    @apply bg-gray-600 hover:bg-gray-500;
+  }
 }

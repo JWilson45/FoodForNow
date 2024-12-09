@@ -4,13 +4,16 @@ import Head from 'next/head';
 import { useState, useEffect } from 'react';
 import Label from '@/components/Label';
 import Input from '@/components/Input';
+import Textarea from '@/components/Textarea';
+import Button from '@/components/Button';
 import Select from '@/components/Select';
 import Checkbox from '@/components/Checkbox';
-import Button from '@/components/Button';
+import RecipeSelect from '@/components/RecipeSelect';
 
 export default function CreateMeal() {
   const [recipes, setRecipes] = useState([]);
-  const [recipeInputs, setRecipeInputs] = useState([{ name: '', id: '' }]);
+  const [recipeInputs, setRecipeInputs] = useState([{ recipeId: '' }]);
+  const [formErrors, setFormErrors] = useState({});
   const [formData, setFormData] = useState({
     name: '',
     description: '',
@@ -23,88 +26,110 @@ export default function CreateMeal() {
     cuisine: '',
   });
 
+  // Fetch recipes on component mount
   useEffect(() => {
-    fetch('/api/recipes', { credentials: 'include' })
-      .then((res) => res.json())
-      .then((data) => setRecipes(data.recipes || []))
-      .catch(() => {});
+    const fetchRecipes = async () => {
+      try {
+        const res = await fetch('/api/recipes/', {
+          // Ensure trailing slash
+          method: 'GET',
+          credentials: 'include', // Include cookies in the request
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+        const data = await res.json();
+        setRecipes(data.recipes || []);
+      } catch (error) {
+        console.error('Error fetching recipes:', error);
+      }
+    };
+
+    fetchRecipes();
   }, []);
 
   const addRecipeField = () => {
-    setRecipeInputs((prev) => [...prev, { name: '', id: '' }]);
+    setRecipeInputs((prev) => [...prev, { recipeId: '' }]);
   };
 
   const removeRecipeField = (index) => {
     setRecipeInputs((prev) => prev.filter((_, i) => i !== index));
   };
 
-  const handleRecipeChange = (index, value) => {
-    const lowerVal = value.trim().toLowerCase();
-    const matched = recipes.find((r) => r.name.toLowerCase() === lowerVal);
+  const handleRecipeSelect = (index, selectedOption) => {
     setRecipeInputs((prev) => {
       const copy = [...prev];
-      copy[index] = { name: value, id: matched?._id || '' };
+      copy[index].recipeId = selectedOption ? selectedOption.value : '';
       return copy;
     });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const valid = recipeInputs.every(
-      (r) => r.id && /^[a-fA-F0-9]{24}$/.test(r.id)
-    );
-    if (!valid) {
-      alert('Please ensure all recipes are selected correctly.');
+
+    const errors = {};
+    if (!formData.name.trim()) {
+      errors.name = 'Meal name is required.';
+    }
+    if (recipeInputs.some((r) => !r.recipeId)) {
+      errors.recipes = 'All recipes must be selected.';
+    }
+    if (isNaN(formData.servings) || formData.servings < 1) {
+      errors.servings = 'Please provide a valid number of servings.';
+    }
+
+    setFormErrors(errors);
+    if (Object.keys(errors).length > 0) {
       return;
     }
 
-    const tagsArray = formData.tags
-      ? formData.tags.split(',').map((t) => t.trim())
-      : undefined;
     const data = {
       name: formData.name.trim(),
       description: formData.description.trim() || undefined,
-      recipes: recipeInputs.map((r) => r.id),
+      recipes: recipeInputs.map((r) => r.recipeId),
       mealTime: formData.mealTime || undefined,
       servings: parseInt(formData.servings),
       calories: formData.calories ? parseFloat(formData.calories) : undefined,
-      tags: tagsArray,
+      tags: formData.tags
+        ? formData.tags.split(',').map((t) => t.trim())
+        : undefined,
       isVegetarian: formData.isVegetarian,
       isVegan: formData.isVegan,
       cuisine: formData.cuisine || undefined,
     };
 
-    if (!data.name) {
-      alert('Please provide a name for the meal.');
-      return;
-    }
+    try {
+      const res = await fetch('/api/meals/', {
+        // Ensure trailing slash
+        method: 'POST',
+        credentials: 'include', // Include cookies in the request
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
 
-    if (isNaN(data.servings) || data.servings < 1) {
-      alert('Please provide a valid number of servings.');
-      return;
-    }
-
-    if (data.recipes.length === 0) {
-      alert('Please add at least one valid recipe.');
-      return;
-    }
-
-    const res = await fetch('/api/meals', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
-      credentials: 'include',
-    });
-
-    if (res.ok) {
-      alert('Meal created successfully!');
-      window.location.href = '/viewMeals';
-    } else if (res.status === 401) {
-      alert('You must be logged in to create a meal.');
-      window.location.href = '/signin';
-    } else {
-      const errData = await res.json();
-      alert(errData.error || 'An error occurred while creating the meal.');
+      if (res.ok) {
+        alert('Meal created successfully!');
+        window.location.href = '/viewMeals';
+      } else if (res.status === 401) {
+        alert('You must be logged in to create a meal.');
+        window.location.href = '/signin';
+      } else {
+        const errData = await res.json();
+        if (errData.errors && Array.isArray(errData.errors)) {
+          alert(
+            errData.errors
+              .map((error) => `${error.field}: ${error.message}`)
+              .join('\n')
+          );
+        } else {
+          alert(errData.error || 'An error occurred while creating the meal.');
+        }
+      }
+    } catch (error) {
+      console.error('Error creating meal:', error);
+      alert('An unexpected error occurred. Please try again.');
     }
   };
 
@@ -127,6 +152,17 @@ export default function CreateMeal() {
             Create Meal
           </h2>
 
+          {/* Error Handling */}
+          {Object.keys(formErrors).length > 0 && (
+            <div className="mb-4">
+              {Object.entries(formErrors).map(([key, message]) => (
+                <p key={key} className="text-red-500">
+                  {message}
+                </p>
+              ))}
+            </div>
+          )}
+
           {/* Name */}
           <div>
             <Label htmlFor="mealName">Name:</Label>
@@ -145,16 +181,15 @@ export default function CreateMeal() {
           {/* Description */}
           <div>
             <Label htmlFor="mealDescription">Description:</Label>
-            <textarea
+            <Textarea
               id="mealDescription"
               name="description"
               value={formData.description}
               onChange={(e) =>
                 setFormData({ ...formData, description: e.target.value })
               }
-              className="w-full p-3 bg-gray-700 text-white rounded-lg border border-gray-600 outline-none focus:bg-gray-600 focus:shadow-custom-hover transition"
               placeholder="Enter meal description"
-            ></textarea>
+            />
           </div>
 
           {/* Recipes */}
@@ -162,34 +197,29 @@ export default function CreateMeal() {
             <legend className="block mb-2 text-gray-300 font-semibold">
               Recipes:
             </legend>
-            {recipeInputs.map((recipeInput, i) => (
+            {recipeInputs.map((rec, i) => (
               <div key={i} className="flex items-center space-x-2">
-                <Input
-                  id={`recipeName${i + 1}`}
-                  name={`recipeName${i + 1}`}
+                <RecipeSelect
+                  label={`Recipe ${i + 1}:`}
+                  name={`recipe-${i}`}
                   required
-                  value={recipeInput.name}
-                  onChange={(e) => handleRecipeChange(i, e.target.value)}
-                  placeholder={`Recipe ${i + 1} name`}
-                  list={`recipesDatalist${i + 1}`}
-                  className="flex-1"
+                  onSelect={(selected) => handleRecipeSelect(i, selected)}
                 />
-                <datalist id={`recipesDatalist${i + 1}`}>
-                  {recipes.map((r) => (
-                    <option key={r._id} value={r.name}></option>
-                  ))}
-                </datalist>
                 {recipeInputs.length > 1 && (
-                  <Button
+                  <button
                     type="button"
                     onClick={() => removeRecipeField(i)}
-                    className="px-2 py-1 bg-red-500 hover:bg-red-600"
+                    className="text-red-500 hover:text-red-700"
+                    aria-label={`Remove recipe ${i + 1}`}
                   >
                     Remove
-                  </Button>
+                  </button>
                 )}
               </div>
             ))}
+            {formErrors.recipes && (
+              <p className="text-red-500">{formErrors.recipes}</p>
+            )}
             <Button
               type="button"
               onClick={addRecipeField}
@@ -209,6 +239,7 @@ export default function CreateMeal() {
               onChange={(e) =>
                 setFormData({ ...formData, mealTime: e.target.value })
               }
+              placeholder="Select meal time"
             >
               <option value="">Select meal time</option>
               <option value="breakfast">Breakfast</option>
@@ -234,6 +265,9 @@ export default function CreateMeal() {
               }
               placeholder="Enter number of servings"
             />
+            {formErrors.servings && (
+              <p className="text-red-500">{formErrors.servings}</p>
+            )}
           </div>
 
           {/* Calories */}
@@ -256,37 +290,38 @@ export default function CreateMeal() {
           <div>
             <Label htmlFor="mealTags">Tags (comma-separated):</Label>
             <Input
+              type="text"
               id="mealTags"
               name="tags"
               value={formData.tags}
               onChange={(e) =>
                 setFormData({ ...formData, tags: e.target.value })
               }
-              placeholder="e.g., spicy, quick, vegan"
+              placeholder="e.g., vegetarian, quick"
             />
           </div>
 
-          {/* Vegetarian */}
-          <Checkbox
-            id="mealIsVegetarian"
-            name="isVegetarian"
-            checked={formData.isVegetarian}
-            onChange={(e) =>
-              setFormData({ ...formData, isVegetarian: e.target.checked })
-            }
-            label="Is Vegetarian"
-          />
-
-          {/* Vegan */}
-          <Checkbox
-            id="mealIsVegan"
-            name="isVegan"
-            checked={formData.isVegan}
-            onChange={(e) =>
-              setFormData({ ...formData, isVegan: e.target.checked })
-            }
-            label="Is Vegan"
-          />
+          {/* Dietary Preferences */}
+          <div className="flex items-center space-x-4">
+            <Checkbox
+              id="mealIsVegetarian"
+              name="isVegetarian"
+              checked={formData.isVegetarian}
+              onChange={(e) =>
+                setFormData({ ...formData, isVegetarian: e.target.checked })
+              }
+              label="Is Vegetarian"
+            />
+            <Checkbox
+              id="mealIsVegan"
+              name="isVegan"
+              checked={formData.isVegan}
+              onChange={(e) =>
+                setFormData({ ...formData, isVegan: e.target.checked })
+              }
+              label="Is Vegan"
+            />
+          </div>
 
           {/* Cuisine */}
           <div>
@@ -298,6 +333,7 @@ export default function CreateMeal() {
               onChange={(e) =>
                 setFormData({ ...formData, cuisine: e.target.value })
               }
+              placeholder="Select cuisine"
             >
               <option value="">Select cuisine</option>
               <option value="italian">Italian</option>
