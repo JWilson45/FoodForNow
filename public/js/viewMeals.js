@@ -62,39 +62,45 @@ export function initViewMeals() {
     card.classList.add('card');
 
     card.innerHTML = `
-          <h3>${meal.name}</h3>
-          <p><strong>Servings:</strong> ${meal.servings}</p>
-          <p><strong>Calories:</strong> ${meal.calories || 'N/A'}</p>
-          <p><strong>Meal Time:</strong> ${meal.mealTime || 'N/A'}</p>
-          <p><strong>Cuisine:</strong> ${meal.cuisine || 'N/A'}</p>
-          <p><strong>Tags:</strong> ${
-            meal.tags && meal.tags.length > 0 ? meal.tags.join(', ') : 'None'
-          }</p>
-          <p><strong>Is Vegetarian:</strong> ${
-            meal.isVegetarian ? 'Yes' : 'No'
-          }</p>
-          <p><strong>Is Vegan:</strong> ${meal.isVegan ? 'Yes' : 'No'}</p>
-          <p><strong>Description:</strong> ${
-            meal.description || 'No description provided.'
-          }</p>
-          <p><strong>Recipes:</strong></p>
-          <ul>
-            ${meal.recipes
-              .map(
-                (recipe) =>
-                  `<li>${recipe.name} (Prep Time: ${recipe.prepTime} mins, Cook Time: ${recipe.cookTime} mins)</li>`
-              )
-              .join('')}
-          </ul>
-          <button class="editMealButton" data-meal-id="${meal._id}">Edit Meal</button>
-          <button class="deleteMealButton" data-meal-id="${meal._id}">Delete Meal</button>
-        `;
+                <h3>${meal.name}</h3>
+                <p><strong>Servings:</strong> ${meal.servings}</p>
+                <p><strong>Calories:</strong> ${meal.calories || 'N/A'}</p>
+                <p><strong>Meal Time:</strong> ${meal.mealTime || 'N/A'}</p>
+                <p><strong>Cuisine:</strong> ${meal.cuisine || 'N/A'}</p>
+                <p><strong>Tags:</strong> ${
+                  meal.tags && meal.tags.length > 0
+                    ? meal.tags.join(', ')
+                    : 'None'
+                }</p>
+                <p><strong>Is Vegetarian:</strong> ${
+                  meal.isVegetarian ? 'Yes' : 'No'
+                }</p>
+                <p><strong>Is Vegan:</strong> ${meal.isVegan ? 'Yes' : 'No'}</p>
+                <p><strong>Description:</strong> ${
+                  meal.description || 'No description provided.'
+                }</p>
+                <p><strong>Recipes:</strong></p>
+                <ul>
+                  ${meal.recipes
+                    .map(
+                      (recipe) =>
+                        `<li>${recipe.name} (Prep Time: ${recipe.prepTime} mins, Cook Time: ${recipe.cookTime} mins)</li>`
+                    )
+                    .join('')}
+                </ul>
+                <button class="editMealButton" data-meal-id="${meal._id}">Edit Meal</button>
+                <button class="deleteMealButton" data-meal-id="${meal._id}">Delete Meal</button>
+              `;
 
     // Add event listener for "Edit Meal" button
     card.querySelector('.editMealButton').addEventListener('click', (event) => {
       const mealId = event.target.dataset.mealId;
-      // Redirect to editMeal.html with the meal ID as a query parameter
-      window.location.href = `editMeal.html?id=${mealId}`;
+      if (mealId && isValidObjectId(mealId)) {
+        // Redirect to editMeal.html with the meal ID as a query parameter
+        window.location.href = `editMeal.html?id=${mealId}`;
+      } else {
+        alert('Invalid Meal ID.');
+      }
     });
 
     // Add event listener for "Delete Meal" button
@@ -102,6 +108,10 @@ export function initViewMeals() {
       .querySelector('.deleteMealButton')
       .addEventListener('click', async (event) => {
         const mealId = event.target.dataset.mealId;
+        if (!mealId || !isValidObjectId(mealId)) {
+          alert('Invalid Meal ID.');
+          return;
+        }
         const confirmDelete = confirm(
           'Are you sure you want to delete this meal?'
         );
@@ -134,6 +144,11 @@ export function initViewMeals() {
       });
 
     return card;
+  }
+
+  // Function to validate if a string is a valid ObjectId (24 hex characters)
+  function isValidObjectId(id) {
+    return /^[a-fA-F0-9]{24}$/.test(id);
   }
 
   // Event listeners for navigation buttons

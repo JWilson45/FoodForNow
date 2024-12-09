@@ -18,8 +18,6 @@ export function initEditMeal() {
     return;
   }
 
-  // Removed authentication token check since authToken is in HTTP-only cookie
-
   // Fetch meal details and recipes on page load
   Promise.all([
     fetch(`/api/meals/${mealId}`, {
@@ -59,7 +57,6 @@ export function initEditMeal() {
       console.error('Error fetching data:', err);
       if (err.message === 'Authentication required') {
         alert('You must be logged in to edit a meal.');
-        // Redirect to an existing login page or show a modal
         window.location.href = 'login.html'; // Ensure this page exists
       } else {
         alert('Error fetching meal details. Redirecting to meals page.');
@@ -68,6 +65,8 @@ export function initEditMeal() {
     });
 
   function populateForm(meal) {
+    console.log('Populating form with meal:', meal); // Debugging log
+
     // Populate basic fields
     document.getElementById('mealName').value = meal.name;
     document.getElementById('mealDescription').value = meal.description || '';
@@ -84,7 +83,7 @@ export function initEditMeal() {
     // Populate recipes
     if (meal.recipes && meal.recipes.length > 0) {
       meal.recipes.forEach((recipe) => {
-        addRecipeField(recipe.id); // Ensure 'recipe.id' is correct
+        addRecipeField(recipe._id); // Use '_id' instead of 'id'
       });
     } else {
       addRecipeField();
@@ -100,24 +99,46 @@ export function initEditMeal() {
     const recipeDiv = document.createElement('div');
     recipeDiv.classList.add('recipe-item');
 
-    // Create the select element
-    const selectId = `recipeSelect${recipeCount}`;
-    let optionsHtml = `<option value="">Select a recipe</option>`;
-    allRecipes.forEach((recipe) => {
-      optionsHtml += `<option value="${recipe._id}">${recipe.name}</option>`;
-    });
+    // Create a unique datalist id
+    const datalistId = `recipesDatalist${recipeCount}`;
 
+    // Construct the datalist options from the fetched recipes
+    let optionsHtml = allRecipes
+      .map(
+        (recipe) =>
+          `<option data-id="${recipe._id}" value="${recipe.name}"></option>`
+      )
+      .join('');
+
+    // If there's an existing recipe ID (in edit mode), find the corresponding name
+    let existingRecipeName = '';
     if (existingRecipeId) {
-      optionsHtml += `<option value="${existingRecipeId}" selected hidden></option>`;
+      const existingRecipe = allRecipes.find(
+        (recipe) => recipe._id === existingRecipeId
+      );
+      existingRecipeName = existingRecipe ? existingRecipe.name : '';
     }
 
     recipeDiv.innerHTML = `
-              <label for="${selectId}">Recipe ${recipeCount}:</label>
-              <select id="${selectId}" name="recipes" required aria-required="true">
-                ${optionsHtml}
-              </select>
-              <button type="button" class="removeRecipeButton">Remove</button>
-            `;
+            <label for="recipeName${recipeCount}">Recipe ${recipeCount}:</label>
+            <input
+              type="text"
+              id="recipeName${recipeCount}"
+              name="recipeNames"
+              list="${datalistId}"
+              placeholder="Start typing recipe name..."
+              required
+              aria-required="true"
+              value="${existingRecipeName}"
+            />
+            <datalist id="${datalistId}">
+              ${optionsHtml}
+            </datalist>
+            
+            <input type="hidden" name="recipeIds" id="recipeIdHidden${recipeCount}" value="${existingRecipeId || ''}" />
+  
+            <button type="button" class="removeRecipeButton">Remove</button>
+          `;
 
     recipesContainer.appendChild(recipeDiv);
 
@@ -127,6 +148,26 @@ export function initEditMeal() {
       .addEventListener('click', () => {
         recipesContainer.removeChild(recipeDiv);
       });
+
+    // Event listener to capture the selected recipe ID
+    const recipeNameInput = recipeDiv.querySelector(
+      `#recipeName${recipeCount}`
+    );
+    const hiddenIdField = recipeDiv.querySelector(
+      `#recipeIdHidden${recipeCount}`
+    );
+
+    recipeNameInput.addEventListener('input', () => {
+      const val = recipeNameInput.value.trim().toLowerCase();
+      const matchedRecipe = allRecipes.find(
+        (recipe) => recipe.name.toLowerCase() === val
+      );
+      if (matchedRecipe) {
+        hiddenIdField.value = matchedRecipe._id; // Use '_id'
+      } else {
+        hiddenIdField.value = '';
+      }
+    });
   }
 
   // Function to validate if a string is a valid ObjectId (24 hex characters)
@@ -143,13 +184,14 @@ export function initEditMeal() {
 
       // Collect recipes
       const recipes = [];
-      const recipeSelects = recipesContainer.querySelectorAll(
-        'select[name="recipes"]'
+      const recipeIdFields = recipesContainer.querySelectorAll(
+        'input[name="recipeIds"]'
       );
+
       let invalidRecipes = false;
 
-      recipeSelects.forEach((select, index) => {
-        const recipeId = select.value.trim();
+      recipeIdFields.forEach((hiddenInput, index) => {
+        const recipeId = hiddenInput.value.trim();
 
         if (!recipeId || !isValidObjectId(recipeId)) {
           alert(`Recipe ${index + 1} is invalid or not selected correctly.`);
@@ -233,5 +275,3 @@ export function initEditMeal() {
     });
   }
 }
-
-// Removed getAuthToken function as it's not needed

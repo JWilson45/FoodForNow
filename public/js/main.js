@@ -15,7 +15,7 @@ import { initCookbook } from './cookbook.js'; // Import the cookbook initializer
 import { initRecipe } from './recipe.js'; // Import the recipe initializer
 import { initCreateMeal } from './createMeal.js'; // Import the create meal initializer
 import { initViewMeals } from './viewMeals.js'; // Import the view meals initializer
-import { initEditMeal } from './editMeal.js'; // Import the edit meal initializer (optional)
+import { initEditMeal } from './editMeal.js'; // Import the edit meal initializer
 
 // Initialize all components on DOMContentLoaded
 document.addEventListener('DOMContentLoaded', () => {
