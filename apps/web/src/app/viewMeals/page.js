@@ -2,7 +2,6 @@
 
 import Head from 'next/head';
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 import Card from '@/components/Card';
 import Button from '@/components/Button';
 import Pagination from '@/components/Pagination';
@@ -12,7 +11,6 @@ export default function ViewMeals() {
   const [meals, setMeals] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const itemsPerPage = 2;
-  const router = useRouter();
 
   useEffect(() => {
     fetch(`${config.apiBaseUrl}/meals`, { credentials: 'include' })
@@ -69,23 +67,12 @@ export default function ViewMeals() {
                 <p className="text-gray-300">
                   <strong>Tags:</strong> {meal.tags?.join(', ') || 'None'}
                 </p>
-                <p className="text-gray-300">
-                  <strong>Is Vegetarian:</strong>{' '}
-                  {meal.isVegetarian ? 'Yes' : 'No'}
-                </p>
-                <p className="text-gray-300">
-                  <strong>Is Vegan:</strong> {meal.isVegan ? 'Yes' : 'No'}
-                </p>
-                <p className="text-gray-300 mb-2">
-                  <strong>Description:</strong>{' '}
-                  {meal.description || 'No description provided.'}
-                </p>
                 <p className="text-gray-300 mb-2">
                   <strong>Recipes:</strong>
                 </p>
                 <ul className="list-disc list-inside text-gray-300 mb-2">
-                  {meal.recipes.map((recipe) => (
-                    <li key={recipe.id}>
+                  {meal.recipes.map((recipe, index) => (
+                    <li key={recipe.id || index}>
                       {recipe.name} (Prep: {recipe.prepTime} mins, Cook:{' '}
                       {recipe.cookTime} mins)
                     </li>

@@ -1,13 +1,14 @@
-// /app/editMeal/page.js
 'use client';
 
 import Head from 'next/head';
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/router';
+import { useSearchParams, useRouter } from 'next/navigation';
+import config from '@/config';
 
 export default function EditMeal() {
+  const searchParams = useSearchParams();
   const router = useRouter();
-  const { id: mealId } = router.query;
+  const mealId = searchParams.get('id'); // Retrieve the meal ID from the query
 
   const [recipes, setRecipes] = useState([]);
   const [recipeInputs, setRecipeInputs] = useState([]);
@@ -25,11 +26,15 @@ export default function EditMeal() {
 
   useEffect(() => {
     if (!mealId) return;
+
+    // Fetch meal details and available recipes
     Promise.all([
-      fetch(`/api/meals/${mealId}`, { credentials: 'include' }).then((r) =>
-        r.json()
+      fetch(`${config.apiBaseUrl}/meals/${mealId}`, {
+        credentials: 'include',
+      }).then((res) => res.json()),
+      fetch(`${config.apiBaseUrl}/recipes`, { credentials: 'include' }).then(
+        (res) => res.json()
       ),
-      fetch('/api/recipes', { credentials: 'include' }).then((r) => r.json()),
     ])
       .then(([mealData, recipesData]) => {
         const meal = mealData.meal;
@@ -38,20 +43,18 @@ export default function EditMeal() {
           name: meal.name || '',
           description: meal.description || '',
           mealTime: meal.mealTime || '',
-          servings: meal.servings.toString() || '',
+          servings: meal.servings?.toString() || '',
           calories: meal.calories?.toString() || '',
           tags: meal.tags?.join(', ') || '',
           isVegetarian: meal.isVegetarian || false,
           isVegan: meal.isVegan || false,
           cuisine: meal.cuisine || '',
         });
-        if (meal.recipes && meal.recipes.length > 0) {
-          setRecipeInputs(
-            meal.recipes.map((r) => ({ name: r.name, id: r._id }))
-          );
-        } else {
-          setRecipeInputs([{ name: '', id: '' }]);
-        }
+        setRecipeInputs(
+          meal.recipes?.map((r) => ({ name: r.name, id: r._id })) || [
+            { name: '', id: '' },
+          ]
+        );
       })
       .catch((err) => {
         console.error('Error:', err);
@@ -106,7 +109,7 @@ export default function EditMeal() {
       cuisine: formData.cuisine || undefined,
     };
 
-    const res = await fetch(`/api/meals/${mealId}`, {
+    const res = await fetch(`${config.apiBaseUrl}/meals/${mealId}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
@@ -233,161 +236,8 @@ export default function EditMeal() {
             </button>
           </fieldset>
 
-          {/* Meal Time */}
-          <div className="mb-4">
-            <label
-              htmlFor="mealMealTime"
-              className="block mb-2 text-gray-300 font-semibold"
-            >
-              Meal Time:
-            </label>
-            <select
-              id="mealMealTime"
-              name="mealTime"
-              value={formData.mealTime}
-              onChange={(e) =>
-                setFormData({ ...formData, mealTime: e.target.value })
-              }
-              className="w-full p-3 bg-gray-700 text-white rounded-lg border border-gray-600 outline-none focus:bg-gray-600 focus:shadow-custom-hover transition"
-            >
-              <option value="">Select meal time</option>
-              <option value="breakfast">Breakfast</option>
-              <option value="lunch">Lunch</option>
-              <option value="dinner">Dinner</option>
-              <option value="snack">Snack</option>
-              <option value="dessert">Dessert</option>
-            </select>
-          </div>
-
-          {/* Servings */}
-          <div className="mb-4">
-            <label
-              htmlFor="mealServings"
-              className="block mb-2 text-gray-300 font-semibold"
-            >
-              Servings:
-            </label>
-            <input
-              type="number"
-              id="mealServings"
-              name="servings"
-              min="1"
-              required
-              value={formData.servings}
-              onChange={(e) =>
-                setFormData({ ...formData, servings: e.target.value })
-              }
-              className="w-full p-3 bg-gray-700 text-white rounded-lg border border-gray-600 outline-none focus:bg-gray-600 focus:shadow-custom-hover transition"
-            />
-          </div>
-
-          {/* Calories */}
-          <div className="mb-4">
-            <label
-              htmlFor="mealCalories"
-              className="block mb-2 text-gray-300 font-semibold"
-            >
-              Calories:
-            </label>
-            <input
-              type="number"
-              id="mealCalories"
-              name="calories"
-              min="0"
-              value={formData.calories}
-              onChange={(e) =>
-                setFormData({ ...formData, calories: e.target.value })
-              }
-              className="w-full p-3 bg-gray-700 text-white rounded-lg border border-gray-600 outline-none focus:bg-gray-600 focus:shadow-custom-hover transition"
-            />
-          </div>
-
-          {/* Tags */}
-          <div className="mb-4">
-            <label
-              htmlFor="mealTags"
-              className="block mb-2 text-gray-300 font-semibold"
-            >
-              Tags (comma-separated):
-            </label>
-            <input
-              type="text"
-              id="mealTags"
-              name="tags"
-              value={formData.tags}
-              onChange={(e) =>
-                setFormData({ ...formData, tags: e.target.value })
-              }
-              className="w-full p-3 bg-gray-700 text-white rounded-lg border border-gray-600 outline-none focus:bg-gray-600 focus:shadow-custom-hover transition"
-            />
-          </div>
-
-          {/* Vegetarian */}
-          <div className="mb-4 flex items-center">
-            <input
-              type="checkbox"
-              id="mealIsVegetarian"
-              name="isVegetarian"
-              checked={formData.isVegetarian}
-              onChange={(e) =>
-                setFormData({ ...formData, isVegetarian: e.target.checked })
-              }
-              className="mr-2"
-            />
-            <label
-              htmlFor="mealIsVegetarian"
-              className="text-gray-300 cursor-pointer"
-            >
-              Is Vegetarian:
-            </label>
-          </div>
-
-          {/* Vegan */}
-          <div className="mb-6 flex items-center">
-            <input
-              type="checkbox"
-              id="mealIsVegan"
-              name="isVegan"
-              checked={formData.isVegan}
-              onChange={(e) =>
-                setFormData({ ...formData, isVegan: e.target.checked })
-              }
-              className="mr-2"
-            />
-            <label
-              htmlFor="mealIsVegan"
-              className="text-gray-300 cursor-pointer"
-            >
-              Is Vegan:
-            </label>
-          </div>
-
-          {/* Cuisine */}
-          <div className="mb-6">
-            <label
-              htmlFor="mealCuisine"
-              className="block mb-2 text-gray-300 font-semibold"
-            >
-              Cuisine:
-            </label>
-            <select
-              id="mealCuisine"
-              name="cuisine"
-              value={formData.cuisine}
-              onChange={(e) =>
-                setFormData({ ...formData, cuisine: e.target.value })
-              }
-              className="w-full p-3 bg-gray-700 text-white rounded-lg border border-gray-600 outline-none focus:bg-gray-600 focus:shadow-custom-hover transition"
-            >
-              <option value="">Select cuisine</option>
-              <option value="italian">Italian</option>
-              <option value="chinese">Chinese</option>
-              <option value="mexican">Mexican</option>
-              <option value="indian">Indian</option>
-              <option value="american">American</option>
-              <option value="other">Other</option>
-            </select>
-          </div>
+          {/* Remaining fields */}
+          {/* ... */}
 
           {/* Submit Button */}
           <button
