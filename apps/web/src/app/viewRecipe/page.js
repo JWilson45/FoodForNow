@@ -3,16 +3,17 @@
 
 import Head from 'next/head';
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
+import { useSearchParams } from 'next/navigation';
+import config from '@/config'; // Import the config
 
 export default function RecipePage() {
   const [recipe, setRecipe] = useState(null);
-  const router = useRouter();
-  const { id } = router.query;
+  const searchParams = useSearchParams();
+  const id = searchParams.get('id'); // Retrieve the query parameter
 
   useEffect(() => {
     if (!id) return;
-    fetch(`/api/recipes/${id}`, { credentials: 'include' })
+    fetch(`${config.apiBaseUrl}/recipes/${id}`, { credentials: 'include' })
       .then((res) => res.json())
       .then((data) => setRecipe(data.recipe || null))
       .catch((err) => console.error('Error fetching recipe:', err));
@@ -68,7 +69,7 @@ export default function RecipePage() {
             </p>
             <div className="mt-4 flex space-x-2">
               <button
-                onClick={() => router.back()}
+                onClick={() => window.history.back()}
                 className="px-4 py-2 bg-button-blue hover:bg-button-blue-hover text-white rounded-lg transition-colors"
               >
                 Back to Cookbook
