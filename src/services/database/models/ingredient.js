@@ -39,6 +39,13 @@ const IngredientSchema = new Schema(
       carbohydrates: { type: Number }, // Carbohydrate content in grams
       fiber: { type: Number }, // Fiber content in grams
     },
+
+    // Field to track the user who created the ingredient
+    createdBy: {
+      type: Schema.Types.ObjectId,
+      ref: 'User', // Reference to the User model
+      required: true, // Mark as required if you want to enforce this relationship
+    },
   },
   {
     // Add timestamps for createdAt and updatedAt fields
