@@ -3,7 +3,6 @@
 const jwt = require('jsonwebtoken');
 const checkEnvVars = require('../utilities/checkEnvVars');
 
-// Ensure required environment variables are set
 checkEnvVars(['JWT_SECRET_KEY']);
 
 /**
@@ -36,7 +35,7 @@ const authenticateUser = (req, res, next) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
 
     // Attach user info to request
-    req.user = { id: decoded.userId, username: decoded.username };
+    req.user = { userId: decoded.userId, username: decoded.username };
 
     next();
   } catch (error) {
