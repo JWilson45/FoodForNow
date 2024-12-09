@@ -3,7 +3,7 @@
 import Head from 'next/head';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import '../styles/main.css'; // Import custom main.css
 
 export default function Home() {
