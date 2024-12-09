@@ -20,10 +20,10 @@ export default function Header() {
           <Link href="/createMeal">Create Meal</Link>
         </li>
         <li>
-          <Link href="/ingredients">Ingredients</Link>
+          <Link href="/createIngredient">Ingredients</Link>
         </li>
         <li>
-          <Link href="/recipes">Recipes</Link>
+          <Link href="/createRecipe">Recipes</Link>
         </li>
         <li>
           <Link href="/cookbook">Cookbook</Link>
