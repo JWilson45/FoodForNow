@@ -1,51 +1,83 @@
+// /app/signin/page.js
+'use client'; // Add this line if using client-side hooks
+
 import Head from 'next/head';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
+import '../styles/main.css'; // Ensure styles are applied
 
-export default function Home() {
+export default function SignInPage() {
+  const [formData, setFormData] = useState({
+    username: '',
+    password: '',
+    showPassword: false,
+  });
+
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: type === 'checkbox' ? checked : value,
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    // Implement your login logic here
+    console.log('Form Data:', formData);
+  };
+
   return (
     <>
       <Head>
-        <title>Food For Now</title>
+        <title>Food For Now - Sign In</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       </Head>
       <Header />
-      <header id="home">
-        <h1>
-          <span id="easter-egg" title="Click me!">
-            F
-          </span>
-          ood For Now
-        </h1>
-        <p>Welcome to the future of food.</p>
-      </header>
-      <form id="loginForm">
-        <label htmlFor="username">Username:</label>
-        <input
-          type="text"
-          id="username"
-          name="username"
-          placeholder="Enter username"
-          required
-        />
+      <main className="signin-container">
+        <section id="signin-form">
+          <h2>Sign In</h2>
+          <form onSubmit={handleSubmit} className="form">
+            <label htmlFor="username">Username:</label>
+            <input
+              type="text"
+              id="username"
+              name="username"
+              placeholder="Enter username"
+              required
+              value={formData.username}
+              onChange={handleChange}
+            />
 
-        <label htmlFor="password">Password:</label>
-        <input
-          type="password"
-          id="password"
-          name="password"
-          placeholder="Enter password"
-          required
-        />
+            <label htmlFor="password">Password:</label>
+            <input
+              type={formData.showPassword ? 'text' : 'password'}
+              id="password"
+              name="password"
+              placeholder="Enter password"
+              required
+              value={formData.password}
+              onChange={handleChange}
+            />
 
-        <label>
-          <input type="checkbox" id="showPassword" />
-          Show Password
-        </label>
+            <label className="checkbox-label">
+              <input
+                type="checkbox"
+                id="showPassword"
+                name="showPassword"
+                checked={formData.showPassword}
+                onChange={handleChange}
+              />
+              Show Password
+            </label>
 
-        <input type="submit" value="Enter" />
-      </form>
+            <button type="submit" className="submit-button">
+              Enter
+            </button>
+          </form>
+        </section>
+      </main>
       <Footer />
     </>
   );

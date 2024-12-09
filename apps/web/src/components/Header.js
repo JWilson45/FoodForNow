@@ -1,10 +1,14 @@
 // Header.js
 import Link from 'next/link';
+import '../styles/header.css'; // Correct CSS import based on file structure
 
 export default function Header() {
   return (
-    <nav>
-      <ul>
+    <nav className="navbar">
+      <div className="navbar-brand">
+        <Link href="/">Food For Now</Link>
+      </div>
+      <ul className="navbar-links">
         <li>
           <Link href="/">Home</Link>
         </li>
