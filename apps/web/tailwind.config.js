@@ -1,15 +1,31 @@
-/** @type {import('tailwindcss').Config} */
 module.exports = {
+  darkMode: 'media',
   content: [
-    "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
-    "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
-    "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
+    './src/app/**/*.{js,ts,jsx,tsx}',
+    './src/components/**/*.{js,ts,jsx,tsx}',
   ],
   theme: {
     extend: {
       colors: {
-        background: "var(--background)",
-        foreground: "var(--foreground)",
+        background: 'var(--background)',
+        foreground: 'var(--foreground)',
+        'navbar-green': '#4caf50',
+        'navbar-green-hover': '#45a049',
+        'button-blue': '#007aff',
+        'button-blue-hover': '#006ae6',
+        'button-blue-active': '#005bb5',
+      },
+      boxShadow: {
+        custom:
+          '0 0 10px rgba(0, 122, 255, 0.4), 0 0 30px rgba(0, 122, 255, 0.4)',
+        'custom-hover':
+          '0 0 20px rgba(0,122,255,0.7), 0 0 40px rgba(0,122,255,0.7)',
+      },
+      keyframes: {
+        fadeIn: { '0%': { opacity: 0 }, '100%': { opacity: 1 } },
+      },
+      animation: {
+        fadeIn: 'fadeIn 2s ease-in-out',
       },
     },
   },

@@ -1,3 +1,6 @@
+// /app/editMeal/page.js
+'use client';
+
 import Head from 'next/head';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
@@ -53,9 +56,9 @@ export default function EditMeal() {
       .catch((err) => {
         console.error('Error:', err);
         alert('Error fetching meal details. Redirecting to meals page.');
-        window.location.href = 'viewMeals';
+        router.push('/viewMeals');
       });
-  }, [mealId]);
+  }, [mealId, router]);
 
   const addRecipeField = () => {
     setRecipeInputs((prev) => [...prev, { name: '', id: '' }]);
@@ -112,10 +115,10 @@ export default function EditMeal() {
 
     if (res.ok) {
       alert('Meal updated successfully!');
-      window.location.href = 'viewMeals';
+      router.push('/viewMeals');
     } else {
       const errData = await res.json();
-      alert(errData.error || 'An error occurred while updating the meal.');
+      alert(errData.error || 'Error updating meal.');
     }
   };
 
@@ -124,16 +127,28 @@ export default function EditMeal() {
       <Head>
         <title>Edit Meal</title>
       </Head>
-      <main className="form-container">
+      <main className="flex justify-center items-center p-6 bg-gray-900 min-h-screen">
         <form
           id="editMealForm"
-          className="meal-form"
-          aria-labelledby="formTitle"
           onSubmit={handleSubmit}
+          aria-labelledby="formTitle"
+          className="w-full max-w-2xl bg-black/80 border-2 border-button-blue rounded-xl p-8 shadow-custom animate-fadeIn"
         >
-          <h2 id="formTitle">Edit Meal</h2>
-          <div className="form-group">
-            <label htmlFor="mealName">Name:</label>
+          <h2
+            id="formTitle"
+            className="text-2xl font-bold mb-6 text-center text-white"
+          >
+            Edit Meal
+          </h2>
+
+          {/* Name */}
+          <div className="mb-4">
+            <label
+              htmlFor="mealName"
+              className="block mb-2 text-gray-300 font-semibold"
+            >
+              Name:
+            </label>
             <input
               type="text"
               id="mealName"
@@ -143,10 +158,18 @@ export default function EditMeal() {
               onChange={(e) =>
                 setFormData({ ...formData, name: e.target.value })
               }
+              className="w-full p-3 bg-gray-700 text-white rounded-lg border border-gray-600 outline-none focus:bg-gray-600 focus:shadow-custom-hover transition"
             />
           </div>
-          <div className="form-group">
-            <label htmlFor="mealDescription">Description:</label>
+
+          {/* Description */}
+          <div className="mb-4">
+            <label
+              htmlFor="mealDescription"
+              className="block mb-2 text-gray-300 font-semibold"
+            >
+              Description:
+            </label>
             <textarea
               id="mealDescription"
               name="description"
@@ -154,48 +177,70 @@ export default function EditMeal() {
               onChange={(e) =>
                 setFormData({ ...formData, description: e.target.value })
               }
+              className="w-full p-3 bg-gray-700 text-white rounded-lg border border-gray-600 outline-none focus:bg-gray-600 focus:shadow-custom-hover transition"
             ></textarea>
           </div>
-          <fieldset className="form-group">
-            <legend>Recipes:</legend>
-            <div id="recipesContainer">
+
+          {/* Recipes */}
+          <fieldset className="mb-6">
+            <legend className="block mb-2 text-gray-300 font-semibold">
+              Recipes:
+            </legend>
+            <div id="recipesContainer" className="space-y-4">
               {recipeInputs.map((ri, i) => (
-                <div className="recipe-item" key={i}>
-                  <label htmlFor={`recipeName${i + 1}`}>Recipe {i + 1}:</label>
-                  <input
-                    type="text"
-                    id={`recipeName${i + 1}`}
-                    required
-                    value={ri.name}
-                    onChange={(e) => handleRecipeChange(i, e.target.value)}
-                    list={`recipesDatalist${i + 1}`}
-                  />
+                <div key={i} className="space-y-2">
+                  <div className="flex items-center space-x-2">
+                    <label
+                      htmlFor={`recipeName${i + 1}`}
+                      className="text-gray-300"
+                    >
+                      Recipe {i + 1}:
+                    </label>
+                    <input
+                      type="text"
+                      id={`recipeName${i + 1}`}
+                      required
+                      value={ri.name}
+                      onChange={(e) => handleRecipeChange(i, e.target.value)}
+                      list={`recipesDatalist${i + 1}`}
+                      className="flex-1 p-3 bg-gray-700 text-white rounded-lg border border-gray-600 outline-none focus:bg-gray-600 focus:shadow-custom-hover transition"
+                    />
+                    {recipeInputs.length > 1 && (
+                      <button
+                        type="button"
+                        onClick={() => removeRecipeField(i)}
+                        className="text-red-500 hover:text-red-700"
+                        aria-label={`Remove recipe ${i + 1}`}
+                      >
+                        Remove
+                      </button>
+                    )}
+                  </div>
                   <datalist id={`recipesDatalist${i + 1}`}>
                     {recipes.map((r) => (
                       <option key={r._id} value={r.name}></option>
                     ))}
                   </datalist>
-                  <button
-                    type="button"
-                    className="removeRecipeButton"
-                    onClick={() => removeRecipeField(i)}
-                  >
-                    Remove
-                  </button>
                 </div>
               ))}
             </div>
             <button
               type="button"
-              id="addRecipeButton"
-              className="btn btn-secondary"
               onClick={addRecipeField}
+              className="mt-4 px-4 py-2 bg-button-blue hover:bg-button-blue-hover text-white rounded-lg transition-colors"
             >
               Add Recipe
             </button>
           </fieldset>
-          <div className="form-group">
-            <label htmlFor="mealMealTime">Meal Time:</label>
+
+          {/* Meal Time */}
+          <div className="mb-4">
+            <label
+              htmlFor="mealMealTime"
+              className="block mb-2 text-gray-300 font-semibold"
+            >
+              Meal Time:
+            </label>
             <select
               id="mealMealTime"
               name="mealTime"
@@ -203,6 +248,7 @@ export default function EditMeal() {
               onChange={(e) =>
                 setFormData({ ...formData, mealTime: e.target.value })
               }
+              className="w-full p-3 bg-gray-700 text-white rounded-lg border border-gray-600 outline-none focus:bg-gray-600 focus:shadow-custom-hover transition"
             >
               <option value="">Select meal time</option>
               <option value="breakfast">Breakfast</option>
@@ -212,8 +258,15 @@ export default function EditMeal() {
               <option value="dessert">Dessert</option>
             </select>
           </div>
-          <div className="form-group">
-            <label htmlFor="mealServings">Servings:</label>
+
+          {/* Servings */}
+          <div className="mb-4">
+            <label
+              htmlFor="mealServings"
+              className="block mb-2 text-gray-300 font-semibold"
+            >
+              Servings:
+            </label>
             <input
               type="number"
               id="mealServings"
@@ -224,10 +277,18 @@ export default function EditMeal() {
               onChange={(e) =>
                 setFormData({ ...formData, servings: e.target.value })
               }
+              className="w-full p-3 bg-gray-700 text-white rounded-lg border border-gray-600 outline-none focus:bg-gray-600 focus:shadow-custom-hover transition"
             />
           </div>
-          <div className="form-group">
-            <label htmlFor="mealCalories">Calories:</label>
+
+          {/* Calories */}
+          <div className="mb-4">
+            <label
+              htmlFor="mealCalories"
+              className="block mb-2 text-gray-300 font-semibold"
+            >
+              Calories:
+            </label>
             <input
               type="number"
               id="mealCalories"
@@ -237,10 +298,18 @@ export default function EditMeal() {
               onChange={(e) =>
                 setFormData({ ...formData, calories: e.target.value })
               }
+              className="w-full p-3 bg-gray-700 text-white rounded-lg border border-gray-600 outline-none focus:bg-gray-600 focus:shadow-custom-hover transition"
             />
           </div>
-          <div className="form-group">
-            <label htmlFor="mealTags">Tags (comma-separated):</label>
+
+          {/* Tags */}
+          <div className="mb-4">
+            <label
+              htmlFor="mealTags"
+              className="block mb-2 text-gray-300 font-semibold"
+            >
+              Tags (comma-separated):
+            </label>
             <input
               type="text"
               id="mealTags"
@@ -249,10 +318,12 @@ export default function EditMeal() {
               onChange={(e) =>
                 setFormData({ ...formData, tags: e.target.value })
               }
+              className="w-full p-3 bg-gray-700 text-white rounded-lg border border-gray-600 outline-none focus:bg-gray-600 focus:shadow-custom-hover transition"
             />
           </div>
-          <div className="form-group checkbox-group">
-            <label htmlFor="mealIsVegetarian">Is Vegetarian:</label>
+
+          {/* Vegetarian */}
+          <div className="mb-4 flex items-center">
             <input
               type="checkbox"
               id="mealIsVegetarian"
@@ -261,10 +332,18 @@ export default function EditMeal() {
               onChange={(e) =>
                 setFormData({ ...formData, isVegetarian: e.target.checked })
               }
+              className="mr-2"
             />
+            <label
+              htmlFor="mealIsVegetarian"
+              className="text-gray-300 cursor-pointer"
+            >
+              Is Vegetarian:
+            </label>
           </div>
-          <div className="form-group checkbox-group">
-            <label htmlFor="mealIsVegan">Is Vegan:</label>
+
+          {/* Vegan */}
+          <div className="mb-6 flex items-center">
             <input
               type="checkbox"
               id="mealIsVegan"
@@ -273,10 +352,24 @@ export default function EditMeal() {
               onChange={(e) =>
                 setFormData({ ...formData, isVegan: e.target.checked })
               }
+              className="mr-2"
             />
+            <label
+              htmlFor="mealIsVegan"
+              className="text-gray-300 cursor-pointer"
+            >
+              Is Vegan:
+            </label>
           </div>
-          <div className="form-group">
-            <label htmlFor="mealCuisine">Cuisine:</label>
+
+          {/* Cuisine */}
+          <div className="mb-6">
+            <label
+              htmlFor="mealCuisine"
+              className="block mb-2 text-gray-300 font-semibold"
+            >
+              Cuisine:
+            </label>
             <select
               id="mealCuisine"
               name="cuisine"
@@ -284,6 +377,7 @@ export default function EditMeal() {
               onChange={(e) =>
                 setFormData({ ...formData, cuisine: e.target.value })
               }
+              className="w-full p-3 bg-gray-700 text-white rounded-lg border border-gray-600 outline-none focus:bg-gray-600 focus:shadow-custom-hover transition"
             >
               <option value="">Select cuisine</option>
               <option value="italian">Italian</option>
@@ -294,7 +388,12 @@ export default function EditMeal() {
               <option value="other">Other</option>
             </select>
           </div>
-          <button type="submit" id="submitMeal" className="btn btn-primary">
+
+          {/* Submit Button */}
+          <button
+            type="submit"
+            className="w-full py-3 bg-button-blue hover:bg-button-blue-hover active:bg-button-blue-active text-white font-bold uppercase rounded-lg transition-transform transform hover:scale-105 active:scale-100 shadow-custom hover:shadow-custom-hover"
+          >
             Update Meal
           </button>
         </form>
