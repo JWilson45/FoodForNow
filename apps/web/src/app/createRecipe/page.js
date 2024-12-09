@@ -1,7 +1,5 @@
 import Head from 'next/head';
 import { useState, useEffect } from 'react';
-import Header from '../components/Header';
-import Footer from '../components/Footer';
 
 export default function CreateRecipe() {
   const [instructions, setInstructions] = useState(['']);
@@ -118,7 +116,6 @@ export default function CreateRecipe() {
       <Head>
         <title>Create Recipe</title>
       </Head>
-      <Header />
       <form id="recipeForm" onSubmit={handleSubmit} aria-labelledby="formTitle">
         <h2 id="formTitle">Create Recipe</h2>
         <label htmlFor="recipeName">Name:</label>
@@ -360,7 +357,6 @@ export default function CreateRecipe() {
           Create Recipe
         </button>
       </form>
-      <Footer />
     </>
   );
 }

@@ -2,8 +2,6 @@
 
 import Head from 'next/head';
 import { useState } from 'react';
-import Header from '../../components/Header';
-import Footer from '../../components/Footer';
 
 export default function Signup() {
   const [formData, setFormData] = useState({
@@ -36,7 +34,6 @@ export default function Signup() {
       <Head>
         <title>Sign Up - Food For Now</title>
       </Head>
-      <Header />
       <header id="home">
         <h1>
           <span id="easter-egg" title="Click me!">
@@ -142,7 +139,6 @@ export default function Signup() {
           Sign Up
         </button>
       </form>
-      <Footer />
     </>
   );
 }

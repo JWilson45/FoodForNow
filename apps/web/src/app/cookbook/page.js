@@ -2,8 +2,6 @@
 
 import Head from 'next/head';
 import { useState, useEffect } from 'react';
-import Header from '../../components/Header';
-import Footer from '../../components/Footer';
 
 export default function Cookbook() {
   const [recipes, setRecipes] = useState([]);
@@ -23,7 +21,6 @@ export default function Cookbook() {
       <Head>
         <title>My Cookbook</title>
       </Head>
-      <Header />
       <main id="cookbook" className="container">
         <h2>My Cookbook</h2>
         <div id="recipeContainer" className="flex-container">
@@ -91,7 +88,6 @@ export default function Cookbook() {
           </button>
         </div>
       </main>
-      <Footer />
     </>
   );
 }

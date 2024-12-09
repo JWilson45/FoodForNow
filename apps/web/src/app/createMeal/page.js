@@ -2,8 +2,6 @@
 
 import Head from 'next/head';
 import { useState, useEffect } from 'react';
-import Header from '../../components/Header';
-import Footer from '../../components/Footer';
 
 export default function CreateMeal() {
   const [recipes, setRecipes] = useState([]);
@@ -110,7 +108,6 @@ export default function CreateMeal() {
       <Head>
         <title>Create Meal</title>
       </Head>
-      <Header />
       <main className="form-container">
         <form
           id="mealForm"
@@ -287,7 +284,6 @@ export default function CreateMeal() {
           </button>
         </form>
       </main>
-      <Footer />
     </>
   );
 }

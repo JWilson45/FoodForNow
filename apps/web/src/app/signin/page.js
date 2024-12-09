@@ -3,9 +3,7 @@
 
 import Head from 'next/head';
 import { useState } from 'react';
-import Header from '../../components/Header';
-import Footer from '../../components/Footer';
-import '../styles/main.css'; // Ensure styles are applied
+import '../../styles/main.css'; // Ensure styles are applied
 
 export default function SignInPage() {
   const [formData, setFormData] = useState({
@@ -34,7 +32,6 @@ export default function SignInPage() {
         <title>Food For Now - Sign In</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       </Head>
-      <Header />
       <main className="signin-container">
         <section id="signin-form">
           <h2>Sign In</h2>
@@ -78,7 +75,6 @@ export default function SignInPage() {
           </form>
         </section>
       </main>
-      <Footer />
     </>
   );
 }

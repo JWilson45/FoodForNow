@@ -1,7 +1,5 @@
 import Head from 'next/head';
 import { useState } from 'react';
-import Header from '../../components/Header';
-import Footer from '../../components/Footer';
 
 export default function Ingredients() {
   const [formData, setFormData] = useState({
@@ -64,7 +62,6 @@ export default function Ingredients() {
       <Head>
         <title>Insert Ingredient</title>
       </Head>
-      <Header />
       <form
         id="ingredientForm"
         aria-labelledby="formTitle"
@@ -182,7 +179,6 @@ export default function Ingredients() {
           Add Ingredient
         </button>
       </form>
-      <Footer />
     </>
   );
 }

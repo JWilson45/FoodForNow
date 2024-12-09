@@ -1,8 +1,6 @@
 import Head from 'next/head';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import Header from '../../components/Header';
-import Footer from '../../components/Footer';
 
 export default function EditMeal() {
   const router = useRouter();
@@ -126,7 +124,6 @@ export default function EditMeal() {
       <Head>
         <title>Edit Meal</title>
       </Head>
-      <Header />
       <main className="form-container">
         <form
           id="editMealForm"
@@ -302,7 +299,6 @@ export default function EditMeal() {
           </button>
         </form>
       </main>
-      <Footer />
     </>
   );
 }

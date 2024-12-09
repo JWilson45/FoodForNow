@@ -2,8 +2,6 @@
 
 import Head from 'next/head';
 import { useState, useEffect } from 'react';
-import Header from '../../components/Header';
-import Footer from '../../components/Footer';
 
 export default function ViewMeals() {
   const [meals, setMeals] = useState([]);
@@ -23,7 +21,6 @@ export default function ViewMeals() {
       <Head>
         <title>My Meals</title>
       </Head>
-      <Header />
       <main id="meals" className="container">
         <h2>My Meals</h2>
         <div id="mealContainer" className="flex-container">
@@ -117,7 +114,6 @@ export default function ViewMeals() {
           </button>
         </div>
       </main>
-      <Footer />
     </>
   );
 }
