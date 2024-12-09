@@ -1,3 +1,5 @@
+// src/middleware/validate.js
+
 /**
  * Middleware factory function to validate request payloads against a provided schema.
  *
