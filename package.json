@@ -8,7 +8,7 @@
   "scripts": {
     "dev:api": "npm run dev --workspace=api",
     "dev:web": "npm run dev --workspace=web",
-    "dev": "npm run dev:backend & npm run dev:frontend",
+    "dev": "npm run dev:api & npm run dev:web",
     "format": "npm run format --workspaces",
     "test": "npm run test --workspaces"
   },
