@@ -5,7 +5,6 @@
   "main": "./src/server.js",
   "scripts": {
     "test": "npx jest",
-    "db": "brew services run mongodb",
     "killmsg": "echo \"Why would you kill me? I am dead now.\"",
     "dev": "node --watch --env-file=.env ./src/server.js",
     "start": "node --env-file=.env ./src/server.js",
