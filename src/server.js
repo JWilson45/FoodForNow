@@ -1,33 +1,50 @@
-const express = require('express'); // Import the Express framework
-const routes = require('./routes'); // Import application routes
-const morgan = require('morgan'); // Import Morgan for HTTP request logging
-const connectDB = require('./services/database/database'); // Import the database connection function
-const cookieParser = require('cookie-parser'); // Import cookie-parser to parse cookies in requests
+// src/server.js
 
-const app = express(); // Create an Express application instance
+const express = require('express');
+const cookieParser = require('cookie-parser');
+const morgan = require('morgan');
+// const helmet = require('helmet');
 
-// Middleware configuration
-app.use(cookieParser()); // Enable cookie parsing middleware
-app.use(express.json()); // Parse incoming JSON requests and populate req.body
-app.use(express.urlencoded({ extended: true })); // Parse incoming URL-encoded data (e.g., form submissions)
+const routes = require('./routes');
+const errorHandler = require('./middleware/errorHandler');
+const connectDB = require('./services/database');
+
+const app = express();
+
+// Security Middlewares
+// app.use(helmet());
+
+// Logging Middleware
 app.use(
-  morgan('combined', {
+  morgan('dev', {
     skip: (req) => {
       return !req.originalUrl.startsWith('/api');
     },
   })
 );
 
-// Serve static files from the 'public' directory
+// Parsing Middleware
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
+
+// Routes
+app.use('/api', routes);
+
+// Serve Static Files (if any)
 app.use(express.static('public'));
 
-// Register API routes under the '/api' path
-app.use('/api', routes); // All routes prefixed with '/api' will be handled by the imported routes
+// 404 Handler for Undefined Routes
+app.use((_, res) => {
+  res.status(404).json({ error: 'Route not found' });
+});
 
-const PORT = process.env.PORT || 9696; // Set the port to the environment variable PORT or default to 9696
+// Centralized Error Handling Middleware
+app.use(errorHandler);
 
-// Start the HTTP server
+// Start Server after Database Connection
+const PORT = process.env.PORT || 5000;
 app.listen(PORT, async () => {
-  await connectDB(); // Establish a connection to the database before starting the server
-  console.log(`Server listening on port ${PORT}`); // Log that the server is running
+  await connectDB(); // Ensure database is connected before starting the server
+  console.log(`Server is running on port ${PORT}`);
 });

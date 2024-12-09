@@ -21,14 +21,18 @@ const userRouter = express.Router();
  * - Validates the request body using the userValidationSchema.
  * - Calls the createUser service function to process the request.
  */
-userRouter.post('/', validate(userValidationSchema), createUser);
+userRouter.post('/', validate(userValidationSchema, 'body'), createUser);
 
 /**
  * Route to handle user login.
  * - Validates the request body using the userLoginValidationSchema.
  * - Calls the signInUser service function to process the login.
  */
-userRouter.post('/login', validate(userLoginValidationSchema), signInUser);
+userRouter.post(
+  '/login',
+  validate(userLoginValidationSchema, 'body'),
+  signInUser
+);
 
 /**
  * Catch-all route for the base `/` path of this router.

@@ -1,34 +1,46 @@
 const express = require('express');
 const validate = require('../../middleware/validate');
-const { createIngredientValidationSchema } = require('./validator');
+const {
+  createIngredientValidationSchema,
+  updateIngredientValidationSchema,
+  getIngredientValidationSchema,
+} = require('./validator');
 const {
   createIngredient,
   getIngredients,
+  updateIngredient,
+  getIngredientById,
 } = require('../../services/ingredients');
 
-// Create a new router instance for handling ingredient-related routes
 const ingredientRouter = express.Router();
 
-/**
- * Route to handle ingredient creation.
- * - Validates the request body using the ingredientValidationSchema.
- * - Calls the createIngredient service function to process the request.
- */
+// CREATE ingredient
 ingredientRouter.post(
-  '/', // Route path
-  validate(createIngredientValidationSchema), // Middleware to validate the request body
-  createIngredient // Controller function to handle the logic
+  '/',
+  validate(createIngredientValidationSchema, 'body'),
+  createIngredient
 );
 
+// GET all ingredients for authenticated users
 ingredientRouter.get('/', getIngredients);
 
-/**
- * Catch-all route for the base `/` path of this router.
- * Responds with a 200 status and a message indicating the ingredients endpoint.
- */
+// GET ingredient by ID
+ingredientRouter.get(
+  '/:id',
+  validate(getIngredientValidationSchema, 'params'),
+  getIngredientById
+);
+
+// UPDATE ingredient by ID
+ingredientRouter.put(
+  '/:id',
+  validate(getIngredientValidationSchema, 'params'),
+  validate(updateIngredientValidationSchema, 'body'),
+  updateIngredient
+);
+
 ingredientRouter.all('/', async (_, res) => {
   res.status(200).send('ingredients!');
 });
 
-// Export the router to be used in the main application
 module.exports = ingredientRouter;

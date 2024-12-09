@@ -1,52 +1,54 @@
-// Import the Joi validation library
 const Joi = require('joi');
+const mongoose = require('mongoose');
 
-// Define the ingredient validation schema with detailed custom error messages
+// Custom validator for ObjectId fields
+const objectIdValidator = (value, helpers) => {
+  if (!mongoose.Types.ObjectId.isValid(value)) {
+    return helpers.message('must be a valid ObjectId');
+  }
+  return value;
+};
+
+// Validation schema for creating an ingredient
 const createIngredientValidationSchema = Joi.object({
-  // Name is required, must be a string, and cannot be empty
   name: Joi.string().required().trim().messages({
-    'string.base': 'Name must be a string.', // Error for invalid type
-    'string.empty': 'Name is required and cannot be empty.', // Error for empty value
-    'any.required': 'Name is a required field.', // Error for missing value
+    'string.empty': 'Name is required and cannot be empty.',
+    'any.required': 'Name is a required field.',
   }),
-
-  // Description is optional but must be a trimmed string if provided
-  description: Joi.string().optional().trim().messages({
-    'string.base': 'Description must be a string.', // Error for invalid type
-    'string.empty': 'Description cannot be empty if provided.', // Error for empty value
-  }),
-
-  // Calories is optional but must be a number if provided
-  calories: Joi.number().optional().messages({
-    'number.base': 'Calories must be a number.', // Error for invalid type
-  }),
-
-  // Image is optional and must be a binary file format
-  image: Joi.binary().optional().messages({
-    'binary.base': 'Image must be a binary file format.', // Error for invalid type
-  }), // Replace with Joi.string().uri() if using image URLs
-
-  // Nutritional information is optional and must be an object with specific numeric properties
+  description: Joi.string().optional().trim(),
+  calories: Joi.number().optional(),
+  image: Joi.binary().optional(), // Consider using Joi.string().uri() if storing image URLs
   nutritionalInfo: Joi.object({
-    // Each nutritional field is optional but must be a number if provided
-    fat: Joi.number().optional().messages({
-      'number.base': 'Fat content must be a number.', // Error for invalid type
-    }),
-    protein: Joi.number().optional().messages({
-      'number.base': 'Protein content must be a number.', // Error for invalid type
-    }),
-    carbohydrates: Joi.number().optional().messages({
-      'number.base': 'Carbohydrates content must be a number.', // Error for invalid type
-    }),
-    fiber: Joi.number().optional().messages({
-      'number.base': 'Fiber content must be a number.', // Error for invalid type
-    }),
-  })
-    .optional()
-    .messages({
-      'object.base': 'Nutritional information must be an object.', // Error for invalid type
-    }),
+    fat: Joi.number().optional(),
+    protein: Joi.number().optional(),
+    carbohydrates: Joi.number().optional(),
+    fiber: Joi.number().optional(),
+  }).optional(),
 });
 
-// Export the ingredient validation schema for use in routes and middleware
-module.exports = { createIngredientValidationSchema };
+// Validation schema for updating an ingredient
+const updateIngredientValidationSchema = Joi.object({
+  name: Joi.string().optional().trim(),
+  description: Joi.string().optional().trim(),
+  calories: Joi.number().optional(),
+  image: Joi.binary().optional(), // Consider using Joi.string().uri() if storing image URLs
+  nutritionalInfo: Joi.object({
+    fat: Joi.number().optional(),
+    protein: Joi.number().optional(),
+    carbohydrates: Joi.number().optional(),
+    fiber: Joi.number().optional(),
+  }).optional(),
+});
+
+// Validation schema for fetching/deleting an ingredient by ID
+const getIngredientValidationSchema = Joi.object({
+  id: Joi.string().required().custom(objectIdValidator).messages({
+    'any.required': 'Ingredient ID is required.',
+  }),
+});
+
+module.exports = {
+  createIngredientValidationSchema,
+  updateIngredientValidationSchema,
+  getIngredientValidationSchema,
+};

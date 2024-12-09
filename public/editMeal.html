@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Edit Meal</title>
+    <!-- CSS Links -->
+    <link rel="stylesheet" href="css/main.css" />
+    <link rel="stylesheet" href="css/header.css" />
+    <link rel="stylesheet" href="css/forms.css" />
+    <!-- You can add more CSS files here if needed -->
+  </head>
+  <body>
+    <!-- Universal Header -->
+    <div id="header-placeholder"></div>
+
+    <!-- Main Content Wrapper for consistent styling -->
+    <main class="form-container">
+      <!-- Edit Meal Form -->
+      <form id="editMealForm" aria-labelledby="formTitle" class="meal-form">
+        <h2 id="formTitle">Edit Meal</h2>
+
+        <!-- Name Field -->
+        <div class="form-group">
+          <label for="mealName">Name:</label>
+          <input
+            type="text"
+            id="mealName"
+            name="name"
+            placeholder="Enter meal name"
+            required
+            aria-required="true"
+            class="form-control"
+          />
+        </div>
+
+        <!-- Description Field -->
+        <div class="form-group">
+          <label for="mealDescription">Description:</label>
+          <textarea
+            id="mealDescription"
+            name="description"
+            placeholder="Enter meal description"
+            class="form-control"
+          ></textarea>
+        </div>
+
+        <!-- Recipes Field -->
+        <fieldset class="form-group">
+          <legend>Recipes:</legend>
+          <div id="recipesContainer">
+            <!-- Recipe Inputs Will Be Added Here Dynamically -->
+          </div>
+          <button type="button" id="addRecipeButton" class="btn btn-secondary">
+            Add Recipe
+          </button>
+        </fieldset>
+
+        <!-- Meal Time Field -->
+        <div class="form-group">
+          <label for="mealMealTime">Meal Time:</label>
+          <select id="mealMealTime" name="mealTime" class="form-control">
+            <option value="">Select meal time</option>
+            <option value="breakfast">Breakfast</option>
+            <option value="lunch">Lunch</option>
+            <option value="dinner">Dinner</option>
+            <option value="snack">Snack</option>
+            <option value="dessert">Dessert</option>
+          </select>
+        </div>
+
+        <!-- Servings Field -->
+        <div class="form-group">
+          <label for="mealServings">Servings:</label>
+          <input
+            type="number"
+            id="mealServings"
+            name="servings"
+            placeholder="Enter number of servings"
+            min="1"
+            required
+            aria-required="true"
+            class="form-control"
+          />
+        </div>
+
+        <!-- Calories Field -->
+        <div class="form-group">
+          <label for="mealCalories">Calories:</label>
+          <input
+            type="number"
+            id="mealCalories"
+            name="calories"
+            placeholder="Enter calories"
+            min="0"
+            class="form-control"
+          />
+        </div>
+
+        <!-- Tags Field -->
+        <div class="form-group">
+          <label for="mealTags">Tags (comma-separated):</label>
+          <input
+            type="text"
+            id="mealTags"
+            name="tags"
+            placeholder="e.g., vegetarian, quick"
+            class="form-control"
+          />
+        </div>
+
+        <!-- Dietary Preferences -->
+        <div class="form-group checkbox-group">
+          <label for="mealIsVegetarian">Is Vegetarian:</label>
+          <input type="checkbox" id="mealIsVegetarian" name="isVegetarian" />
+        </div>
+
+        <div class="form-group checkbox-group">
+          <label for="mealIsVegan">Is Vegan:</label>
+          <input type="checkbox" id="mealIsVegan" name="isVegan" />
+        </div>
+
+        <!-- Cuisine Field -->
+        <div class="form-group">
+          <label for="mealCuisine">Cuisine:</label>
+          <select id="mealCuisine" name="cuisine" class="form-control">
+            <option value="">Select cuisine</option>
+            <option value="italian">Italian</option>
+            <option value="chinese">Chinese</option>
+            <option value="mexican">Mexican</option>
+            <option value="indian">Indian</option>
+            <option value="american">American</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" id="submitMeal" class="btn btn-primary">
+          Update Meal
+        </button>
+      </form>
+    </main>
+
+    <!-- Universal Footer -->
+    <div id="footer-placeholder"></div>
+
+    <!-- JavaScript -->
+    <script type="module" src="js/main.js"></script>
+  </body>
+</html>

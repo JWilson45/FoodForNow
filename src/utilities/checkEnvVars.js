@@ -10,10 +10,9 @@ function checkEnvVars(requiredEnvVars) {
 
   // If there are any missing environment variables, log them and exit the process
   if (missingEnvVars.length > 0) {
-    console.error(
+    throw new Error(
       `Missing required environment variables: ${missingEnvVars.join(', ')}.`
     );
-    process.exit(1); // Exit the process with an error code (1 indicates failure)
   }
 }
 
