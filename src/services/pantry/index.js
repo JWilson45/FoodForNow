@@ -8,7 +8,7 @@ const Pantry = require('../database/models/pantry'); // Adjust the path if neces
 const addPantryIngredient = async (req, res) => {
   try {
     const { name, quantity, unit } = req.body;
-    const userId = req.user.id; // Assuming authentication middleware populates req.user
+    const userId = req.user.userId; // Assuming authentication middleware populates req.user
 
     const newPantryItem = new Pantry({
       name,
