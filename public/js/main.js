@@ -13,7 +13,11 @@ import { initAddIngredient } from './addIngredients.js';
 import { initAddRecipe } from './addRecipe.js';
 import { initCookbook } from './cookbook.js'; // Import the cookbook initializer
 import { initRecipe } from './recipe.js'; // Import the recipe initializer
+import { initCreateMeal } from './createMeal.js'; // Import the create meal initializer
+import { initViewMeals } from './viewMeals.js'; // Import the view meals initializer
+import { initEditMeal } from './editMeal.js'; // Import the edit meal initializer (optional)
 
+// Initialize all components on DOMContentLoaded
 document.addEventListener('DOMContentLoaded', () => {
   // Load the header across all pages
   loadHeader();
@@ -47,6 +51,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (document.getElementById('recipeDetails')) {
     initRecipe();
+  }
+
+  if (document.getElementById('mealForm')) {
+    initCreateMeal();
+  }
+
+  if (document.getElementById('meals')) {
+    initViewMeals();
+  }
+
+  if (document.getElementById('editMealForm')) {
+    initEditMeal();
   }
 
   // Dynamically adjust form margin to prevent overlap with the header

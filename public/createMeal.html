@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Create Meal</title>
+    <!-- CSS Links -->
+    <link rel="stylesheet" href="css/main.css" />
+    <link rel="stylesheet" href="css/header.css" />
+    <link rel="stylesheet" href="css/forms.css" />
+  </head>
+  <body>
+    <!-- Placeholder for the universal header -->
+    <div id="header-placeholder"></div>
+
+    <!-- Create Meal Form -->
+    <form id="mealForm" aria-labelledby="formTitle">
+      <h2 id="formTitle">Create Meal</h2>
+
+      <!-- Name Field -->
+      <label for="mealName">Name:</label>
+      <input
+        type="text"
+        id="mealName"
+        name="name"
+        placeholder="Enter meal name"
+        required
+        aria-required="true"
+      />
+
+      <!-- Description Field -->
+      <label for="mealDescription">Description:</label>
+      <textarea
+        id="mealDescription"
+        name="description"
+        placeholder="Enter meal description"
+      ></textarea>
+
+      <!-- Recipes Field -->
+      <fieldset>
+        <legend>Recipes:</legend>
+        <div id="recipesContainer">
+          <!-- Recipe Inputs Will Be Added Here Dynamically -->
+        </div>
+        <button type="button" id="addRecipeButton">Add Recipe</button>
+      </fieldset>
+
+      <!-- Meal Time Field -->
+      <label for="mealMealTime">Meal Time:</label>
+      <select id="mealMealTime" name="mealTime">
+        <option value="">Select meal time</option>
+        <option value="breakfast">Breakfast</option>
+        <option value="lunch">Lunch</option>
+        <option value="dinner">Dinner</option>
+        <option value="snack">Snack</option>
+        <option value="dessert">Dessert</option>
+      </select>
+
+      <!-- Servings Field -->
+      <label for="mealServings">Servings:</label>
+      <input
+        type="number"
+        id="mealServings"
+        name="servings"
+        placeholder="Enter number of servings"
+        min="1"
+        required
+        aria-required="true"
+      />
+
+      <!-- Calories Field -->
+      <label for="mealCalories">Calories:</label>
+      <input
+        type="number"
+        id="mealCalories"
+        name="calories"
+        placeholder="Enter calories"
+        min="0"
+      />
+
+      <!-- Tags Field -->
+      <label for="mealTags">Tags (comma-separated):</label>
+      <input
+        type="text"
+        id="mealTags"
+        name="tags"
+        placeholder="e.g., vegetarian, quick"
+      />
+
+      <!-- Is Vegetarian Field -->
+      <label for="mealIsVegetarian">Is Vegetarian:</label>
+      <input type="checkbox" id="mealIsVegetarian" name="isVegetarian" />
+
+      <!-- Is Vegan Field -->
+      <label for="mealIsVegan">Is Vegan:</label>
+      <input type="checkbox" id="mealIsVegan" name="isVegan" />
+
+      <!-- Cuisine Field -->
+      <label for="mealCuisine">Cuisine:</label>
+      <select id="mealCuisine" name="cuisine">
+        <option value="">Select cuisine</option>
+        <option value="italian">Italian</option>
+        <option value="chinese">Chinese</option>
+        <option value="mexican">Mexican</option>
+        <option value="indian">Indian</option>
+        <option value="american">American</option>
+        <option value="other">Other</option>
+      </select>
+
+      <!-- Submit Button -->
+      <button type="submit" id="submitMeal">Create Meal</button>
+    </form>
+
+    <!-- Placeholder for the universal footer -->
+    <div id="footer-placeholder"></div>
+
+    <!-- JavaScript -->
+    <script type="module" src="js/main.js"></script>
+  </body>
+</html>
