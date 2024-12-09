@@ -9,6 +9,7 @@ import Button from '@/components/Button';
 import Select from '@/components/Select';
 import Checkbox from '@/components/Checkbox';
 import RecipeSelect from '@/components/RecipeSelect';
+import config from '@/config'; // Ensure this path is correct
 
 export default function CreateMeal() {
   const [recipeInputs, setRecipeInputs] = useState([{ recipeId: '' }]);
@@ -35,9 +36,9 @@ export default function CreateMeal() {
 
   const handleRecipeSelect = (index, selectedOption) => {
     setRecipeInputs((prev) => {
-      const copy = [...prev];
-      copy[index].recipeId = selectedOption ? selectedOption.value : '';
-      return copy;
+      const updated = [...prev];
+      updated[index].recipeId = selectedOption ? selectedOption.value : '';
+      return updated;
     });
   };
 
@@ -65,7 +66,7 @@ export default function CreateMeal() {
       description: formData.description.trim() || undefined,
       recipes: recipeInputs.map((r) => r.recipeId),
       mealTime: formData.mealTime || undefined,
-      servings: parseInt(formData.servings),
+      servings: parseInt(formData.servings, 10),
       calories: formData.calories ? parseFloat(formData.calories) : undefined,
       tags: formData.tags
         ? formData.tags.split(',').map((t) => t.trim())
@@ -77,7 +78,6 @@ export default function CreateMeal() {
 
     try {
       const res = await fetch(`${config.apiBaseUrl}/meals`, {
-        // Use config.apiBaseUrl
         method: 'POST',
         credentials: 'include', // Include cookies in the request
         headers: {
@@ -216,7 +216,6 @@ export default function CreateMeal() {
               onChange={(e) =>
                 setFormData({ ...formData, mealTime: e.target.value })
               }
-              placeholder="Select meal time"
             >
               <option value="">Select meal time</option>
               <option value="breakfast">Breakfast</option>
@@ -310,7 +309,6 @@ export default function CreateMeal() {
               onChange={(e) =>
                 setFormData({ ...formData, cuisine: e.target.value })
               }
-              placeholder="Select cuisine"
             >
               <option value="">Select cuisine</option>
               <option value="italian">Italian</option>

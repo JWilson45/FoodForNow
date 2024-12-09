@@ -13,10 +13,22 @@ export default function Cookbook() {
   const itemsPerPage = 2;
 
   useEffect(() => {
-    fetch(`${config.apiBaseUrl}/recipes`, { credentials: 'include' })
-      .then((res) => res.json())
-      .then((data) => setRecipes(data.recipes || []))
-      .catch((err) => console.error('Error fetching recipes:', err));
+    const fetchRecipes = async () => {
+      try {
+        const res = await fetch(`${config.apiBaseUrl}/recipes`, {
+          credentials: 'include',
+        });
+        if (!res.ok) {
+          throw new Error(`Error fetching recipes: ${res.statusText}`);
+        }
+        const data = await res.json();
+        setRecipes(data.recipes || []);
+      } catch (err) {
+        console.error('Error fetching recipes:', err);
+      }
+    };
+
+    fetchRecipes();
   }, []);
 
   const displayedRecipes = recipes.slice(
@@ -52,8 +64,8 @@ export default function Cookbook() {
                   <strong>Ingredients:</strong>
                 </p>
                 <ul className="list-disc list-inside text-gray-300 mb-2">
-                  {recipe.ingredients.map((ing, i) => (
-                    <li key={ing.ingredientId || i}>
+                  {recipe.ingredients.map((ing) => (
+                    <li key={ing.ingredientId || ing.id}>
                       {ing.amount} {ing.unit} of Ingredient ID{' '}
                       {ing.ingredientId}
                     </li>
@@ -74,7 +86,7 @@ export default function Cookbook() {
                 <div className="mt-4 flex space-x-2">
                   <Button
                     href={`/viewRecipe?id=${recipe._id}`}
-                    className="px-4 py-2 bg-button-blue hover:bg-button-blue-hover"
+                    className="px-4 py-2 bg-button-blue hover:bg-button-blue-hover text-white rounded-lg transition-colors"
                   >
                     View Recipe
                   </Button>

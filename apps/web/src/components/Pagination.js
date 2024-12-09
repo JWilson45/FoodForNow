@@ -1,4 +1,5 @@
 import Button from '@/components/Button';
+import PropTypes from 'prop-types';
 
 export default function Pagination({
   currentIndex,
@@ -15,7 +16,8 @@ export default function Pagination({
       <Button
         onClick={onPrevious}
         disabled={!canGoPrevious}
-        className={`px-4 py-2 bg-button-blue hover:bg-button-blue-hover text-white rounded-lg transition-colors ${
+        aria-disabled={!canGoPrevious}
+        className={`px-4 py-2 bg-button-blue hover:bg-button-blue-hover text-white rounded-lg transition-transform transform hover:scale-105 active:scale-100 shadow-custom hover:shadow-custom-hover ${
           !canGoPrevious ? 'opacity-50 cursor-not-allowed' : ''
         }`}
       >
@@ -24,7 +26,8 @@ export default function Pagination({
       <Button
         onClick={onNext}
         disabled={!canGoNext}
-        className={`px-4 py-2 bg-button-blue hover:bg-button-blue-hover text-white rounded-lg transition-colors ${
+        aria-disabled={!canGoNext}
+        className={`px-4 py-2 bg-button-blue hover:bg-button-blue-hover text-white rounded-lg transition-transform transform hover:scale-105 active:scale-100 shadow-custom hover:shadow-custom-hover ${
           !canGoNext ? 'opacity-50 cursor-not-allowed' : ''
         }`}
       >
@@ -33,3 +36,11 @@ export default function Pagination({
     </div>
   );
 }
+
+Pagination.propTypes = {
+  currentIndex: PropTypes.number.isRequired,
+  totalItems: PropTypes.number.isRequired,
+  itemsPerPage: PropTypes.number.isRequired,
+  onPrevious: PropTypes.func.isRequired,
+  onNext: PropTypes.func.isRequired,
+};

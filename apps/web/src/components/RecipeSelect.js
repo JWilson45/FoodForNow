@@ -1,6 +1,15 @@
+// /src/components/RecipeSelect.js
+
+'use client';
+
 import React from 'react';
-import SearchableDropdown from './SearchableDropdown';
+import dynamic from 'next/dynamic';
 import PropTypes from 'prop-types';
+
+const SearchableDropdown = dynamic(
+  () => import('./SearchableDropdown'),
+  { ssr: false } // Ensure it's only rendered on the client
+);
 
 /**
  * RecipeSelect Component
@@ -11,15 +20,11 @@ import PropTypes from 'prop-types';
  * @param {string} label - Label for the dropdown.
  */
 const RecipeSelect = ({ onSelect, required, name, label }) => {
-  const handleSelect = (selectedOption) => {
-    onSelect(selectedOption);
-  };
-
   return (
     <SearchableDropdown
       label={label || 'Select Recipe'}
       apiEndpoint="/recipes" // Specify the recipes endpoint
-      onChange={handleSelect}
+      onChange={onSelect}
       required={required}
       placeholder="Search for a recipe..."
       name={name}

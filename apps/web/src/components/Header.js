@@ -1,13 +1,20 @@
 'use client';
+
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 
 export default function Header() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(null); // Initialize as null
+
   useEffect(() => {
     const token = localStorage.getItem('authToken');
     setIsAuthenticated(!!token);
   }, []);
+
+  if (isAuthenticated === null) {
+    // Optionally, render a loading state or nothing to prevent mismatches
+    return null;
+  }
 
   return (
     <header className="bg-navbar-green">
@@ -16,6 +23,7 @@ export default function Header() {
           <Link href="/">Food For Now</Link>
         </div>
         <ul className="hidden md:flex gap-6">
+          {/* Common Links */}
           <li>
             <Link href="/" className="text-white text-base hover:underline">
               Home
@@ -61,6 +69,7 @@ export default function Header() {
               Cookbook
             </Link>
           </li>
+          {/* Conditional Links */}
           {!isAuthenticated ? (
             <>
               <li>
@@ -91,12 +100,12 @@ export default function Header() {
                 </Link>
               </li>
               <li>
-                <Link
-                  href="/logout"
+                <button
+                  onClick={handleLogout}
                   className="text-white text-base hover:underline"
                 >
                   Logout
-                </Link>
+                </button>
               </li>
             </>
           )}
@@ -104,4 +113,14 @@ export default function Header() {
       </nav>
     </header>
   );
+
+  function handleLogout() {
+    localStorage.removeItem('authToken');
+    setIsAuthenticated(false);
+    // Optionally, redirect or inform the server
+  }
 }
+
+Header.propTypes = {
+  // Define propTypes if there are any props passed to Header
+};
