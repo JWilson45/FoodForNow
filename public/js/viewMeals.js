@@ -62,27 +62,33 @@ export function initViewMeals() {
     card.classList.add('card');
 
     card.innerHTML = `
-        <h3>${meal.name}</h3>
-        <p><strong>Servings:</strong> ${meal.servings}</p>
-        <p><strong>Calories:</strong> ${meal.calories || 'N/A'}</p>
-        <p><strong>Meal Time:</strong> ${meal.mealTime || 'N/A'}</p>
-        <p><strong>Cuisine:</strong> ${meal.cuisine || 'N/A'}</p>
-        <p><strong>Tags:</strong> ${meal.tags && meal.tags.length > 0 ? meal.tags.join(', ') : 'None'}</p>
-        <p><strong>Is Vegetarian:</strong> ${meal.isVegetarian ? 'Yes' : 'No'}</p>
-        <p><strong>Is Vegan:</strong> ${meal.isVegan ? 'Yes' : 'No'}</p>
-        <p><strong>Description:</strong> ${meal.description || 'No description provided.'}</p>
-        <p><strong>Recipes:</strong></p>
-        <ul>
-          ${meal.recipes
-            .map(
-              (recipe) =>
-                `<li>${recipe.name} (Prep Time: ${recipe.prepTime} mins, Cook Time: ${recipe.cookTime} mins)</li>`
-            )
-            .join('')}
-        </ul>
-        <button class="editMealButton" data-meal-id="${meal.id}">Edit Meal</button>
-        <button class="deleteMealButton" data-meal-id="${meal.id}">Delete Meal</button>
-      `;
+          <h3>${meal.name}</h3>
+          <p><strong>Servings:</strong> ${meal.servings}</p>
+          <p><strong>Calories:</strong> ${meal.calories || 'N/A'}</p>
+          <p><strong>Meal Time:</strong> ${meal.mealTime || 'N/A'}</p>
+          <p><strong>Cuisine:</strong> ${meal.cuisine || 'N/A'}</p>
+          <p><strong>Tags:</strong> ${
+            meal.tags && meal.tags.length > 0 ? meal.tags.join(', ') : 'None'
+          }</p>
+          <p><strong>Is Vegetarian:</strong> ${
+            meal.isVegetarian ? 'Yes' : 'No'
+          }</p>
+          <p><strong>Is Vegan:</strong> ${meal.isVegan ? 'Yes' : 'No'}</p>
+          <p><strong>Description:</strong> ${
+            meal.description || 'No description provided.'
+          }</p>
+          <p><strong>Recipes:</strong></p>
+          <ul>
+            ${meal.recipes
+              .map(
+                (recipe) =>
+                  `<li>${recipe.name} (Prep Time: ${recipe.prepTime} mins, Cook Time: ${recipe.cookTime} mins)</li>`
+              )
+              .join('')}
+          </ul>
+          <button class="editMealButton" data-meal-id="${meal._id}">Edit Meal</button>
+          <button class="deleteMealButton" data-meal-id="${meal._id}">Delete Meal</button>
+        `;
 
     // Add event listener for "Edit Meal" button
     card.querySelector('.editMealButton').addEventListener('click', (event) => {
@@ -112,7 +118,7 @@ export function initViewMeals() {
             if (response.ok) {
               alert('Meal deleted successfully!');
               // Remove the meal from the local array and refresh display
-              meals = meals.filter((meal) => meal.id !== mealId);
+              meals = meals.filter((meal) => meal._id !== mealId);
               displayMeals();
             } else {
               const errorData = await response.json();

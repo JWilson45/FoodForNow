@@ -18,35 +18,30 @@ export function initEditMeal() {
     return;
   }
 
-  // Check if user is authenticated
-  const authToken = getAuthToken(); // Implement this function based on your auth method
-  if (!authToken) {
-    alert('You must be logged in to edit a meal.');
-    window.location.href = 'login.html';
-    return;
-  }
+  // Removed authentication token check since authToken is in HTTP-only cookie
 
   // Fetch meal details and recipes on page load
   Promise.all([
     fetch(`/api/meals/${mealId}`, {
       method: 'GET',
-      credentials: 'include',
+      credentials: 'include', // Include auth cookie in the request
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${authToken}`,
       },
     }),
     fetch('/api/recipes', {
       method: 'GET',
-      credentials: 'include',
+      credentials: 'include', // Include auth cookie in the request
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${authToken}`,
       },
     }),
   ])
     .then(async ([mealRes, recipesRes]) => {
       if (!mealRes.ok) {
+        if (mealRes.status === 401) {
+          throw new Error('Authentication required');
+        }
         throw new Error('Failed to fetch meal details');
       }
       if (!recipesRes.ok) {
@@ -62,8 +57,14 @@ export function initEditMeal() {
     })
     .catch((err) => {
       console.error('Error fetching data:', err);
-      alert('Error fetching meal details. Redirecting to meals page.');
-      window.location.href = 'viewMeals.html';
+      if (err.message === 'Authentication required') {
+        alert('You must be logged in to edit a meal.');
+        // Redirect to an existing login page or show a modal
+        window.location.href = 'login.html'; // Ensure this page exists
+      } else {
+        alert('Error fetching meal details. Redirecting to meals page.');
+        window.location.href = 'viewMeals.html';
+      }
     });
 
   function populateForm(meal) {
@@ -83,7 +84,7 @@ export function initEditMeal() {
     // Populate recipes
     if (meal.recipes && meal.recipes.length > 0) {
       meal.recipes.forEach((recipe) => {
-        addRecipeField(recipe.id);
+        addRecipeField(recipe.id); // Ensure 'recipe.id' is correct
       });
     } else {
       addRecipeField();
@@ -111,12 +112,12 @@ export function initEditMeal() {
     }
 
     recipeDiv.innerHTML = `
-        <label for="${selectId}">Recipe ${recipeCount}:</label>
-        <select id="${selectId}" name="recipes" required aria-required="true">
-          ${optionsHtml}
-        </select>
-        <button type="button" class="removeRecipeButton">Remove</button>
-      `;
+              <label for="${selectId}">Recipe ${recipeCount}:</label>
+              <select id="${selectId}" name="recipes" required aria-required="true">
+                ${optionsHtml}
+              </select>
+              <button type="button" class="removeRecipeButton">Remove</button>
+            `;
 
     recipesContainer.appendChild(recipeDiv);
 
@@ -202,11 +203,15 @@ export function initEditMeal() {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(data),
+          credentials: 'include', // Include auth cookie in the request
         });
 
         if (response.ok) {
           alert('Meal updated successfully!');
           window.location.href = 'viewMeals.html';
+        } else if (response.status === 401) {
+          alert('You must be logged in to edit a meal.');
+          window.location.href = 'login.html'; // Ensure this page exists
         } else {
           const errorData = await response.json();
           if (errorData.errors && Array.isArray(errorData.errors)) {
@@ -229,7 +234,4 @@ export function initEditMeal() {
   }
 }
 
-function getAuthToken() {
-  // Example: Retrieve token from localStorage
-  return localStorage.getItem('authToken');
-}
+// Removed getAuthToken function as it's not needed
