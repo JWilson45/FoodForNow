@@ -23,12 +23,12 @@ export function initCreateMeal() {
     })
     .then((data) => {
       allRecipes = data.recipes || [];
-      // Initialize with one recipe field
+      // Initialize with one recipe select
       addRecipeField();
     })
     .catch((err) => {
       console.error('Error fetching recipes:', err);
-      // If there's an error, still add fields but without dropdown functionality
+      // If there's an error, still add fields but with no options
       addRecipeField();
     });
 
@@ -36,40 +36,27 @@ export function initCreateMeal() {
     addRecipeField();
   });
 
-  function addRecipeField() {
+  function addRecipeField(existingRecipeId = null) {
     recipeCount++;
     const recipeDiv = document.createElement('div');
     recipeDiv.classList.add('recipe-item');
 
-    // Create a unique datalist id
-    const datalistId = `recipesDatalist${recipeCount}`;
+    // Create the select element
+    const selectId = `recipeSelect${recipeCount}`;
+    let optionsHtml = `<option value="">Select a recipe</option>`;
+    allRecipes.forEach((recipe) => {
+      optionsHtml += `<option value="${recipe._id}">${recipe.name}</option>`;
+    });
 
-    // Construct the datalist options from the fetched recipes
-    let optionsHtml = allRecipes
-      .map(
-        (recipe) =>
-          `<option data-id="${recipe.id}" value="${recipe.name}"></option>`
-      )
-      .join('');
+    if (existingRecipeId) {
+      optionsHtml += `<option value="${existingRecipeId}" selected hidden></option>`;
+    }
 
     recipeDiv.innerHTML = `
-        <label for="recipeName${recipeCount}">Recipe ${recipeCount}:</label>
-        <input
-          type="text"
-          id="recipeName${recipeCount}"
-          name="recipeNames"
-          placeholder="Start typing recipe name..."
-          list="${datalistId}"
-          required
-          aria-required="true"
-        />
-        <datalist id="${datalistId}">
+        <label for="${selectId}">Recipe ${recipeCount}:</label>
+        <select id="${selectId}" name="recipes" required aria-required="true">
           ${optionsHtml}
-        </datalist>
-  
-        <!-- Hidden field to store the recipe ID after selection -->
-        <input type="hidden" name="recipeIds" id="recipeIdHidden${recipeCount}" />
-  
+        </select>
         <button type="button" class="removeRecipeButton">Remove</button>
       `;
 
@@ -81,25 +68,11 @@ export function initCreateMeal() {
       .addEventListener('click', () => {
         recipesContainer.removeChild(recipeDiv);
       });
+  }
 
-    // Attach an event to update hidden ID when the user picks a recipe
-    const recipeNameInput = recipeDiv.querySelector(
-      `input[name="recipeNames"]`
-    );
-    recipeNameInput.addEventListener('input', () => {
-      const val = recipeNameInput.value.toLowerCase();
-      const matchedRecipe = allRecipes.find(
-        (rec) => rec.name.toLowerCase() === val
-      );
-      const hiddenIdField = recipeDiv.querySelector(
-        `#recipeIdHidden${recipeCount}`
-      );
-      if (matchedRecipe) {
-        hiddenIdField.value = matchedRecipe.id;
-      } else {
-        hiddenIdField.value = '';
-      }
-    });
+  // Function to validate if a string is a valid ObjectId (24 hex characters)
+  function isValidObjectId(id) {
+    return /^[a-fA-F0-9]{24}$/.test(id);
   }
 
   // Handle form submission
@@ -111,15 +84,26 @@ export function initCreateMeal() {
 
       // Collect recipes
       const recipes = [];
-      const recipeItems = recipesContainer.querySelectorAll('.recipe-item');
-      recipeItems.forEach((item) => {
-        const recipeId = item
-          .querySelector(`input[name="recipeIds"]`)
-          .value.trim();
-        if (recipeId) {
+      const recipeSelects = recipesContainer.querySelectorAll(
+        'select[name="recipes"]'
+      );
+      let invalidRecipes = false;
+
+      recipeSelects.forEach((select, index) => {
+        const recipeId = select.value.trim();
+
+        if (!recipeId || !isValidObjectId(recipeId)) {
+          alert(`Recipe ${index + 1} is invalid or not selected correctly.`);
+          invalidRecipes = true;
+        } else {
           recipes.push(recipeId);
         }
       });
+
+      if (invalidRecipes) {
+        // Prevent form submission if any recipe is invalid
+        return;
+      }
 
       const data = {
         name: formData.get('name').trim(),
@@ -141,17 +125,17 @@ export function initCreateMeal() {
         cuisine: formData.get('cuisine') || undefined,
       };
 
-      // Validate required fields
+      // Additional front-end validation
       if (!data.name) {
         alert('Please provide a name for the meal.');
         return;
       }
-      if (data.servings < 1 || isNaN(data.servings)) {
+      if (isNaN(data.servings) || data.servings < 1) {
         alert('Please provide a valid number of servings.');
         return;
       }
       if (recipes.length === 0) {
-        alert('Please add at least one recipe.');
+        alert('Please add at least one valid recipe.');
         return;
       }
 

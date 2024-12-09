@@ -18,6 +18,14 @@ export function initEditMeal() {
     return;
   }
 
+  // Check if user is authenticated
+  const authToken = getAuthToken(); // Implement this function based on your auth method
+  if (!authToken) {
+    alert('You must be logged in to edit a meal.');
+    window.location.href = 'login.html';
+    return;
+  }
+
   // Fetch meal details and recipes on page load
   Promise.all([
     fetch(`/api/meals/${mealId}`, {
@@ -25,6 +33,7 @@ export function initEditMeal() {
       credentials: 'include',
       headers: {
         'Content-Type': 'application/json',
+        Authorization: `Bearer ${authToken}`,
       },
     }),
     fetch('/api/recipes', {
@@ -32,6 +41,7 @@ export function initEditMeal() {
       credentials: 'include',
       headers: {
         'Content-Type': 'application/json',
+        Authorization: `Bearer ${authToken}`,
       },
     }),
   ])
@@ -73,7 +83,7 @@ export function initEditMeal() {
     // Populate recipes
     if (meal.recipes && meal.recipes.length > 0) {
       meal.recipes.forEach((recipe) => {
-        addRecipeField(recipe);
+        addRecipeField(recipe.id);
       });
     } else {
       addRecipeField();
@@ -84,45 +94,27 @@ export function initEditMeal() {
     addRecipeField();
   });
 
-  function addRecipeField(existingRecipe = null) {
+  function addRecipeField(existingRecipeId = null) {
     recipeCount++;
     const recipeDiv = document.createElement('div');
     recipeDiv.classList.add('recipe-item');
 
-    // Create a unique datalist id
-    const datalistId = `recipesDatalist${recipeCount}`;
+    // Create the select element
+    const selectId = `recipeSelect${recipeCount}`;
+    let optionsHtml = `<option value="">Select a recipe</option>`;
+    allRecipes.forEach((recipe) => {
+      optionsHtml += `<option value="${recipe._id}">${recipe.name}</option>`;
+    });
 
-    // Construct the datalist options from the fetched recipes
-    let optionsHtml = allRecipes
-      .map(
-        (recipe) =>
-          `<option data-id="${recipe.id}" value="${recipe.name}"></option>`
-      )
-      .join('');
-
-    const selectedRecipe = existingRecipe
-      ? allRecipes.find((rec) => rec.id === existingRecipe.id)
-      : null;
+    if (existingRecipeId) {
+      optionsHtml += `<option value="${existingRecipeId}" selected hidden></option>`;
+    }
 
     recipeDiv.innerHTML = `
-        <label for="recipeName${recipeCount}">Recipe ${recipeCount}:</label>
-        <input
-          type="text"
-          id="recipeName${recipeCount}"
-          name="recipeNames"
-          placeholder="Start typing recipe name..."
-          list="${datalistId}"
-          required
-          aria-required="true"
-          value="${selectedRecipe ? selectedRecipe.name : ''}"
-        />
-        <datalist id="${datalistId}">
+        <label for="${selectId}">Recipe ${recipeCount}:</label>
+        <select id="${selectId}" name="recipes" required aria-required="true">
           ${optionsHtml}
-        </datalist>
-  
-        <!-- Hidden field to store the recipe ID after selection -->
-        <input type="hidden" name="recipeIds" id="recipeIdHidden${recipeCount}" value="${selectedRecipe ? selectedRecipe.id : ''}" />
-  
+        </select>
         <button type="button" class="removeRecipeButton">Remove</button>
       `;
 
@@ -134,25 +126,11 @@ export function initEditMeal() {
       .addEventListener('click', () => {
         recipesContainer.removeChild(recipeDiv);
       });
+  }
 
-    // Attach an event to update hidden ID when the user picks a recipe
-    const recipeNameInput = recipeDiv.querySelector(
-      `input[name="recipeNames"]`
-    );
-    recipeNameInput.addEventListener('input', () => {
-      const val = recipeNameInput.value.toLowerCase();
-      const matchedRecipe = allRecipes.find(
-        (rec) => rec.name.toLowerCase() === val
-      );
-      const hiddenIdField = recipeDiv.querySelector(
-        `#recipeIdHidden${recipeCount}`
-      );
-      if (matchedRecipe) {
-        hiddenIdField.value = matchedRecipe.id;
-      } else {
-        hiddenIdField.value = '';
-      }
-    });
+  // Function to validate if a string is a valid ObjectId (24 hex characters)
+  function isValidObjectId(id) {
+    return /^[a-fA-F0-9]{24}$/.test(id);
   }
 
   // Handle form submission
@@ -164,15 +142,26 @@ export function initEditMeal() {
 
       // Collect recipes
       const recipes = [];
-      const recipeItems = recipesContainer.querySelectorAll('.recipe-item');
-      recipeItems.forEach((item) => {
-        const recipeId = item
-          .querySelector(`input[name="recipeIds"]`)
-          .value.trim();
-        if (recipeId) {
+      const recipeSelects = recipesContainer.querySelectorAll(
+        'select[name="recipes"]'
+      );
+      let invalidRecipes = false;
+
+      recipeSelects.forEach((select, index) => {
+        const recipeId = select.value.trim();
+
+        if (!recipeId || !isValidObjectId(recipeId)) {
+          alert(`Recipe ${index + 1} is invalid or not selected correctly.`);
+          invalidRecipes = true;
+        } else {
           recipes.push(recipeId);
         }
       });
+
+      if (invalidRecipes) {
+        // Prevent form submission if any recipe is invalid
+        return;
+      }
 
       const data = {
         name: formData.get('name').trim(),
@@ -199,7 +188,7 @@ export function initEditMeal() {
         alert('Please provide a name for the meal.');
         return;
       }
-      if (data.servings < 1 || isNaN(data.servings)) {
+      if (isNaN(data.servings) || data.servings < 1) {
         alert('Please provide a valid number of servings.');
         return;
       }
@@ -238,4 +227,9 @@ export function initEditMeal() {
       }
     });
   }
+}
+
+function getAuthToken() {
+  // Example: Retrieve token from localStorage
+  return localStorage.getItem('authToken');
 }
