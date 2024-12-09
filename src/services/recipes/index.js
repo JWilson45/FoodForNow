@@ -1,10 +1,8 @@
-// recipes
-const Recipe = require('../database/models/recipe'); // Importing the Recipe model
+const Recipe = require('../database/models/recipe');
 
-// Controller function to create a new recipe
+// Create a new recipe
 const createRecipe = async (req, res) => {
   try {
-    // Destructure the data from the request body (already validated in the route)
     const {
       name,
       alias,
@@ -22,7 +20,6 @@ const createRecipe = async (req, res) => {
       tags,
     } = req.body;
 
-    // Create a new instance of the Recipe model with the data
     const newRecipe = new Recipe({
       owner: req.user.userId,
       name,
@@ -41,109 +38,143 @@ const createRecipe = async (req, res) => {
       tags,
     });
 
-    // Save the recipe instance to the database
     await newRecipe.save();
 
-    // Return a successful response with the created recipe's data
     res.status(201).json({
       message: 'Recipe created successfully',
       recipe: {
-        id: newRecipe._id, // Return the recipe's ID
-        name: newRecipe.name, // Return the recipe's name
-        alias: newRecipe.alias,
-        description: newRecipe.description,
-        instructions: newRecipe.instructions,
-        ingredients: newRecipe.ingredients,
-        isPublic: newRecipe.isPublic,
-        type: newRecipe.type,
-        mealTime: newRecipe.mealTime,
-        cuisine: newRecipe.cuisine,
-        servings: newRecipe.servings,
-        prepTime: newRecipe.prepTime,
-        cookTime: newRecipe.cookTime,
-        calories: newRecipe.calories,
-        tags: newRecipe.tags,
-        totalTime: newRecipe.totalTime, // Include the virtual field
-        createdAt: newRecipe.createdAt,
-        updatedAt: newRecipe.updatedAt,
+        ...newRecipe.toObject(),
+        id: newRecipe._id,
+        totalTime: newRecipe.totalTime,
       },
     });
   } catch (error) {
-    // Handle specific errors
     if (error.code === 11000) {
-      // MongoDB duplicate key error (unique field conflict)
-      return res.status(409).json({
-        error: 'Recipe already exists',
-        keyPattern: error.keyPattern, // Return the specific key that caused the conflict
-      });
+      return res
+        .status(409)
+        .json({ error: 'Recipe already exists', keyPattern: error.keyPattern });
     }
 
-    // Handle Mongoose validation errors
     if (error.name === 'ValidationError') {
-      return res.status(400).json({ error: error.message }); // Return the validation error message
+      return res.status(400).json({ error: error.message });
     }
 
-    // General error handling for other unexpected issues
-    console.error(error); // Log the error for debugging purposes
-    res.status(500).json({
-      error: 'An unexpected error occurred while creating the recipe',
-    });
+    console.error(error);
+    res
+      .status(500)
+      .json({
+        error: 'An unexpected error occurred while creating the recipe',
+      });
   }
 };
 
-// Function to get recipes for a specific user
+// Get all recipes for the authenticated user
 const getUserRecipes = async (req, res) => {
   try {
-    // Extract the userId from the authenticated request
     const userId = req.user.userId;
-
-    // Fetch recipes owned by this user from the database
     const recipes = await Recipe.find({ owner: userId });
 
-    // Return the recipes in the response
     res.status(200).json({
       message: 'Recipes fetched successfully',
       recipes,
     });
   } catch (error) {
     console.error('Error fetching user recipes:', error);
-
-    // Handle unexpected errors
-    res.status(500).json({
-      error: 'An error occurred while fetching the recipes',
-    });
+    res
+      .status(500)
+      .json({ error: 'An error occurred while fetching the recipes' });
   }
 };
 
-// Controller function to get a recipe by its ID
+// Get a single recipe by ID (ownership enforced)
 const getRecipe = async (req, res) => {
   try {
-    // Extract the recipe ID from the route parameters
     const { id } = req.params;
+    const userId = req.user.userId;
 
-    // Find the recipe by its ID
-    const recipe = await Recipe.findById(id);
-
-    // If the recipe is not found, return a 404 status
+    const recipe = await Recipe.findOne({ _id: id, owner: userId });
     if (!recipe) {
-      return res.status(404).json({
-        error: 'Recipe not found',
-      });
+      return res
+        .status(404)
+        .json({ error: 'Recipe not found or not authorized' });
     }
 
-    // Return the found recipe
     res.status(200).json({
       message: 'Recipe fetched successfully',
       recipe,
     });
   } catch (error) {
     console.error('Error fetching recipe:', error);
-
-    // Return a generic 500 error response for any unexpected errors
-    res.status(500).json({
-      error: 'An error occurred while fetching the recipe',
-    });
+    res
+      .status(500)
+      .json({ error: 'An error occurred while fetching the recipe' });
   }
 };
 
-module.exports = { createRecipe, getUserRecipes, getRecipe };
+// Update a recipe (ownership enforced)
+const updateRecipe = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const userId = req.user.userId;
+    const updateData = req.body;
+
+    const updatedRecipe = await Recipe.findOneAndUpdate(
+      { _id: id, owner: userId },
+      { $set: updateData },
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedRecipe) {
+      return res
+        .status(404)
+        .json({ error: 'Recipe not found or not authorized' });
+    }
+
+    res.status(200).json({
+      message: 'Recipe updated successfully',
+      recipe: updatedRecipe.toObject(),
+    });
+  } catch (error) {
+    console.error('Error updating recipe:', error);
+    if (error.name === 'ValidationError') {
+      return res.status(400).json({ error: error.message });
+    }
+
+    res
+      .status(500)
+      .json({ error: 'An error occurred while updating the recipe' });
+  }
+};
+
+// Delete a recipe (ownership enforced)
+const deleteRecipe = async (req, res) => {
+  try {
+    const userId = req.user.userId;
+    const { id } = req.params;
+
+    const deletedRecipe = await Recipe.findOneAndDelete({
+      _id: id,
+      owner: userId,
+    });
+    if (!deletedRecipe) {
+      return res
+        .status(404)
+        .json({ error: 'Recipe not found or not authorized' });
+    }
+
+    res.status(200).json({ message: 'Recipe deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting recipe:', error);
+    res
+      .status(500)
+      .json({ error: 'An error occurred while deleting the recipe' });
+  }
+};
+
+module.exports = {
+  createRecipe,
+  getUserRecipes,
+  getRecipe,
+  updateRecipe,
+  deleteRecipe,
+};

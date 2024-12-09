@@ -1,48 +1,53 @@
-// Import the Express framework
 const express = require('express');
 const {
   createRecipe,
   getUserRecipes,
   getRecipe,
+  updateRecipe,
+  deleteRecipe,
 } = require('../../services/recipes');
 const {
   createRecipeValidationSchema,
-  getUserRecipesValidationSchema,
   getRecipeValidationSchema,
+  updateRecipeValidationSchema,
 } = require('./validator');
 const validate = require('../../middleware/validate');
 
-// Create a new router instance for handling recipe-related routes
 const recipeRouter = express.Router();
 
-// GET route to fetch recipes for a specific user (validates params if provided)
-// recipeRouter.get(
-//   '/user/:userId',
-//   validate(getUserRecipesValidationSchema, 'params'),
-//   getSpecificUserRecipes
-// );
+// GET all recipes for authenticated user (no validation needed for this GET)
+recipeRouter.get('/', getUserRecipes);
 
-recipeRouter.get(
-  '/',
-  validate(getUserRecipesValidationSchema, 'params'),
-  getUserRecipes
-);
-
-// POST route to create a new recipe (validates the body)
+// CREATE recipe
 recipeRouter.post(
   '/',
   validate(createRecipeValidationSchema, 'body'),
   createRecipe
 );
 
-// New route for fetching a single recipe by ID (via query param)
+// GET recipe by ID
 recipeRouter.get(
   '/:id',
-  validate(getRecipeValidationSchema, 'params'), // Validate query params
+  validate(getRecipeValidationSchema, 'params'),
   getRecipe
 );
 
-// Catch-all route for the base '/'
+// UPDATE recipe by ID
+recipeRouter.put(
+  '/:id',
+  validate(getRecipeValidationSchema, 'params'),
+  validate(updateRecipeValidationSchema, 'body'),
+  updateRecipe
+);
+
+// DELETE recipe by ID
+recipeRouter.delete(
+  '/:id',
+  validate(getRecipeValidationSchema, 'params'),
+  deleteRecipe
+);
+
+// Catch-all
 recipeRouter.all('/', async (_, res) => {
   res.status(200).send('recipes!');
 });

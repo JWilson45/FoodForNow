@@ -178,8 +178,38 @@ const getRecipeValidationSchema = Joi.object({
     }),
 });
 
+const updateRecipeValidationSchema = Joi.object({
+  name: Joi.string().optional().trim(),
+  alias: Joi.string().optional().trim(),
+  description: Joi.string().optional().trim().max(1000),
+  instructions: Joi.array()
+    .items(Joi.string().trim().optional())
+    .min(1)
+    .optional(),
+  ingredients: Joi.array()
+    .items(recipeIngredientValidationSchema)
+    .min(1)
+    .optional(),
+  isPublic: Joi.boolean().optional(),
+  type: Joi.string().optional().trim(),
+  mealTime: Joi.string()
+    .optional()
+    .trim()
+    .valid('breakfast', 'lunch', 'dinner', 'snack', 'dessert'),
+  cuisine: Joi.string()
+    .optional()
+    .trim()
+    .valid('italian', 'chinese', 'mexican', 'indian', 'american', 'other'),
+  servings: Joi.number().optional(),
+  prepTime: Joi.number().optional(),
+  cookTime: Joi.number().optional(),
+  calories: Joi.number().optional(),
+  tags: Joi.array().items(Joi.string().trim().optional()).optional(),
+});
+
 module.exports = {
   createRecipeValidationSchema,
   getUserRecipesValidationSchema,
   getRecipeValidationSchema,
+  updateRecipeValidationSchema,
 };

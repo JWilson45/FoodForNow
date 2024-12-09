@@ -1,12 +1,10 @@
-const Ingredient = require('../database/models/ingredient'); // Importing the Ingredient model
+const Ingredient = require('../database/models/ingredient');
 
-// Controller function to create a new ingredient
+// Create a new ingredient
 const createIngredient = async (req, res) => {
   try {
-    // Destructure the validated data from the request body
     const { name, description, calories, image, nutritionalInfo } = req.body;
 
-    // Create a new instance of the Ingredient model with the validated data
     const newIngredient = new Ingredient({
       name,
       description,
@@ -16,10 +14,8 @@ const createIngredient = async (req, res) => {
       createdBy: req.user.userId,
     });
 
-    // Save the ingredient instance to the database
     await newIngredient.save();
 
-    // Return a successful response with the created ingredient's data
     res.status(201).json({
       message: 'Ingredient created successfully',
       ingredient: {
@@ -33,7 +29,6 @@ const createIngredient = async (req, res) => {
       },
     });
   } catch (error) {
-    // Handle duplicate key error
     if (error.code === 11000) {
       return res.status(409).json({
         error: 'Ingredient already exists',
@@ -41,12 +36,10 @@ const createIngredient = async (req, res) => {
       });
     }
 
-    // Handle Mongoose validation errors
     if (error.name === 'ValidationError') {
       return res.status(400).json({ error: error.message });
     }
 
-    // General error handling
     console.error(error);
     res.status(500).json({
       error: 'An unexpected error occurred while creating the ingredient',
@@ -59,7 +52,6 @@ const getIngredients = async (_, res) => {
   try {
     const ingredients = await Ingredient.find({}).lean();
 
-    // Return all ingredients as a JSON response
     res.status(200).json({ ingredients });
   } catch (error) {
     console.error('Error fetching ingredients:', error);
@@ -69,4 +61,59 @@ const getIngredients = async (_, res) => {
   }
 };
 
-module.exports = { createIngredient, getIngredients };
+// Get a single ingredient by ID (no ownership enforced)
+const getIngredientById = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const ingredient = await Ingredient.findById(id);
+    if (!ingredient) {
+      return res.status(404).json({ error: 'Ingredient not found' });
+    }
+
+    res.status(200).json({ ingredient });
+  } catch (error) {
+    console.error('Error fetching ingredient:', error);
+    res
+      .status(500)
+      .json({ error: 'An error occurred while fetching the ingredient' });
+  }
+};
+
+// Update an ingredient (no ownership enforced)
+const updateIngredient = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updateData = req.body;
+
+    const updatedIngredient = await Ingredient.findByIdAndUpdate(
+      id,
+      { $set: updateData },
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedIngredient) {
+      return res.status(404).json({ error: 'Ingredient not found' });
+    }
+
+    res.status(200).json({
+      message: 'Ingredient updated successfully',
+      ingredient: updatedIngredient,
+    });
+  } catch (error) {
+    console.error('Error updating ingredient:', error);
+    if (error.name === 'ValidationError') {
+      return res.status(400).json({ error: error.message });
+    }
+    res
+      .status(500)
+      .json({ error: 'An error occurred while updating the ingredient' });
+  }
+};
+
+module.exports = {
+  createIngredient,
+  getIngredients,
+  getIngredientById,
+  updateIngredient,
+};
