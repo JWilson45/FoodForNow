@@ -3,7 +3,7 @@
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const morgan = require('morgan');
-// const helmet = require('helmet'); // Uncomment for enhanced security
+// const helmet = require('helmet');
 
 const routes = require('./routes');
 const errorHandler = require('./middleware/errorHandler');
@@ -12,7 +12,7 @@ const connectDB = require('./services/database');
 const app = express();
 
 // Security Middlewares
-// app.use(helmet()); // Uncomment to enable Helmet for setting various HTTP headers
+// app.use(helmet());
 
 // Logging Middleware
 app.use(
@@ -45,11 +45,6 @@ app.use(errorHandler);
 // Start Server after Database Connection
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, async () => {
-  try {
-    await connectDB(); // Ensure database is connected before starting the server
-    console.log(`Server is running on port ${PORT}`);
-  } catch (error) {
-    console.error('Failed to connect to the database:', error);
-    process.exit(1); // Exit process with failure
-  }
+  await connectDB(); // Ensure database is connected before starting the server
+  console.log(`Server is running on port ${PORT}`);
 });
