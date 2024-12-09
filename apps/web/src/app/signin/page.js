@@ -1,6 +1,7 @@
 'use client';
 import Head from 'next/head';
 import { useState } from 'react';
+import config from '@/config';
 import Button from '@/components/Button';
 import Label from '@/components/Label';
 import Input from '@/components/Input';
@@ -12,6 +13,9 @@ export default function SignInPage() {
     password: '',
     showPassword: false,
   });
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData((prev) => ({
@@ -19,9 +23,38 @@ export default function SignInPage() {
       [name]: type === 'checkbox' ? checked : value,
     }));
   };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // Sign-in logic
+    setLoading(true);
+    setError('');
+
+    try {
+      const response = await fetch(`${config.apiBaseUrl}/users/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          username: formData.username,
+          password: formData.password,
+        }),
+        credentials: 'include',
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        alert('Sign-in successful');
+        window.location.href = '/'; // Redirect to home or dashboard page
+      } else {
+        const errorData = await response.json();
+        setError(errorData.error || 'Failed to sign in');
+      }
+    } catch (err) {
+      setError('An unexpected error occurred. Please try again later.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -35,6 +68,11 @@ export default function SignInPage() {
           <h2 className="text-2xl font-bold mb-6 text-center text-white">
             Sign In
           </h2>
+          {error && (
+            <div className="p-3 mb-4 text-red-500 bg-red-100 rounded-lg">
+              {error}
+            </div>
+          )}
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <Label htmlFor="username">Username:</Label>
@@ -66,8 +104,8 @@ export default function SignInPage() {
               onChange={handleChange}
               label="Show Password"
             />
-            <Button type="submit" className="w-full">
-              Enter
+            <Button type="submit" className="w-full" disabled={loading}>
+              {loading ? 'Signing in...' : 'Enter'}
             </Button>
           </form>
         </section>

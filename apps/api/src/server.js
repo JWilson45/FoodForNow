@@ -3,7 +3,7 @@
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const morgan = require('morgan');
-// const helmet = require('helmet');
+const cors = require('cors'); // Import CORS
 
 const routes = require('./routes');
 const errorHandler = require('./middleware/errorHandler');
@@ -11,8 +11,14 @@ const connectDB = require('./services/database');
 
 const app = express();
 
-// Security Middlewares
-// app.use(helmet());
+// CORS Configuration
+const corsOptions = {
+  origin: 'http://localhost:3000', // Allow requests from Next.js frontend
+  credentials: true, // Allow credentials (cookies, etc.)
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Allowed methods
+  allowedHeaders: ['Content-Type', 'Authorization'], // Allowed headers
+};
+app.use(cors(corsOptions)); // Enable CORS with the specified options
 
 // Logging Middleware
 app.use(
