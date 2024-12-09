@@ -1,0 +1,2400 @@
+{
+  "base_url": "https://yourdomain.com/api",
+  "resources": {
+    "Users": {
+      "endpoints": [
+        {
+          "method": "POST",
+          "path": "/users/",
+          "description": "Register a new user account.",
+          "authentication": "None",
+          "request": {
+            "headers": {
+              "Content-Type": "application/json"
+            },
+            "body": {
+              "firstName": "string (required)",
+              "lastName": "string",
+              "username": "string (required, min 3, max 30)",
+              "password": "string (required, min 8)",
+              "email": "string (required, valid email format)",
+              "dateOfBirth": "date",
+              "phoneNumber": "string (optional, 10 digits)",
+              "profilePicture": "binary (optional)"
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "User created successfully.",
+              "body": {
+                "message": "User created successfully",
+                "user": {
+                  "id": "string",
+                  "fullName": "string",
+                  "email": "string (masked)",
+                  "recentlyLoggedIn": "boolean",
+                  "isActive": "boolean",
+                  "username": "string"
+                }
+              }
+            },
+            "409": {
+              "description": "User already exists.",
+              "body": {
+                "error": "User Already Exists",
+                "keyPattern": {
+                  "username": 1
+                }
+              }
+            },
+            "400": {
+              "description": "Validation error.",
+              "body": {
+                "errors": [
+                  {
+                    "field": "string",
+                    "message": "string"
+                  }
+                ]
+              }
+            },
+            "500": {
+              "description": "Internal server error.",
+              "body": {
+                "error": "An unexpected error occurred while creating the user"
+              }
+            }
+          }
+        },
+        {
+          "method": "POST",
+          "path": "/users/login",
+          "description": "Authenticate a user and initiate a session.",
+          "authentication": "None",
+          "request": {
+            "headers": {
+              "Content-Type": "application/json"
+            },
+            "body": {
+              "username": "string (required, min 3, max 30)",
+              "password": "string (required, min 8)"
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Sign-in successful.",
+              "body": {
+                "message": "Sign-in successful",
+                "user": {
+                  "id": "string",
+                  "fullName": "string",
+                  "email": "string (masked)",
+                  "recentlyLoggedIn": "boolean",
+                  "isActive": "boolean",
+                  "username": "string"
+                }
+              },
+              "cookies": {
+                "authToken": "JWT token (HTTP-only, Secure, SameSite)"
+              }
+            },
+            "401": {
+              "description": "Invalid credentials.",
+              "body": {
+                "error": "Invalid username or password"
+              }
+            },
+            "404": {
+              "description": "User not found.",
+              "body": {
+                "error": "Invalid username or password"
+              }
+            },
+            "500": {
+              "description": "Internal server error.",
+              "body": {
+                "error": "Internal server error"
+              }
+            }
+          }
+        },
+        {
+          "method": "GET",
+          "path": "/users/:id",
+          "description": "Retrieve details of a specific user.",
+          "authentication": "Required",
+          "request": {
+            "headers": {
+              "Authorization": "Bearer <JWT_TOKEN>"
+            },
+            "params": {
+              "id": "string (User ID, required)"
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "User details retrieved successfully.",
+              "body": {
+                "user": {
+                  "id": "string",
+                  "fullName": "string",
+                  "email": "string (masked)",
+                  "recentlyLoggedIn": "boolean",
+                  "isActive": "boolean",
+                  "username": "string",
+                  "formattedDOB": "string",
+                  "obfuscatedPhoneNumber": "string",
+                  "profilePicture": "binary or URL",
+                  "accountAge": "number (days)"
+                }
+              }
+            },
+            "401": {
+              "description": "Authentication required.",
+              "body": {
+                "error": "Authentication required"
+              }
+            },
+            "404": {
+              "description": "User not found.",
+              "body": {
+                "error": "User not found"
+              }
+            },
+            "500": {
+              "description": "Internal server error.",
+              "body": {
+                "error": "An error occurred while retrieving user details"
+              }
+            }
+          }
+        },
+        {
+          "method": "PUT",
+          "path": "/users/:id",
+          "description": "Update details of a specific user.",
+          "authentication": "Required",
+          "request": {
+            "headers": {
+              "Authorization": "Bearer <JWT_TOKEN>",
+              "Content-Type": "application/json"
+            },
+            "params": {
+              "id": "string (User ID, required)"
+            },
+            "body": {
+              "firstName": "string (optional)",
+              "lastName": "string (optional)",
+              "email": "string (optional, valid email format)",
+              "phoneNumber": "string (optional, 10 digits)",
+              "profilePicture": "binary (optional)"
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "User updated successfully.",
+              "body": {
+                "message": "User updated successfully",
+                "user": {
+                  "id": "string",
+                  "fullName": "string",
+                  "email": "string (masked)",
+                  "recentlyLoggedIn": "boolean",
+                  "isActive": "boolean",
+                  "username": "string"
+                }
+              }
+            },
+            "400": {
+              "description": "Validation error.",
+              "body": {
+                "errors": [
+                  {
+                    "field": "string",
+                    "message": "string"
+                  }
+                ]
+              }
+            },
+            "401": {
+              "description": "Authentication required.",
+              "body": {
+                "error": "Authentication required"
+              }
+            },
+            "404": {
+              "description": "User not found or not authorized.",
+              "body": {
+                "error": "User not found or not authorized"
+              }
+            },
+            "500": {
+              "description": "Internal server error.",
+              "body": {
+                "error": "An error occurred while updating the user"
+              }
+            }
+          }
+        },
+        {
+          "method": "DELETE",
+          "path": "/users/:id",
+          "description": "Delete a specific user account.",
+          "authentication": "Required",
+          "request": {
+            "headers": {
+              "Authorization": "Bearer <JWT_TOKEN>"
+            },
+            "params": {
+              "id": "string (User ID, required)"
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "User deleted successfully.",
+              "body": {
+                "message": "User deleted successfully"
+              }
+            },
+            "401": {
+              "description": "Authentication required.",
+              "body": {
+                "error": "Authentication required"
+              }
+            },
+            "404": {
+              "description": "User not found or not authorized.",
+              "body": {
+                "error": "User not found or not authorized"
+              }
+            },
+            "500": {
+              "description": "Internal server error.",
+              "body": {
+                "error": "An error occurred while deleting the user"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "Ingredients": {
+      "endpoints": [
+        {
+          "method": "POST",
+          "path": "/ingredients/",
+          "description": "Create a new ingredient.",
+          "authentication": "Required",
+          "request": {
+            "headers": {
+              "Authorization": "Bearer <JWT_TOKEN>",
+              "Content-Type": "application/json"
+            },
+            "body": {
+              "name": "string (required, unique, lowercase)",
+              "description": "string (optional)",
+              "calories": "number (optional)",
+              "image": "binary (optional)", // Or string (URL)
+              "nutritionalInfo": {
+                "fat": "number (optional)",
+                "protein": "number (optional)",
+                "carbohydrates": "number (optional)",
+                "fiber": "number (optional)"
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "Ingredient created successfully.",
+              "body": {
+                "message": "Ingredient created successfully",
+                "ingredient": {
+                  "id": "string",
+                  "name": "string",
+                  "description": "string",
+                  "calories": "number",
+                  "nutritionalInfo": {
+                    "fat": "number",
+                    "protein": "number",
+                    "carbohydrates": "number",
+                    "fiber": "number"
+                  },
+                  "createdAt": "ISODate",
+                  "updatedAt": "ISODate"
+                }
+              }
+            },
+            "409": {
+              "description": "Ingredient already exists.",
+              "body": {
+                "error": "Ingredient already exists",
+                "keyPattern": {
+                  "name": 1
+                }
+              }
+            },
+            "400": {
+              "description": "Validation errors.",
+              "body": {
+                "error": "Error message"
+              }
+            },
+            "401": {
+              "description": "Authentication required.",
+              "body": {
+                "error": "Authentication required"
+              }
+            },
+            "500": {
+              "description": "Internal server error.",
+              "body": {
+                "error": "An unexpected error occurred while creating the ingredient"
+              }
+            }
+          }
+        },
+        {
+          "method": "GET",
+          "path": "/ingredients/",
+          "description": "Retrieve all ingredients.",
+          "authentication": "Required",
+          "request": {
+            "headers": {
+              "Authorization": "Bearer <JWT_TOKEN>"
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "List of all ingredients.",
+              "body": {
+                "ingredients": [
+                  {
+                    "id": "string",
+                    "name": "string",
+                    "description": "string",
+                    "calories": "number",
+                    "nutritionalInfo": {
+                      "fat": "number",
+                      "protein": "number",
+                      "carbohydrates": "number",
+                      "fiber": "number"
+                    },
+                    "createdAt": "ISODate",
+                    "updatedAt": "ISODate"
+                  }
+                  // More ingredients...
+                ]
+              }
+            },
+            "401": {
+              "description": "Authentication required.",
+              "body": {
+                "error": "Authentication required"
+              }
+            },
+            "500": {
+              "description": "Internal server error.",
+              "body": {
+                "error": "An error occurred while fetching the ingredients"
+              }
+            }
+          }
+        },
+        {
+          "method": "GET",
+          "path": "/ingredients/:id",
+          "description": "Retrieve a specific ingredient by ID.",
+          "authentication": "Required",
+          "request": {
+            "headers": {
+              "Authorization": "Bearer <JWT_TOKEN>"
+            },
+            "params": {
+              "id": "string (Ingredient ID, required)"
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Ingredient details retrieved successfully.",
+              "body": {
+                "ingredient": {
+                  "id": "string",
+                  "name": "string",
+                  "description": "string",
+                  "calories": "number",
+                  "nutritionalInfo": {
+                    "fat": "number",
+                    "protein": "number",
+                    "carbohydrates": "number",
+                    "fiber": "number"
+                  },
+                  "createdAt": "ISODate",
+                  "updatedAt": "ISODate"
+                }
+              }
+            },
+            "401": {
+              "description": "Authentication required.",
+              "body": {
+                "error": "Authentication required"
+              }
+            },
+            "404": {
+              "description": "Ingredient not found.",
+              "body": {
+                "error": "Ingredient not found"
+              }
+            },
+            "500": {
+              "description": "Internal server error.",
+              "body": {
+                "error": "An error occurred while fetching the ingredient"
+              }
+            }
+          }
+        },
+        {
+          "method": "PUT",
+          "path": "/ingredients/:id",
+          "description": "Update a specific ingredient by ID.",
+          "authentication": "Required",
+          "request": {
+            "headers": {
+              "Authorization": "Bearer <JWT_TOKEN>",
+              "Content-Type": "application/json"
+            },
+            "params": {
+              "id": "string (Ingredient ID, required)"
+            },
+            "body": {
+              "name": "string (optional, unique, lowercase)",
+              "description": "string (optional)",
+              "calories": "number (optional)",
+              "image": "binary (optional)", // Or string (URL)
+              "nutritionalInfo": {
+                "fat": "number (optional)",
+                "protein": "number (optional)",
+                "carbohydrates": "number (optional)",
+                "fiber": "number (optional)"
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Ingredient updated successfully.",
+              "body": {
+                "message": "Ingredient updated successfully",
+                "ingredient": {
+                  "id": "string",
+                  "name": "string",
+                  "description": "string",
+                  "calories": "number",
+                  "nutritionalInfo": {
+                    "fat": "number",
+                    "protein": "number",
+                    "carbohydrates": "number",
+                    "fiber": "number"
+                  },
+                  "createdAt": "ISODate",
+                  "updatedAt": "ISODate"
+                }
+              }
+            },
+            "400": {
+              "description": "Validation error.",
+              "body": {
+                "error": "Validation error message"
+              }
+            },
+            "401": {
+              "description": "Authentication required.",
+              "body": {
+                "error": "Authentication required"
+              }
+            },
+            "404": {
+              "description": "Ingredient not found.",
+              "body": {
+                "error": "Ingredient not found"
+              }
+            },
+            "500": {
+              "description": "Internal server error.",
+              "body": {
+                "error": "An error occurred while updating the ingredient"
+              }
+            }
+          }
+        },
+        {
+          "method": "DELETE",
+          "path": "/ingredients/:id",
+          "description": "Delete a specific ingredient by ID.",
+          "authentication": "Required",
+          "request": {
+            "headers": {
+              "Authorization": "Bearer <JWT_TOKEN>"
+            },
+            "params": {
+              "id": "string (Ingredient ID, required)"
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Ingredient deleted successfully.",
+              "body": {
+                "message": "Ingredient deleted successfully"
+              }
+            },
+            "401": {
+              "description": "Authentication required.",
+              "body": {
+                "error": "Authentication required"
+              }
+            },
+            "404": {
+              "description": "Ingredient not found.",
+              "body": {
+                "error": "Ingredient not found"
+              }
+            },
+            "500": {
+              "description": "Internal server error.",
+              "body": {
+                "error": "An error occurred while deleting the ingredient"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "Recipes": {
+      "endpoints": [
+        {
+          "method": "POST",
+          "path": "/recipes/",
+          "description": "Create a new recipe.",
+          "authentication": "Required",
+          "request": {
+            "headers": {
+              "Authorization": "Bearer <JWT_TOKEN>",
+              "Content-Type": "application/json"
+            },
+            "body": {
+              "name": "string (required)",
+              "alias": "string (optional)",
+              "description": "string (optional)",
+              "instructions": "array of strings (required, at least 1)",
+              "ingredients": "array of ingredient objects (required, at least 1)",
+              "isPublic": "boolean (optional, default: false)",
+              "type": "string (optional)",
+              "mealTime": "string (optional, one of: breakfast, lunch, dinner, snack, dessert)",
+              "cuisine": "string (optional, one of: italian, chinese, mexican, indian, american, other)",
+              "servings": "number (required)",
+              "prepTime": "number (required, minutes)",
+              "cookTime": "number (required, minutes)",
+              "calories": "number (optional)",
+              "tags": "array of strings (optional)"
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "Recipe created successfully.",
+              "body": {
+                "message": "Recipe created successfully",
+                "recipe": {
+                  "id": "string",
+                  "owner": "string (User ID)",
+                  "name": "string",
+                  "alias": "string",
+                  "description": "string",
+                  "instructions": [
+                    "string"
+                    // More instructions...
+                  ],
+                  "ingredients": [
+                    {
+                      "ingredientId": "string",
+                      "amount": "number",
+                      "unit": "string",
+                      "notes": "string"
+                    }
+                    // More ingredients...
+                  ],
+                  "isPublic": "boolean",
+                  "type": "string",
+                  "mealTime": "string",
+                  "cuisine": "string",
+                  "servings": "number",
+                  "prepTime": "number",
+                  "cookTime": "number",
+                  "calories": "number",
+                  "tags": [
+                    "string"
+                    // More tags...
+                  ],
+                  "totalTime": "number",
+                  "createdAt": "ISODate",
+                  "updatedAt": "ISODate"
+                }
+              }
+            },
+            "409": {
+              "description": "Recipe already exists.",
+              "body": {
+                "error": "Recipe already exists",
+                "keyPattern": {
+                  "name": 1
+                }
+              }
+            },
+            "400": {
+              "description": "Validation errors.",
+              "body": {
+                "errors": [
+                  {
+                    "field": "string",
+                    "message": "string"
+                  }
+                  // More validation errors...
+                ]
+              }
+            },
+            "401": {
+              "description": "Authentication required.",
+              "body": {
+                "error": "Authentication required"
+              }
+            },
+            "500": {
+              "description": "Internal server error.",
+              "body": {
+                "error": "An unexpected error occurred while creating the recipe"
+              }
+            }
+          }
+        },
+        {
+          "method": "GET",
+          "path": "/recipes/",
+          "description": "Retrieve all recipes for the authenticated user.",
+          "authentication": "Required",
+          "request": {
+            "headers": {
+              "Authorization": "Bearer <JWT_TOKEN>"
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "List of user recipes.",
+              "body": {
+                "message": "Recipes fetched successfully",
+                "recipes": [
+                  {
+                    "id": "string",
+                    "owner": "string (User ID)",
+                    "name": "string",
+                    "alias": "string",
+                    "description": "string",
+                    "instructions": [
+                      "string"
+                      // More instructions...
+                    ],
+                    "ingredients": [
+                      {
+                        "ingredientId": "string",
+                        "amount": "number",
+                        "unit": "string",
+                        "notes": "string"
+                      }
+                      // More ingredients...
+                    ],
+                    "isPublic": "boolean",
+                    "type": "string",
+                    "mealTime": "string",
+                    "cuisine": "string",
+                    "servings": "number",
+                    "prepTime": "number",
+                    "cookTime": "number",
+                    "calories": "number",
+                    "tags": [
+                      "string"
+                      // More tags...
+                    ],
+                    "totalTime": "number",
+                    "createdAt": "ISODate",
+                    "updatedAt": "ISODate"
+                  }
+                  // More recipes...
+                ]
+              }
+            },
+            "401": {
+              "description": "Authentication required.",
+              "body": {
+                "error": "Authentication required"
+              }
+            },
+            "500": {
+              "description": "Internal server error.",
+              "body": {
+                "error": "An error occurred while fetching the recipes"
+              }
+            }
+          }
+        },
+        {
+          "method": "GET",
+          "path": "/recipes/:id",
+          "description": "Retrieve a specific recipe by ID.",
+          "authentication": "Required",
+          "request": {
+            "headers": {
+              "Authorization": "Bearer <JWT_TOKEN>"
+            },
+            "params": {
+              "id": "string (Recipe ID, required)"
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Recipe details retrieved successfully.",
+              "body": {
+                "message": "Recipe fetched successfully",
+                "recipe": {
+                  "id": "string",
+                  "owner": "string (User ID)",
+                  "name": "string",
+                  "alias": "string",
+                  "description": "string",
+                  "instructions": [
+                    "string"
+                    // More instructions...
+                  ],
+                  "ingredients": [
+                    {
+                      "ingredientId": "string",
+                      "amount": "number",
+                      "unit": "string",
+                      "notes": "string"
+                    }
+                    // More ingredients...
+                  ],
+                  "isPublic": "boolean",
+                  "type": "string",
+                  "mealTime": "string",
+                  "cuisine": "string",
+                  "servings": "number",
+                  "prepTime": "number",
+                  "cookTime": "number",
+                  "calories": "number",
+                  "tags": [
+                    "string"
+                    // More tags...
+                  ],
+                  "totalTime": "number",
+                  "createdAt": "ISODate",
+                  "updatedAt": "ISODate"
+                }
+              }
+            },
+            "401": {
+              "description": "Authentication required.",
+              "body": {
+                "error": "Authentication required"
+              }
+            },
+            "404": {
+              "description": "Recipe not found or not authorized.",
+              "body": {
+                "error": "Recipe not found or not authorized"
+              }
+            },
+            "500": {
+              "description": "Internal server error.",
+              "body": {
+                "error": "An error occurred while fetching the recipe"
+              }
+            }
+          }
+        },
+        {
+          "method": "PUT",
+          "path": "/recipes/:id",
+          "description": "Update a specific recipe by ID.",
+          "authentication": "Required",
+          "request": {
+            "headers": {
+              "Authorization": "Bearer <JWT_TOKEN>",
+              "Content-Type": "application/json"
+            },
+            "params": {
+              "id": "string (Recipe ID, required)"
+            },
+            "body": {
+              "name": "string (optional)",
+              "alias": "string (optional)",
+              "description": "string (optional)",
+              "instructions": "array of strings (optional)",
+              "ingredients": "array of ingredient objects (optional)",
+              "isPublic": "boolean (optional)",
+              "type": "string (optional)",
+              "mealTime": "string (optional, one of: breakfast, lunch, dinner, snack, dessert)",
+              "cuisine": "string (optional, one of: italian, chinese, mexican, indian, american, other)",
+              "servings": "number (optional)",
+              "prepTime": "number (optional, minutes)",
+              "cookTime": "number (optional, minutes)",
+              "calories": "number (optional)",
+              "tags": "array of strings (optional)"
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Recipe updated successfully.",
+              "body": {
+                "message": "Recipe updated successfully",
+                "recipe": {
+                  "id": "string",
+                  "owner": "string (User ID)",
+                  "name": "string",
+                  "alias": "string",
+                  "description": "string",
+                  "instructions": [
+                    "string"
+                    // More instructions...
+                  ],
+                  "ingredients": [
+                    {
+                      "ingredientId": "string",
+                      "amount": "number",
+                      "unit": "string",
+                      "notes": "string"
+                    }
+                    // More ingredients...
+                  ],
+                  "isPublic": "boolean",
+                  "type": "string",
+                  "mealTime": "string",
+                  "cuisine": "string",
+                  "servings": "number",
+                  "prepTime": "number",
+                  "cookTime": "number",
+                  "calories": "number",
+                  "tags": [
+                    "string"
+                    // More tags...
+                  ],
+                  "totalTime": "number",
+                  "createdAt": "ISODate",
+                  "updatedAt": "ISODate"
+                }
+              }
+            },
+            "400": {
+              "description": "Validation error.",
+              "body": {
+                "errors": [
+                  {
+                    "field": "string",
+                    "message": "string"
+                  }
+                  // More validation errors...
+                ]
+              }
+            },
+            "401": {
+              "description": "Authentication required.",
+              "body": {
+                "error": "Authentication required"
+              }
+            },
+            "404": {
+              "description": "Recipe not found or not authorized.",
+              "body": {
+                "error": "Recipe not found or not authorized"
+              }
+            },
+            "500": {
+              "description": "Internal server error.",
+              "body": {
+                "error": "An error occurred while updating the recipe"
+              }
+            }
+          }
+        },
+        {
+          "method": "DELETE",
+          "path": "/recipes/:id",
+          "description": "Delete a specific recipe by ID.",
+          "authentication": "Required",
+          "request": {
+            "headers": {
+              "Authorization": "Bearer <JWT_TOKEN>"
+            },
+            "params": {
+              "id": "string (Recipe ID, required)"
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Recipe deleted successfully.",
+              "body": {
+                "message": "Recipe deleted successfully"
+              }
+            },
+            "401": {
+              "description": "Authentication required.",
+              "body": {
+                "error": "Authentication required"
+              }
+            },
+            "404": {
+              "description": "Recipe not found or not authorized.",
+              "body": {
+                "error": "Recipe not found or not authorized"
+              }
+            },
+            "500": {
+              "description": "Internal server error.",
+              "body": {
+                "error": "An error occurred while deleting the recipe"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "Meals": {
+      "endpoints": [
+        {
+          "method": "POST",
+          "path": "/meals/",
+          "description": "Create a new meal.",
+          "authentication": "Required",
+          "request": {
+            "headers": {
+              "Authorization": "Bearer <JWT_TOKEN>",
+              "Content-Type": "application/json"
+            },
+            "body": {
+              "name": "string (required)",
+              "description": "string (optional)",
+              "recipes": "array of recipe IDs (required)",
+              "mealTime": "string (optional)",
+              "servings": "number (required)",
+              "calories": "number (optional)",
+              "tags": "array of strings (optional)",
+              "isVegetarian": "boolean (optional, default: false)",
+              "isVegan": "boolean (optional, default: false)",
+              "cuisine": "string (optional)"
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "Meal created successfully.",
+              "body": {
+                "message": "Meal created successfully",
+                "meal": {
+                  "id": "string",
+                  "owner": "string (User ID)",
+                  "name": "string",
+                  "description": "string",
+                  "recipes": [
+                    {
+                      "id": "string",
+                      "name": "string",
+                      "prepTime": "number",
+                      "cookTime": "number"
+                    }
+                    // More recipes...
+                  ],
+                  "mealTime": "string",
+                  "servings": "number",
+                  "calories": "number",
+                  "tags": [
+                    "string"
+                    // More tags...
+                  ],
+                  "isVegetarian": "boolean",
+                  "isVegan": "boolean",
+                  "cuisine": "string",
+                  "prepTime": "number",
+                  "cookTime": "number",
+                  "totalTime": "number",
+                  "createdAt": "ISODate",
+                  "updatedAt": "ISODate"
+                }
+              }
+            },
+            "409": {
+              "description": "Meal already exists.",
+              "body": {
+                "error": "Meal already exists"
+              }
+            },
+            "400": {
+              "description": "Validation errors.",
+              "body": {
+                "errors": [
+                  {
+                    "field": "string",
+                    "message": "string"
+                  }
+                  // More validation errors...
+                ]
+              }
+            },
+            "401": {
+              "description": "Authentication required.",
+              "body": {
+                "error": "Authentication required"
+              }
+            },
+            "500": {
+              "description": "Internal server error.",
+              "body": {
+                "error": "An unexpected error occurred"
+              }
+            }
+          }
+        },
+        {
+          "method": "GET",
+          "path": "/meals/",
+          "description": "Retrieve all meals for the authenticated user.",
+          "authentication": "Required",
+          "request": {
+            "headers": {
+              "Authorization": "Bearer <JWT_TOKEN>"
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "List of user meals.",
+              "body": {
+                "message": "Meals fetched successfully",
+                "meals": [
+                  {
+                    "id": "string",
+                    "owner": "string (User ID)",
+                    "name": "string",
+                    "description": "string",
+                    "recipes": [
+                      {
+                        "id": "string",
+                        "name": "string",
+                        "prepTime": "number",
+                        "cookTime": "number"
+                      }
+                      // More recipes...
+                    ],
+                    "mealTime": "string",
+                    "servings": "number",
+                    "calories": "number",
+                    "tags": [
+                      "string"
+                      // More tags...
+                    ],
+                    "isVegetarian": "boolean",
+                    "isVegan": "boolean",
+                    "cuisine": "string",
+                    "prepTime": "number",
+                    "cookTime": "number",
+                    "totalTime": "number",
+                    "createdAt": "ISODate",
+                    "updatedAt": "ISODate"
+                  }
+                  // More meals...
+                ]
+              }
+            },
+            "401": {
+              "description": "Authentication required.",
+              "body": {
+                "error": "Authentication required"
+              }
+            },
+            "500": {
+              "description": "Internal server error.",
+              "body": {
+                "error": "An error occurred while fetching the meals"
+              }
+            }
+          }
+        },
+        {
+          "method": "GET",
+          "path": "/meals/:id",
+          "description": "Retrieve a specific meal by ID.",
+          "authentication": "Required",
+          "request": {
+            "headers": {
+              "Authorization": "Bearer <JWT_TOKEN>"
+            },
+            "params": {
+              "id": "string (Meal ID, required)"
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Meal details retrieved successfully.",
+              "body": {
+                "message": "Meal fetched successfully",
+                "meal": {
+                  "id": "string",
+                  "owner": "string (User ID)",
+                  "name": "string",
+                  "description": "string",
+                  "recipes": [
+                    {
+                      "id": "string",
+                      "name": "string",
+                      "prepTime": "number",
+                      "cookTime": "number"
+                    }
+                    // More recipes...
+                  ],
+                  "mealTime": "string",
+                  "servings": "number",
+                  "calories": "number",
+                  "tags": [
+                    "string"
+                    // More tags...
+                  ],
+                  "isVegetarian": "boolean",
+                  "isVegan": "boolean",
+                  "cuisine": "string",
+                  "prepTime": "number",
+                  "cookTime": "number",
+                  "totalTime": "number",
+                  "createdAt": "ISODate",
+                  "updatedAt": "ISODate"
+                }
+              }
+            },
+            "401": {
+              "description": "Authentication required.",
+              "body": {
+                "error": "Authentication required"
+              }
+            },
+            "404": {
+              "description": "Meal not found.",
+              "body": {
+                "error": "Meal not found"
+              }
+            },
+            "500": {
+              "description": "Internal server error.",
+              "body": {
+                "error": "An error occurred while fetching the meal"
+              }
+            }
+          }
+        },
+        {
+          "method": "PUT",
+          "path": "/meals/:id",
+          "description": "Update a specific meal by ID.",
+          "authentication": "Required",
+          "request": {
+            "headers": {
+              "Authorization": "Bearer <JWT_TOKEN>",
+              "Content-Type": "application/json"
+            },
+            "params": {
+              "id": "string (Meal ID, required)"
+            },
+            "body": {
+              "name": "string (optional)",
+              "description": "string (optional)",
+              "recipes": "array of recipe IDs (optional)",
+              "mealTime": "string (optional)",
+              "servings": "number (optional)",
+              "calories": "number (optional)",
+              "tags": "array of strings (optional)",
+              "isVegetarian": "boolean (optional)",
+              "isVegan": "boolean (optional)",
+              "cuisine": "string (optional)"
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Meal updated successfully.",
+              "body": {
+                "message": "Meal updated successfully",
+                "meal": {
+                  "id": "string",
+                  "owner": "string (User ID)",
+                  "name": "string",
+                  "description": "string",
+                  "recipes": [
+                    {
+                      "id": "string",
+                      "name": "string",
+                      "prepTime": "number",
+                      "cookTime": "number"
+                    }
+                    // More recipes...
+                  ],
+                  "mealTime": "string",
+                  "servings": "number",
+                  "calories": "number",
+                  "tags": [
+                    "string"
+                    // More tags...
+                  ],
+                  "isVegetarian": "boolean",
+                  "isVegan": "boolean",
+                  "cuisine": "string",
+                  "prepTime": "number",
+                  "cookTime": "number",
+                  "totalTime": "number",
+                  "createdAt": "ISODate",
+                  "updatedAt": "ISODate"
+                }
+              }
+            },
+            "400": {
+              "description": "Validation error.",
+              "body": {
+                "errors": [
+                  {
+                    "field": "string",
+                    "message": "string"
+                  }
+                  // More validation errors...
+                ]
+              }
+            },
+            "401": {
+              "description": "Authentication required.",
+              "body": {
+                "error": "Authentication required"
+              }
+            },
+            "404": {
+              "description": "Meal not found or not authorized.",
+              "body": {
+                "error": "Meal not found or not authorized"
+              }
+            },
+            "500": {
+              "description": "Internal server error.",
+              "body": {
+                "error": "An error occurred while updating the meal"
+              }
+            }
+          }
+        },
+        {
+          "method": "DELETE",
+          "path": "/meals/:id",
+          "description": "Delete a specific meal by ID.",
+          "authentication": "Required",
+          "request": {
+            "headers": {
+              "Authorization": "Bearer <JWT_TOKEN>"
+            },
+            "params": {
+              "id": "string (Meal ID, required)"
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Meal deleted successfully.",
+              "body": {
+                "message": "Meal deleted successfully"
+              }
+            },
+            "401": {
+              "description": "Authentication required.",
+              "body": {
+                "error": "Authentication required"
+              }
+            },
+            "404": {
+              "description": "Meal not found or not authorized.",
+              "body": {
+                "error": "Meal not found or not authorized"
+              }
+            },
+            "500": {
+              "description": "Internal server error.",
+              "body": {
+                "error": "An error occurred while deleting the meal"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "Ingredients": {
+      "endpoints": [
+        {
+          "method": "POST",
+          "path": "/ingredients/",
+          "description": "Create a new ingredient.",
+          "authentication": "Required",
+          "request": {
+            "headers": {
+              "Authorization": "Bearer <JWT_TOKEN>",
+              "Content-Type": "application/json"
+            },
+            "body": {
+              "name": "string (required, unique, lowercase)",
+              "description": "string (optional)",
+              "calories": "number (optional)",
+              "image": "binary (optional)", // Or string (URL)
+              "nutritionalInfo": {
+                "fat": "number (optional)",
+                "protein": "number (optional)",
+                "carbohydrates": "number (optional)",
+                "fiber": "number (optional)"
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "Ingredient created successfully.",
+              "body": {
+                "message": "Ingredient created successfully",
+                "ingredient": {
+                  "id": "string",
+                  "name": "string",
+                  "description": "string",
+                  "calories": "number",
+                  "nutritionalInfo": {
+                    "fat": "number",
+                    "protein": "number",
+                    "carbohydrates": "number",
+                    "fiber": "number"
+                  },
+                  "createdAt": "ISODate",
+                  "updatedAt": "ISODate"
+                }
+              }
+            },
+            "409": {
+              "description": "Ingredient already exists.",
+              "body": {
+                "error": "Ingredient already exists",
+                "keyPattern": {
+                  "name": 1
+                }
+              }
+            },
+            "400": {
+              "description": "Validation errors.",
+              "body": {
+                "error": "Error message"
+              }
+            },
+            "401": {
+              "description": "Authentication required.",
+              "body": {
+                "error": "Authentication required"
+              }
+            },
+            "500": {
+              "description": "Internal server error.",
+              "body": {
+                "error": "An unexpected error occurred while creating the ingredient"
+              }
+            }
+          }
+        },
+        {
+          "method": "GET",
+          "path": "/ingredients/",
+          "description": "Retrieve all ingredients.",
+          "authentication": "Required",
+          "request": {
+            "headers": {
+              "Authorization": "Bearer <JWT_TOKEN>"
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "List of all ingredients.",
+              "body": {
+                "ingredients": [
+                  {
+                    "id": "string",
+                    "name": "string",
+                    "description": "string",
+                    "calories": "number",
+                    "nutritionalInfo": {
+                      "fat": "number",
+                      "protein": "number",
+                      "carbohydrates": "number",
+                      "fiber": "number"
+                    },
+                    "createdAt": "ISODate",
+                    "updatedAt": "ISODate"
+                  }
+                  // More ingredients...
+                ]
+              }
+            },
+            "401": {
+              "description": "Authentication required.",
+              "body": {
+                "error": "Authentication required"
+              }
+            },
+            "500": {
+              "description": "Internal server error.",
+              "body": {
+                "error": "An error occurred while fetching the ingredients"
+              }
+            }
+          }
+        },
+        {
+          "method": "GET",
+          "path": "/ingredients/:id",
+          "description": "Retrieve a specific ingredient by ID.",
+          "authentication": "Required",
+          "request": {
+            "headers": {
+              "Authorization": "Bearer <JWT_TOKEN>"
+            },
+            "params": {
+              "id": "string (Ingredient ID, required)"
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Ingredient details retrieved successfully.",
+              "body": {
+                "ingredient": {
+                  "id": "string",
+                  "name": "string",
+                  "description": "string",
+                  "calories": "number",
+                  "nutritionalInfo": {
+                    "fat": "number",
+                    "protein": "number",
+                    "carbohydrates": "number",
+                    "fiber": "number"
+                  },
+                  "createdAt": "ISODate",
+                  "updatedAt": "ISODate"
+                }
+              }
+            },
+            "401": {
+              "description": "Authentication required.",
+              "body": {
+                "error": "Authentication required"
+              }
+            },
+            "404": {
+              "description": "Ingredient not found.",
+              "body": {
+                "error": "Ingredient not found"
+              }
+            },
+            "500": {
+              "description": "Internal server error.",
+              "body": {
+                "error": "An error occurred while fetching the ingredient"
+              }
+            }
+          }
+        },
+        {
+          "method": "PUT",
+          "path": "/ingredients/:id",
+          "description": "Update a specific ingredient by ID.",
+          "authentication": "Required",
+          "request": {
+            "headers": {
+              "Authorization": "Bearer <JWT_TOKEN>",
+              "Content-Type": "application/json"
+            },
+            "params": {
+              "id": "string (Ingredient ID, required)"
+            },
+            "body": {
+              "name": "string (optional, unique, lowercase)",
+              "description": "string (optional)",
+              "calories": "number (optional)",
+              "image": "binary (optional)", // Or string (URL)
+              "nutritionalInfo": {
+                "fat": "number (optional)",
+                "protein": "number (optional)",
+                "carbohydrates": "number (optional)",
+                "fiber": "number (optional)"
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Ingredient updated successfully.",
+              "body": {
+                "message": "Ingredient updated successfully",
+                "ingredient": {
+                  "id": "string",
+                  "name": "string",
+                  "description": "string",
+                  "calories": "number",
+                  "nutritionalInfo": {
+                    "fat": "number",
+                    "protein": "number",
+                    "carbohydrates": "number",
+                    "fiber": "number"
+                  },
+                  "createdAt": "ISODate",
+                  "updatedAt": "ISODate"
+                }
+              }
+            },
+            "400": {
+              "description": "Validation error.",
+              "body": {
+                "error": "Validation error message"
+              }
+            },
+            "401": {
+              "description": "Authentication required.",
+              "body": {
+                "error": "Authentication required"
+              }
+            },
+            "404": {
+              "description": "Ingredient not found.",
+              "body": {
+                "error": "Ingredient not found"
+              }
+            },
+            "500": {
+              "description": "Internal server error.",
+              "body": {
+                "error": "An error occurred while updating the ingredient"
+              }
+            }
+          }
+        },
+        {
+          "method": "DELETE",
+          "path": "/ingredients/:id",
+          "description": "Delete a specific ingredient by ID.",
+          "authentication": "Required",
+          "request": {
+            "headers": {
+              "Authorization": "Bearer <JWT_TOKEN>"
+            },
+            "params": {
+              "id": "string (Ingredient ID, required)"
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Ingredient deleted successfully.",
+              "body": {
+                "message": "Ingredient deleted successfully"
+              }
+            },
+            "401": {
+              "description": "Authentication required.",
+              "body": {
+                "error": "Authentication required"
+              }
+            },
+            "404": {
+              "description": "Ingredient not found.",
+              "body": {
+                "error": "Ingredient not found"
+              }
+            },
+            "500": {
+              "description": "Internal server error.",
+              "body": {
+                "error": "An error occurred while deleting the ingredient"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "Recipes": {
+      "endpoints": [
+        {
+          "method": "POST",
+          "path": "/recipes/",
+          "description": "Create a new recipe.",
+          "authentication": "Required",
+          "request": {
+            "headers": {
+              "Authorization": "Bearer <JWT_TOKEN>",
+              "Content-Type": "application/json"
+            },
+            "body": {
+              "name": "string (required)",
+              "alias": "string (optional)",
+              "description": "string (optional)",
+              "instructions": "array of strings (required, at least 1)",
+              "ingredients": [
+                {
+                  "ingredientId": "string (required, valid ObjectId)",
+                  "amount": "number (required, min 0)",
+                  "unit": "string (required)",
+                  "notes": "string (optional)"
+                }
+                // More ingredients...
+              ],
+              "isPublic": "boolean (optional, default: false)",
+              "type": "string (optional)",
+              "mealTime": "string (optional, one of: breakfast, lunch, dinner, snack, dessert)",
+              "cuisine": "string (optional, one of: italian, chinese, mexican, indian, american, other)",
+              "servings": "number (required)",
+              "prepTime": "number (required, minutes)",
+              "cookTime": "number (required, minutes)",
+              "calories": "number (optional)",
+              "tags": "array of strings (optional)"
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "Recipe created successfully.",
+              "body": {
+                "message": "Recipe created successfully",
+                "recipe": {
+                  "id": "string",
+                  "owner": "string (User ID)",
+                  "name": "string",
+                  "alias": "string",
+                  "description": "string",
+                  "instructions": [
+                    "string"
+                    // More instructions...
+                  ],
+                  "ingredients": [
+                    {
+                      "ingredientId": "string",
+                      "amount": "number",
+                      "unit": "string",
+                      "notes": "string"
+                    }
+                    // More ingredients...
+                  ],
+                  "isPublic": "boolean",
+                  "type": "string",
+                  "mealTime": "string",
+                  "cuisine": "string",
+                  "servings": "number",
+                  "prepTime": "number",
+                  "cookTime": "number",
+                  "calories": "number",
+                  "tags": [
+                    "string"
+                    // More tags...
+                  ],
+                  "totalTime": "number",
+                  "createdAt": "ISODate",
+                  "updatedAt": "ISODate"
+                }
+              }
+            },
+            "409": {
+              "description": "Recipe already exists.",
+              "body": {
+                "error": "Recipe already exists",
+                "keyPattern": {
+                  "name": 1
+                }
+              }
+            },
+            "400": {
+              "description": "Validation errors.",
+              "body": {
+                "errors": [
+                  {
+                    "field": "string",
+                    "message": "string"
+                  }
+                  // More validation errors...
+                ]
+              }
+            },
+            "401": {
+              "description": "Authentication required.",
+              "body": {
+                "error": "Authentication required"
+              }
+            },
+            "500": {
+              "description": "Internal server error.",
+              "body": {
+                "error": "An unexpected error occurred while creating the recipe"
+              }
+            }
+          }
+        },
+        {
+          "method": "GET",
+          "path": "/recipes/",
+          "description": "Retrieve all recipes for the authenticated user.",
+          "authentication": "Required",
+          "request": {
+            "headers": {
+              "Authorization": "Bearer <JWT_TOKEN>"
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "List of user recipes.",
+              "body": {
+                "message": "Recipes fetched successfully",
+                "recipes": [
+                  {
+                    "id": "string",
+                    "owner": "string (User ID)",
+                    "name": "string",
+                    "alias": "string",
+                    "description": "string",
+                    "instructions": [
+                      "string"
+                      // More instructions...
+                    ],
+                    "ingredients": [
+                      {
+                        "ingredientId": "string",
+                        "amount": "number",
+                        "unit": "string",
+                        "notes": "string"
+                      }
+                      // More ingredients...
+                    ],
+                    "isPublic": "boolean",
+                    "type": "string",
+                    "mealTime": "string",
+                    "cuisine": "string",
+                    "servings": "number",
+                    "prepTime": "number",
+                    "cookTime": "number",
+                    "calories": "number",
+                    "tags": [
+                      "string"
+                      // More tags...
+                    ],
+                    "totalTime": "number",
+                    "createdAt": "ISODate",
+                    "updatedAt": "ISODate"
+                  }
+                  // More recipes...
+                ]
+              }
+            },
+            "401": {
+              "description": "Authentication required.",
+              "body": {
+                "error": "Authentication required"
+              }
+            },
+            "500": {
+              "description": "Internal server error.",
+              "body": {
+                "error": "An error occurred while fetching the recipes"
+              }
+            }
+          }
+        },
+        {
+          "method": "GET",
+          "path": "/recipes/:id",
+          "description": "Retrieve a specific recipe by ID.",
+          "authentication": "Required",
+          "request": {
+            "headers": {
+              "Authorization": "Bearer <JWT_TOKEN>"
+            },
+            "params": {
+              "id": "string (Recipe ID, required)"
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Recipe details retrieved successfully.",
+              "body": {
+                "message": "Recipe fetched successfully",
+                "recipe": {
+                  "id": "string",
+                  "owner": "string (User ID)",
+                  "name": "string",
+                  "alias": "string",
+                  "description": "string",
+                  "instructions": [
+                    "string"
+                    // More instructions...
+                  ],
+                  "ingredients": [
+                    {
+                      "ingredientId": "string",
+                      "amount": "number",
+                      "unit": "string",
+                      "notes": "string"
+                    }
+                    // More ingredients...
+                  ],
+                  "isPublic": "boolean",
+                  "type": "string",
+                  "mealTime": "string",
+                  "cuisine": "string",
+                  "servings": "number",
+                  "prepTime": "number",
+                  "cookTime": "number",
+                  "calories": "number",
+                  "tags": [
+                    "string"
+                    // More tags...
+                  ],
+                  "totalTime": "number",
+                  "createdAt": "ISODate",
+                  "updatedAt": "ISODate"
+                }
+              }
+            },
+            "401": {
+              "description": "Authentication required.",
+              "body": {
+                "error": "Authentication required"
+              }
+            },
+            "404": {
+              "description": "Recipe not found or not authorized.",
+              "body": {
+                "error": "Recipe not found or not authorized"
+              }
+            },
+            "500": {
+              "description": "Internal server error.",
+              "body": {
+                "error": "An error occurred while fetching the recipe"
+              }
+            }
+          }
+        },
+        {
+          "method": "PUT",
+          "path": "/recipes/:id",
+          "description": "Update a specific recipe by ID.",
+          "authentication": "Required",
+          "request": {
+            "headers": {
+              "Authorization": "Bearer <JWT_TOKEN>",
+              "Content-Type": "application/json"
+            },
+            "params": {
+              "id": "string (Recipe ID, required)"
+            },
+            "body": {
+              "name": "string (optional)",
+              "alias": "string (optional)",
+              "description": "string (optional)",
+              "instructions": "array of strings (optional)",
+              "ingredients": [
+                {
+                  "ingredientId": "string (optional, valid ObjectId)",
+                  "amount": "number (optional, min 0)",
+                  "unit": "string (optional)",
+                  "notes": "string (optional)"
+                }
+                // More ingredients...
+              ],
+              "isPublic": "boolean (optional)",
+              "type": "string (optional)",
+              "mealTime": "string (optional, one of: breakfast, lunch, dinner, snack, dessert)",
+              "cuisine": "string (optional, one of: italian, chinese, mexican, indian, american, other)",
+              "servings": "number (optional)",
+              "prepTime": "number (optional, minutes)",
+              "cookTime": "number (optional, minutes)",
+              "calories": "number (optional)",
+              "tags": "array of strings (optional)"
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Recipe updated successfully.",
+              "body": {
+                "message": "Recipe updated successfully",
+                "recipe": {
+                  "id": "string",
+                  "owner": "string (User ID)",
+                  "name": "string",
+                  "alias": "string",
+                  "description": "string",
+                  "instructions": [
+                    "string"
+                    // More instructions...
+                  ],
+                  "ingredients": [
+                    {
+                      "ingredientId": "string",
+                      "amount": "number",
+                      "unit": "string",
+                      "notes": "string"
+                    }
+                    // More ingredients...
+                  ],
+                  "isPublic": "boolean",
+                  "type": "string",
+                  "mealTime": "string",
+                  "cuisine": "string",
+                  "servings": "number",
+                  "prepTime": "number",
+                  "cookTime": "number",
+                  "calories": "number",
+                  "tags": [
+                    "string"
+                    // More tags...
+                  ],
+                  "totalTime": "number",
+                  "createdAt": "ISODate",
+                  "updatedAt": "ISODate"
+                }
+              }
+            },
+            "400": {
+              "description": "Validation error.",
+              "body": {
+                "errors": [
+                  {
+                    "field": "string",
+                    "message": "string"
+                  }
+                  // More validation errors...
+                ]
+              }
+            },
+            "401": {
+              "description": "Authentication required.",
+              "body": {
+                "error": "Authentication required"
+              }
+            },
+            "404": {
+              "description": "Recipe not found or not authorized.",
+              "body": {
+                "error": "Recipe not found or not authorized"
+              }
+            },
+            "500": {
+              "description": "Internal server error.",
+              "body": {
+                "error": "An error occurred while updating the recipe"
+              }
+            }
+          }
+        },
+        {
+          "method": "DELETE",
+          "path": "/recipes/:id",
+          "description": "Delete a specific recipe by ID.",
+          "authentication": "Required",
+          "request": {
+            "headers": {
+              "Authorization": "Bearer <JWT_TOKEN>"
+            },
+            "params": {
+              "id": "string (Recipe ID, required)"
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Recipe deleted successfully.",
+              "body": {
+                "message": "Recipe deleted successfully"
+              }
+            },
+            "401": {
+              "description": "Authentication required.",
+              "body": {
+                "error": "Authentication required"
+              }
+            },
+            "404": {
+              "description": "Recipe not found or not authorized.",
+              "body": {
+                "error": "Recipe not found or not authorized"
+              }
+            },
+            "500": {
+              "description": "Internal server error.",
+              "body": {
+                "error": "An error occurred while deleting the recipe"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "Meals": {
+      "endpoints": [
+        {
+          "method": "POST",
+          "path": "/meals/",
+          "description": "Create a new meal.",
+          "authentication": "Required",
+          "request": {
+            "headers": {
+              "Authorization": "Bearer <JWT_TOKEN>",
+              "Content-Type": "application/json"
+            },
+            "body": {
+              "name": "string (required)",
+              "description": "string (optional)",
+              "recipes": "array of recipe IDs (required)",
+              "mealTime": "string (optional)",
+              "servings": "number (required)",
+              "calories": "number (optional)",
+              "tags": "array of strings (optional)",
+              "isVegetarian": "boolean (optional, default: false)",
+              "isVegan": "boolean (optional, default: false)",
+              "cuisine": "string (optional)"
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "Meal created successfully.",
+              "body": {
+                "message": "Meal created successfully",
+                "meal": {
+                  "id": "string",
+                  "owner": "string (User ID)",
+                  "name": "string",
+                  "description": "string",
+                  "recipes": [
+                    {
+                      "id": "string",
+                      "name": "string",
+                      "prepTime": "number",
+                      "cookTime": "number"
+                    }
+                    // More recipes...
+                  ],
+                  "mealTime": "string",
+                  "servings": "number",
+                  "calories": "number",
+                  "tags": [
+                    "string"
+                    // More tags...
+                  ],
+                  "isVegetarian": "boolean",
+                  "isVegan": "boolean",
+                  "cuisine": "string",
+                  "prepTime": "number",
+                  "cookTime": "number",
+                  "totalTime": "number",
+                  "createdAt": "ISODate",
+                  "updatedAt": "ISODate"
+                }
+              }
+            },
+            "409": {
+              "description": "Meal already exists.",
+              "body": {
+                "error": "Meal already exists"
+              }
+            },
+            "400": {
+              "description": "Validation errors.",
+              "body": {
+                "errors": [
+                  {
+                    "field": "string",
+                    "message": "string"
+                  }
+                  // More validation errors...
+                ]
+              }
+            },
+            "401": {
+              "description": "Authentication required.",
+              "body": {
+                "error": "Authentication required"
+              }
+            },
+            "500": {
+              "description": "Internal server error.",
+              "body": {
+                "error": "An unexpected error occurred"
+              }
+            }
+          }
+        },
+        {
+          "method": "GET",
+          "path": "/meals/",
+          "description": "Retrieve all meals for the authenticated user.",
+          "authentication": "Required",
+          "request": {
+            "headers": {
+              "Authorization": "Bearer <JWT_TOKEN>"
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "List of user meals.",
+              "body": {
+                "message": "Meals fetched successfully",
+                "meals": [
+                  {
+                    "id": "string",
+                    "owner": "string (User ID)",
+                    "name": "string",
+                    "description": "string",
+                    "recipes": [
+                      {
+                        "id": "string",
+                        "name": "string",
+                        "prepTime": "number",
+                        "cookTime": "number"
+                      }
+                      // More recipes...
+                    ],
+                    "mealTime": "string",
+                    "servings": "number",
+                    "calories": "number",
+                    "tags": [
+                      "string"
+                      // More tags...
+                    ],
+                    "isVegetarian": "boolean",
+                    "isVegan": "boolean",
+                    "cuisine": "string",
+                    "prepTime": "number",
+                    "cookTime": "number",
+                    "totalTime": "number",
+                    "createdAt": "ISODate",
+                    "updatedAt": "ISODate"
+                  }
+                  // More meals...
+                ]
+              }
+            },
+            "401": {
+              "description": "Authentication required.",
+              "body": {
+                "error": "Authentication required"
+              }
+            },
+            "500": {
+              "description": "Internal server error.",
+              "body": {
+                "error": "An error occurred while fetching the meals"
+              }
+            }
+          }
+        },
+        {
+          "method": "GET",
+          "path": "/meals/:id",
+          "description": "Retrieve a specific meal by ID.",
+          "authentication": "Required",
+          "request": {
+            "headers": {
+              "Authorization": "Bearer <JWT_TOKEN>"
+            },
+            "params": {
+              "id": "string (Meal ID, required)"
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Meal details retrieved successfully.",
+              "body": {
+                "message": "Meal fetched successfully",
+                "meal": {
+                  "id": "string",
+                  "owner": "string (User ID)",
+                  "name": "string",
+                  "description": "string",
+                  "recipes": [
+                    {
+                      "id": "string",
+                      "name": "string",
+                      "prepTime": "number",
+                      "cookTime": "number"
+                    }
+                    // More recipes...
+                  ],
+                  "mealTime": "string",
+                  "servings": "number",
+                  "calories": "number",
+                  "tags": [
+                    "string"
+                    // More tags...
+                  ],
+                  "isVegetarian": "boolean",
+                  "isVegan": "boolean",
+                  "cuisine": "string",
+                  "prepTime": "number",
+                  "cookTime": "number",
+                  "totalTime": "number",
+                  "createdAt": "ISODate",
+                  "updatedAt": "ISODate"
+                }
+              }
+            },
+            "401": {
+              "description": "Authentication required.",
+              "body": {
+                "error": "Authentication required"
+              }
+            },
+            "404": {
+              "description": "Meal not found.",
+              "body": {
+                "error": "Meal not found"
+              }
+            },
+            "500": {
+              "description": "Internal server error.",
+              "body": {
+                "error": "An error occurred while fetching the meal"
+              }
+            }
+          }
+        },
+        {
+          "method": "PUT",
+          "path": "/meals/:id",
+          "description": "Update a specific meal by ID.",
+          "authentication": "Required",
+          "request": {
+            "headers": {
+              "Authorization": "Bearer <JWT_TOKEN>",
+              "Content-Type": "application/json"
+            },
+            "params": {
+              "id": "string (Meal ID, required)"
+            },
+            "body": {
+              "name": "string (optional)",
+              "description": "string (optional)",
+              "recipes": "array of recipe IDs (optional)",
+              "mealTime": "string (optional)",
+              "servings": "number (optional)",
+              "calories": "number (optional)",
+              "tags": "array of strings (optional)",
+              "isVegetarian": "boolean (optional)",
+              "isVegan": "boolean (optional)",
+              "cuisine": "string (optional)"
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Meal updated successfully.",
+              "body": {
+                "message": "Meal updated successfully",
+                "meal": {
+                  "id": "string",
+                  "owner": "string (User ID)",
+                  "name": "string",
+                  "description": "string",
+                  "recipes": [
+                    {
+                      "id": "string",
+                      "name": "string",
+                      "prepTime": "number",
+                      "cookTime": "number"
+                    }
+                    // More recipes...
+                  ],
+                  "mealTime": "string",
+                  "servings": "number",
+                  "calories": "number",
+                  "tags": [
+                    "string"
+                    // More tags...
+                  ],
+                  "isVegetarian": "boolean",
+                  "isVegan": "boolean",
+                  "cuisine": "string",
+                  "prepTime": "number",
+                  "cookTime": "number",
+                  "totalTime": "number",
+                  "createdAt": "ISODate",
+                  "updatedAt": "ISODate"
+                }
+              }
+            },
+            "400": {
+              "description": "Validation error.",
+              "body": {
+                "errors": [
+                  {
+                    "field": "string",
+                    "message": "string"
+                  }
+                  // More validation errors...
+                ]
+              }
+            },
+            "401": {
+              "description": "Authentication required.",
+              "body": {
+                "error": "Authentication required"
+              }
+            },
+            "404": {
+              "description": "Meal not found or not authorized.",
+              "body": {
+                "error": "Meal not found or not authorized"
+              }
+            },
+            "500": {
+              "description": "Internal server error.",
+              "body": {
+                "error": "An error occurred while updating the meal"
+              }
+            }
+          }
+        },
+        {
+          "method": "DELETE",
+          "path": "/meals/:id",
+          "description": "Delete a specific meal by ID.",
+          "authentication": "Required",
+          "request": {
+            "headers": {
+              "Authorization": "Bearer <JWT_TOKEN>"
+            },
+            "params": {
+              "id": "string (Meal ID, required)"
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Meal deleted successfully.",
+              "body": {
+                "message": "Meal deleted successfully"
+              }
+            },
+            "401": {
+              "description": "Authentication required.",
+              "body": {
+                "error": "Authentication required"
+              }
+            },
+            "404": {
+              "description": "Meal not found or not authorized.",
+              "body": {
+                "error": "Meal not found or not authorized"
+              }
+            },
+            "500": {
+              "description": "Internal server error.",
+              "body": {
+                "error": "An error occurred while deleting the meal"
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}
