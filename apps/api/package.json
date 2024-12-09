@@ -1,0 +1,25 @@
+{
+  "name": "api",
+  "version": "0.0.1",
+  "description": "FoodForNow Express API Server",
+  "main": "./src/server.js",
+  "scripts": {
+    "dev": "node --watch --env-file=.env ./src/server.js",
+    "start": "node --env-file=.env ./src/server.js",
+    "test": "npx jest",
+    "format": "prettier --write ."
+  },
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "cookie-parser": "^1.4.7",
+    "express": "^4.21.2",
+    "joi": "^17.13.3",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.8.3",
+    "morgan": "^1.10.0",
+    "uuid": "^11.0.3"
+  },
+  "devDependencies": {
+    "prettier": "^3.3.3"
+  }
+}
