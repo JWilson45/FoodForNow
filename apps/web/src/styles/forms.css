@@ -1,0 +1,68 @@
+/* General Styles for Forms */
+form {
+  background: rgba(0, 0, 0, 0.8);
+  border: 2px solid #007aff;
+  border-radius: 12px;
+  box-shadow:
+    0 0 10px rgba(0, 122, 255, 0.4),
+    0 0 30px rgba(0, 122, 255, 0.4);
+  padding: 20px;
+  width: 90%;
+  max-width: 400px;
+  margin: 20px auto;
+  animation: fadeIn 2s ease-in-out;
+}
+
+/* Label Styles */
+label {
+  display: block;
+  margin-bottom: 8px;
+  color: #d1d1d6;
+  font-weight: 600;
+}
+
+/* Input and Textarea Styles */
+input,
+textarea {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 20px;
+  background: #333;
+  color: #fff;
+  border: 1px solid #555;
+  border-radius: 10px;
+  font-size: 1rem;
+  outline: none;
+  box-shadow: 0 0 5px rgba(0, 122, 255, 0.3);
+  transition:
+    box-shadow 0.3s ease,
+    background-color 0.3s ease;
+}
+
+input:focus,
+textarea:focus {
+  background-color: #444;
+  box-shadow:
+    0 0 10px rgba(0, 122, 255, 0.7),
+    0 0 20px rgba(0, 122, 255, 0.7);
+}
+
+input:hover,
+textarea:hover {
+  background-color: #444;
+}
+
+/* Nutrition Fieldset */
+fieldset {
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid #d1d1d6;
+  padding: 20px;
+  margin-top: 20px;
+  box-shadow: 0 0 10px rgba(0, 122, 255, 0.2);
+}
+
+fieldset label {
+  display: block;
+  margin-bottom: 8px;
+  color: #d1d1d6;
+}

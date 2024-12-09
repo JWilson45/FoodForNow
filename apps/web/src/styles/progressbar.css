@@ -1,0 +1,36 @@
+/* Progress Bar Container */
+.progress-bar-container {
+  width: 100%;
+  background-color: #222;
+  border-radius: 10px;
+  margin: 20px 0;
+  border: 1px solid #444;
+}
+
+/* Progress Bar */
+.progress-bar {
+  height: 10px;
+  width: 0;
+  background-color: #ff00ff;
+  border-radius: 10px;
+  transition:
+    width 0.4s ease,
+    background-color 0.4s ease;
+}
+
+/* Password Strength Variants */
+.progress-bar.weak {
+  background-color: #ff4d4d; /* Light Red */
+}
+
+.progress-bar.medium {
+  background-color: #ffae42; /* Orange */
+}
+
+.progress-bar.strong {
+  background-color: #90ee90; /* Light Green */
+}
+
+.progress-bar.very-strong {
+  background-color: #32cd32; /* Strong Green */
+}
