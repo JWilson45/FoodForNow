@@ -60,11 +60,9 @@ const createRecipe = async (req, res) => {
     }
 
     console.error(error);
-    res
-      .status(500)
-      .json({
-        error: 'An unexpected error occurred while creating the recipe',
-      });
+    res.status(500).json({
+      error: 'An unexpected error occurred while creating the recipe',
+    });
   }
 };
 
