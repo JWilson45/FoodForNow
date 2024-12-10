@@ -1,19 +1,14 @@
-// Import the Express framework
 const express = require('express');
-
-// Import service functions for user operations
-const { createUser, signInUser } = require('../../services/users');
-
-// Import the validation middleware
+const {
+  createUser,
+  signInUser,
+  checkIfLoggedIn,
+} = require('../../services/users');
 const validate = require('../../middleware/validate');
-
-// Import validation schemas for user creation and login
 const {
   userValidationSchema,
   userLoginValidationSchema,
 } = require('./validator');
-
-// Create a new router instance for handling user-related routes
 const userRouter = express.Router();
 
 /**
@@ -33,6 +28,14 @@ userRouter.post(
   validate(userLoginValidationSchema, 'body'),
   signInUser
 );
+
+/**
+ * Route to check if a user is logged in.
+ * - Calls the checkIfLoggedIn service function to check and decode the token.
+ */
+userRouter.get('/check', (req, res) => {
+  checkIfLoggedIn(req, res);
+});
 
 /**
  * Catch-all route for the base `/` path of this router.

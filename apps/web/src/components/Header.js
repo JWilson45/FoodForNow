@@ -4,37 +4,68 @@ import Link from 'next/link';
 import { useState, useEffect } from 'react';
 
 export default function Header() {
-  const [isAuthenticated, setIsAuthenticated] = useState(null); // Initialize as null
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
-    const token = localStorage.getItem('authToken');
-    setIsAuthenticated(!!token);
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+
+    async function checkLogin() {
+      try {
+        const res = await fetch('/api/users/check', {
+          credentials: 'include',
+        });
+        if (res.ok) {
+          const data = await res.json();
+          setUser(data.user);
+          localStorage.setItem('user', JSON.stringify(data.user));
+        } else {
+          setUser(null);
+          localStorage.removeItem('user');
+        }
+      } catch (error) {
+        console.error('Error checking login status:', error);
+        setUser(null);
+        localStorage.removeItem('user');
+      }
+    }
+
+    checkLogin();
   }, []);
 
-  if (isAuthenticated === null) {
-    // Optionally, render a loading state or nothing to prevent mismatches
-    return null;
+  function handleLogout() {
+    setUser(null);
+    localStorage.removeItem('user');
   }
 
   return (
-    <header className="bg-navbar-green">
-      <nav className="max-w-7xl mx-auto flex items-center justify-between py-4 px-6">
+    <header
+      className="bg-primary-blue shadow-md sticky top-0 z-50"
+      role="banner"
+      aria-label="Site Header"
+    >
+      <nav
+        className="max-w-7xl mx-auto flex items-center justify-between py-4 px-6"
+        role="navigation"
+        aria-label="Main navigation"
+      >
+        {/* Logo Placeholder as Home Link */}
         <div className="text-white text-2xl font-bold">
-          <Link href="/">Food For Now</Link>
+          <Link href="/" aria-label="Food For Now Home">
+            Food For Now
+          </Link>
         </div>
-        <ul className="hidden md:flex gap-6">
-          {/* Common Links */}
-          <li>
-            <Link href="/" className="text-white text-base hover:underline">
-              Home
-            </Link>
-          </li>
+
+        {/* Navigation Links */}
+        <ul className="flex gap-6 items-center">
           <li>
             <Link
               href="/viewMeals"
               className="text-white text-base hover:underline"
             >
-              View Meals
+              Explore Meals
             </Link>
           </li>
           <li>
@@ -42,7 +73,7 @@ export default function Header() {
               href="/createMeal"
               className="text-white text-base hover:underline"
             >
-              Create Meal
+              Add Meal
             </Link>
           </li>
           <li>
@@ -50,7 +81,7 @@ export default function Header() {
               href="/createIngredient"
               className="text-white text-base hover:underline"
             >
-              Ingredients
+              Add Ingredients
             </Link>
           </li>
           <li>
@@ -58,7 +89,7 @@ export default function Header() {
               href="/createRecipe"
               className="text-white text-base hover:underline"
             >
-              Recipes
+              Add Recipes
             </Link>
           </li>
           <li>
@@ -66,16 +97,17 @@ export default function Header() {
               href="/cookbook"
               className="text-white text-base hover:underline"
             >
-              Cookbook
+              My Cookbook
             </Link>
           </li>
-          {/* Conditional Links */}
-          {!isAuthenticated ? (
+
+          {/* User Authentication Section */}
+          {!user ? (
             <>
               <li>
                 <Link
                   href="/signup"
-                  className="text-white text-base hover:underline"
+                  className="text-white text-base font-semibold bg-button-blue hover:bg-button-blue-hover px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
                 >
                   Sign Up
                 </Link>
@@ -83,7 +115,7 @@ export default function Header() {
               <li>
                 <Link
                   href="/signin"
-                  className="text-white text-base hover:underline"
+                  className="text-white text-base font-semibold bg-gray-600 hover:bg-gray-500 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-300"
                 >
                   Sign In
                 </Link>
@@ -92,17 +124,18 @@ export default function Header() {
           ) : (
             <>
               <li>
-                <Link
-                  href="/profile"
-                  className="text-white text-base hover:underline"
+                <span
+                  className="text-white text-base font-semibold"
+                  aria-label={`Logged in as ${user.username}`}
                 >
-                  Profile
-                </Link>
+                  {user.username}
+                </span>
               </li>
               <li>
                 <button
                   onClick={handleLogout}
-                  className="text-white text-base hover:underline"
+                  className="text-white text-base font-semibold bg-red-600 hover:bg-red-500 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-300"
+                  aria-label="Logout"
                 >
                   Logout
                 </button>
@@ -113,14 +146,4 @@ export default function Header() {
       </nav>
     </header>
   );
-
-  function handleLogout() {
-    localStorage.removeItem('authToken');
-    setIsAuthenticated(false);
-    // Optionally, redirect or inform the server
-  }
 }
-
-Header.propTypes = {
-  // Define propTypes if there are any props passed to Header
-};

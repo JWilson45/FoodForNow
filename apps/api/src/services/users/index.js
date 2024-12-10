@@ -126,4 +126,31 @@ const signInUser = async (req, res) => {
   }
 };
 
-module.exports = { createUser, signInUser }; // Export the functions for use in other parts of the application
+// Function to check if a user is logged in and decode the token
+const checkIfLoggedIn = (req, res) => {
+  const token = req.cookies.authToken;
+
+  // Check if the token is missing
+  if (!token) {
+    return res.status(401).json({ error: 'User is not logged in' });
+  }
+
+  try {
+    // Decode the token using the secret key
+    const decoded = jwt.decode(token);
+
+    // Return the decoded token data
+    return res.status(200).json({
+      message: 'User is logged in',
+      user: {
+        userId: decoded.userId,
+        username: decoded.username,
+      },
+    });
+  } catch (error) {
+    // Handle invalid or expired token
+    return res.status(401).json({ error: 'Invalid or expired token' });
+  }
+};
+
+module.exports = { createUser, signInUser, checkIfLoggedIn }; // Export the functions for use in other parts of the application

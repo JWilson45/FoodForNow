@@ -9,8 +9,9 @@ module.exports = {
       colors: {
         background: 'var(--background)',
         foreground: 'var(--foreground)',
+        'primary-blue': '#005bb5',
+        'primary-blue-hover': '#0047a8',
         'navbar-green': '#4caf50',
-        'navbar-green-hover': '#45a049',
         'button-blue': '#007aff',
         'button-blue-hover': '#006ae6',
         'button-blue-active': '#005bb5',
