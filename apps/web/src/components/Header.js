@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
+import config from '@/config'; // Ensure this path is correct
 
 export default function Header() {
   const [user, setUser] = useState(null);
@@ -14,7 +15,7 @@ export default function Header() {
 
     async function checkLogin() {
       try {
-        const res = await fetch('/api/users/check', {
+        const res = await fetch(`${config.apiBaseUrl}/users/check`, {
           credentials: 'include',
         });
         if (res.ok) {
