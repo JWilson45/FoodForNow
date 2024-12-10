@@ -1,3 +1,4 @@
+// /Users/jasonwilson/git/FoodForNow/apps/web/src/components/Header.js
 'use client';
 
 import Link from 'next/link';
@@ -16,7 +17,7 @@ export default function Header() {
     async function checkLogin() {
       try {
         const res = await fetch(`${config.apiBaseUrl}/users/check`, {
-          credentials: 'include',
+          credentials: 'include', // Include cookies in the request
         });
         if (res.ok) {
           const data = await res.json();
@@ -36,9 +37,27 @@ export default function Header() {
     checkLogin();
   }, []);
 
-  function handleLogout() {
-    setUser(null);
-    localStorage.removeItem('user');
+  // Updated handleLogout function
+  async function handleLogout() {
+    try {
+      const res = await fetch(`${config.apiBaseUrl}/users/logout`, {
+        method: 'POST',
+        credentials: 'include', // Include cookies in the request
+      });
+
+      if (res.ok) {
+        setUser(null);
+        localStorage.removeItem('user');
+        // Optionally, redirect to the home page or show a success message
+        window.location.href = '/'; // Redirect to home page after logout
+      } else {
+        console.error('Failed to logout');
+        // Optionally, display an error message to the user
+      }
+    } catch (error) {
+      console.error('Error during logout:', error);
+      // Optionally, display an error message to the user
+    }
   }
 
   return (

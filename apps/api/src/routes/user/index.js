@@ -38,6 +38,19 @@ userRouter.get('/check', (req, res) => {
 });
 
 /**
+ * Route to handle user logout.
+ * - Clears the authToken cookie.
+ */
+userRouter.post('/logout', (_, res) => {
+  res.clearCookie('authToken', {
+    httpOnly: true, // Ensures the cookie is not accessible via JavaScript
+    secure: process.env.NODE_ENV === 'production', // Ensures the cookie is sent over HTTPS in production
+    sameSite: 'strict', // Restricts the cookie to same-site requests
+  });
+  return res.status(200).json({ message: 'Logged out successfully' });
+});
+
+/**
  * Catch-all route for the base `/` path of this router.
  * Responds with a 200 status and a message indicating the users endpoint.
  */
