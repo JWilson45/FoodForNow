@@ -37,9 +37,6 @@ app.use(cookieParser());
 // Routes
 app.use('/api', routes);
 
-// Serve Static Files (if any)
-app.use(express.static('public'));
-
 // 404 Handler for Undefined Routes
 app.use((_, res) => {
   res.status(404).json({ error: 'Route not found' });
