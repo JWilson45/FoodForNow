@@ -1,0 +1,80 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background-light: #ffffff;
+  --foreground-light: #171717;
+  --background-dark: #0a0a0a;
+  --foreground-dark: #ededed;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: var(--background-dark);
+    --foreground: var(--foreground-dark);
+  }
+}
+@media (prefers-color-scheme: light) {
+  :root {
+    --background: var(--background-light);
+    --foreground: var(--foreground-light);
+  }
+}
+
+html,
+body {
+  @apply h-full m-0 p-0;
+  /* Removed overflow-hidden to allow scrolling */
+}
+
+body {
+  @apply bg-background text-foreground font-sans flex flex-col min-h-screen;
+  /* Added min-h-screen to ensure the body takes at least the full viewport height */
+}
+
+main {
+  @apply flex-grow overflow-y-auto px-4 py-6 container mx-auto;
+  /* Ensure main can grow and scroll independently */
+}
+
+footer {
+  @apply bg-gray-800 text-white py-4;
+}
+
+/* Accessible focus outlines */
+:focus {
+  outline: 2px solid #007aff;
+  outline-offset: 2px;
+}
+
+@layer utilities {
+  .bg-background {
+    background-color: var(--background);
+  }
+  .text-foreground {
+    color: var(--foreground);
+  }
+}
+
+@layer components {
+  .form-input {
+    @apply w-full p-3 bg-gray-700 text-white rounded-lg border border-gray-600 outline-none focus:bg-gray-600 focus:shadow-custom-hover transition;
+  }
+
+  .form-textarea {
+    @apply w-full p-3 bg-gray-700 text-white rounded-lg border border-gray-600 outline-none focus:bg-gray-600 focus:shadow-custom-hover transition;
+  }
+
+  .btn {
+    @apply px-4 py-2 rounded-lg text-white transition;
+  }
+
+  .btn-primary {
+    @apply bg-button-blue hover:bg-button-blue-hover;
+  }
+
+  .btn-secondary {
+    @apply bg-gray-600 hover:bg-gray-500;
+  }
+}
