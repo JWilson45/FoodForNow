@@ -1,38 +1,61 @@
-lib-cov
-*.seed
-*.log
-*.csv
-*.dat
-*.out
-*.pid
-*.gz
-*.swp
+# Dependency directories
+node_modules/
+**/node_modules/
 
-pids
-logs
-results
-tmp
+bower_components/
+
+# Logs
+*.log
+logs/
+pids/
+*.pid
 
 # Coverage reports
-coverage
+coverage/
+
+# Temporary files
+tmp/
+temp/
+*.swp
+*.swo
+
+# Built files
+dist/
+**/dist/
+.next/
+**/.next/
+build/
+**/build/
 
 # API keys and secrets
 .env
-
-# Dependency directory
-node_modules
-bower_components
-
-# Editors
-.idea
-*.iml
+.env.local
+.env.development
+.env.test
+.env.production
 
 # OS metadata
 .DS_Store
 Thumbs.db
 
-# Ignore built ts files
-dist/**/*
+# Editors and IDEs
+.idea/
+.vscode/
+*.iml
 
-# ignore yarn.lock
+# TypeScript
+*.tsbuildinfo
+
+# Other system files
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# Ignore lock files for other package managers
 yarn.lock
+package-lock.json
+
+# Optional: Ignore specific project files
+*.sublime-project
+*.sublime-workspace

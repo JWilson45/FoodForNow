@@ -1,34 +1,16 @@
 {
-  "name": "foodfornow",
-  "version": "0.0.1",
-  "description": "FoodForNow",
-  "main": "./src/server.js",
+  "name": "recipe-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "apps/*"
+  ],
   "scripts": {
-    "test": "npx jest",
-    "killmsg": "echo \"Why would you kill me? I am dead now.\"",
-    "dev": "node --watch --env-file=.env ./src/server.js",
-    "start": "node --env-file=.env ./src/server.js",
-    "format": "prettier --write ."
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/JWilson45/FoodForNow.git"
-  },
-  "author": "Jason Wilson",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/JWilson45/FoodForNow/issues"
-  },
-  "homepage": "https://github.com/JWilson45/FoodForNow#readme",
-  "dependencies": {
-    "bcrypt": "^5.1.1",
-    "cookie-parser": "^1.4.7",
-    "express": "^4.21.2",
-    "joi": "^17.13.3",
-    "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.8.3",
-    "morgan": "^1.10.0",
-    "uuid": "^11.0.3"
+    "dev:api": "npm run dev --workspace=api",
+    "dev:web": "npm run dev --workspace=web",
+    "dev": "npm run dev:api & npm run dev:web",
+    "format": "npm run format --workspaces",
+    "test": "npm run test --workspaces"
   },
   "devDependencies": {
     "prettier": "^3.3.3"
