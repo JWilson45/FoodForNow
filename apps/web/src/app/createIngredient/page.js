@@ -8,6 +8,7 @@ import Textarea from '@/components/Textarea';
 import Checkbox from '@/components/Checkbox';
 import Button from '@/components/Button';
 import ProgressBar from '@/components/ProgressBar';
+import config from '@/config';
 
 export default function CreateIngredient() {
   const [formData, setFormData] = useState({
@@ -20,11 +21,22 @@ export default function CreateIngredient() {
     fiber: '',
   });
   const [nutritionVisible, setNutritionVisible] = useState(false);
+  const [formErrors, setFormErrors] = useState({});
   const [progress, setProgress] = useState(0);
   const [strength, setStrength] = useState('weak');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const errors = {};
+    if (!formData.name.trim()) {
+      errors.name = 'Ingredient name is required.';
+    }
+    if (Object.keys(errors).length > 0) {
+      setFormErrors(errors);
+      return;
+    }
+
     const data = {
       name: formData.name.trim(),
       description: formData.description.trim() || undefined,
@@ -39,56 +51,48 @@ export default function CreateIngredient() {
       },
     };
 
-    if (!data.name) {
-      alert('Please provide a name for the ingredient.');
-      return;
-    }
-
-    const res = await fetch('/api/ingredients', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
-    });
-
-    if (res.ok) {
-      alert('Ingredient added successfully!');
-      setFormData({
-        name: '',
-        description: '',
-        calories: '',
-        fat: '',
-        protein: '',
-        carbohydrates: '',
-        fiber: '',
+    try {
+      const res = await fetch(`${config.apiBaseUrl}/ingredients`, {
+        method: 'POST',
+        credentials: 'include', // Include cookies in the request
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
       });
-      setProgress(0);
-      setStrength('weak');
-    } else {
-      const err = await res.json();
-      alert(err.error || 'An error occurred.');
+
+      if (res.ok) {
+        alert('Ingredient created successfully!');
+        setFormData({
+          name: '',
+          description: '',
+          calories: '',
+          fat: '',
+          protein: '',
+          carbohydrates: '',
+          fiber: '',
+        });
+        setFormErrors({});
+        setProgress(0);
+        setStrength('weak');
+      } else {
+        const errData = await res.json();
+        if (errData.errors && Array.isArray(errData.errors)) {
+          const newErrors = {};
+          errData.errors.forEach((error) => {
+            newErrors[error.field] = error.message;
+          });
+          setFormErrors(newErrors);
+        } else {
+          alert(errData.error || 'An error occurred.');
+        }
+      }
+    } catch (error) {
+      console.error('Error creating ingredient:', error);
+      alert('An unexpected error occurred. Please try again.');
     }
   };
 
   const handleNutritionToggle = () => {
     setNutritionVisible(!nutritionVisible);
-  };
-
-  const handlePasswordStrength = (value) => {
-    // Example logic for progress and strength based on input value
-    const len = value.length;
-    if (len < 4) {
-      setProgress(25);
-      setStrength('weak');
-    } else if (len < 8) {
-      setProgress(50);
-      setStrength('medium');
-    } else if (len < 12) {
-      setProgress(75);
-      setStrength('strong');
-    } else {
-      setProgress(100);
-      setStrength('very-strong');
-    }
   };
 
   return (
@@ -109,6 +113,17 @@ export default function CreateIngredient() {
           >
             Create Ingredient
           </h2>
+
+          {/* Error Handling */}
+          {Object.keys(formErrors).length > 0 && (
+            <div className="mb-4">
+              {Object.entries(formErrors).map(([key, message]) => (
+                <p key={key} className="text-red-500">
+                  {message}
+                </p>
+              ))}
+            </div>
+          )}
 
           {/* Name */}
           <div>
