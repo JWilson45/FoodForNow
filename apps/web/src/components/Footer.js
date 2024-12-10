@@ -1,6 +1,6 @@
 export default function Footer() {
   return (
-    <footer className="bg-gray-800 text-white py-4 mt-10">
+    <footer className="bg-gray-800 text-white py-4">
       <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
         <p>&copy; 2024 FoodForNow. All Rights Reserved.</p>
         <div className="flex gap-4">

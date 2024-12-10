@@ -1,3 +1,4 @@
+// page.js
 'use client';
 import Head from 'next/head';
 import Button from '@/components/Button';
@@ -9,7 +10,7 @@ export default function LandingPage() {
         <title>Food For Now - Welcome</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       </Head>
-      <main className="flex flex-col items-center justify-center min-h-screen bg-background text-foreground">
+      <main className="flex-grow flex flex-col items-center justify-center bg-background text-foreground">
         <section className="w-full max-w-2xl text-center p-8 bg-black/80 border-2 border-button-blue rounded-xl shadow-custom animate-fadeIn">
           <h1 className="text-4xl font-bold text-white mb-4">
             Welcome to the Future of Food
