@@ -9,7 +9,6 @@ const {
   userValidationSchema,
   userLoginValidationSchema,
 } = require('./validator');
-
 const userRouter = express.Router();
 
 /**
@@ -17,10 +16,7 @@ const userRouter = express.Router();
  * - Validates the request body using the userValidationSchema.
  * - Calls the createUser service function to process the request.
  */
-userRouter.post('/signup', (req, res, next) => {
-  console.log('Incoming request to /signup:', req.body);
-  next();
-}, validate(userValidationSchema, 'body'), createUser);
+userRouter.post('/', validate(userValidationSchema, 'body'), createUser);
 
 /**
  * Route to handle user login.
