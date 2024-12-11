@@ -54,7 +54,7 @@ export default function Signup() {
 
     try {
       // Here we can use Joi or a simple check based on the validator.js schema
-      const response = await fetch(`${config.apiBaseUrl}/users/signup`, {
+      const response = await fetch(`${config.apiBaseUrl}/users`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -176,7 +176,10 @@ export default function Signup() {
           </div>
 
           <div className="mb-4">
-            <ProgressBar value={passwordStrength} strength={['weak', 'medium', 'strong'][passwordStrength - 1]} />
+            <ProgressBar
+              value={passwordStrength}
+              strength={['weak', 'medium', 'strong'][passwordStrength - 1]}
+            />
           </div>
 
           <div className="mb-4">
