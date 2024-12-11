@@ -34,8 +34,11 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-// Routes
-app.use('/api', routes);
+// Debugging Middleware for API Requests
+app.use('/api', (req, res, next) => {
+  console.log(`Incoming API request: ${req.method} ${req.originalUrl}`);
+  next();
+}, routes);
 
 // 404 Handler for Undefined Routes
 app.use((_, res) => {
@@ -48,6 +51,11 @@ app.use(errorHandler);
 // Start Server after Database Connection
 const PORT = process.env.PORT || 9696;
 app.listen(PORT, async () => {
-  await connectDB(); // Ensure database is connected before starting the server
-  console.log(`Server is running on port ${PORT}`);
+  try {
+    await connectDB(); // Ensure database is connected before starting the server
+    console.log(`Server is running on port ${PORT}`);
+  } catch (error) {
+    console.error('Failed to start server:', error);
+    process.exit(1); // Exit the process if the server fails to start
+  }
 });

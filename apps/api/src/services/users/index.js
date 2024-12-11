@@ -5,83 +5,60 @@ const jwt = require('jsonwebtoken'); // Import jsonwebtoken for generating JWT t
 // Controller function to create a new user
 const createUser = async (req, res) => {
   try {
-    // Destructure the necessary fields from the request body
-    const {
-      firstName,
-      lastName,
-      username,
-      password,
-      email,
-      dateOfBirth,
-      phoneNumber,
-      profilePicture,
-    } = req.body;
+    console.log('Incoming data for user creation:', req.body); // Log the incoming request
 
-    // Hash the password using bcrypt
-    const salt = await bcrypt.genSalt(10); // Generate a salt with 10 rounds
-    const hashedPassword = await bcrypt.hash(password, salt); // Hash the password with the salt
+    const { firstName, lastName, username, password, email, dateOfBirth } = req.body;
 
-    // Create a new User instance with the provided data
+    // Validate critical fields
+    if (!firstName || !username || !password || !email) {
+      return res.status(400).json({ error: 'Missing required fields' });
+    }
+
+    if (typeof firstName !== 'string' || typeof username !== 'string' || typeof email !== 'string') {
+      return res.status(400).json({ error: 'Invalid data types' });
+    }
+
+    // Hash the password
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Create a new user
     const newUser = new User({
       firstName,
-      lastName,
+      lastName: lastName || null, // Handle optional fields
       username,
       hashedPassword,
       email,
-      dateOfBirth,
-      phoneNumber,
-      profilePicture,
+      dateOfBirth: dateOfBirth || null, // Handle optional fields
     });
 
-    // Save the new user to the database
     await newUser.save();
 
-    // Return a success response with the newly created user's details (excluding password)
-    res.status(201).json({
-      message: 'User created successfully',
-      user: {
-        id: newUser._id,
-        fullName: newUser.fullName, // Full name based on the user's first and last name
-        email: newUser.maskedEmail, // Masked email for privacy
-        recentlyLoggedIn: newUser.recentlyLoggedIn, // Boolean to check if the user logged in recently
-        isActive: newUser.isActive, // Boolean to check if the user is active
-        username: newUser.username, // The username of the user
-      },
-    });
+    console.log('User created successfully:', newUser._id); // Log the new user's ID
+
+    res.status(201).json({ message: 'User created successfully', userId: newUser._id });
   } catch (error) {
-    // Handle errors during user creation
+    console.error('Error during user creation:', error.message); // Log the error
+
     if (error.code === 11000) {
-      // Duplicate key error (e.g., username or email already exists)
-      console.log(error.errorResponse);
-
-      return res.status(409).json({
-        error: 'User Already Exists',
-        keyPattern: error.errorResponse?.keyPattern, // Return the key that caused the conflict
-      });
+      return res.status(409).json({ error: 'Username or email already exists' });
     }
 
-    // Handle validation errors (if any)
-    if (error.name === 'ValidationError') {
-      return res.status(400).json({ error: error.message });
-    }
-
-    // General error handling for unexpected errors
-    console.error(error);
-    res
-      .status(500)
-      .json({ error: 'An unexpected error occurred while creating the user' });
+    res.status(500).json({ error: 'Internal server error' });
   }
 };
 
 // Controller function to sign in an existing user
 const signInUser = async (req, res) => {
   try {
+    console.log('Incoming data for sign-in:', req.body); // Log incoming request body
+
     const { username, password } = req.body;
 
     const user = await User.findOne({ username }).collation({
       locale: 'en',
       strength: 2,
     });
+
     if (!user) {
       return res.status(404).json({ error: 'Invalid username or password' });
     }
@@ -107,6 +84,8 @@ const signInUser = async (req, res) => {
       maxAge: 3600000, // Set cookie expiration time (1 hour)
     });
 
+    console.log('User signed in successfully:', user._id); // Log the user's ID
+
     // Return a success response with user details (excluding password)
     res.status(200).json({
       message: 'Sign-in successful',
@@ -120,8 +99,7 @@ const signInUser = async (req, res) => {
       },
     });
   } catch (error) {
-    // Handle errors during sign-in
-    console.error('Error during sign-in:', error.message);
+    console.error('Error during sign-in:', error.message); // Log the error
     res.status(500).json({ error: 'Internal server error' });
   }
 };
@@ -139,6 +117,8 @@ const checkIfLoggedIn = (req, res) => {
     // Decode the token using the secret key
     const decoded = jwt.decode(token);
 
+    console.log('User is logged in:', decoded.userId); // Log the user's ID from the token
+
     // Return the decoded token data
     return res.status(200).json({
       message: 'User is logged in',
@@ -148,7 +128,7 @@ const checkIfLoggedIn = (req, res) => {
       },
     });
   } catch (error) {
-    // Handle invalid or expired token
+    console.error('Error decoding token:', error.message); // Log the error
     return res.status(401).json({ error: 'Invalid or expired token' });
   }
 };

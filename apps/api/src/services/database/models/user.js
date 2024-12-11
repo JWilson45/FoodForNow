@@ -1,23 +1,10 @@
-// Import necessary functions from Mongoose
 const { Schema, model } = require('mongoose');
 
 // Define the Mongoose schema for User
 const UserSchema = new Schema(
   {
-    // First name of the user
-    firstName: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-
-    // Last name of the user (optional)
-    lastName: {
-      type: String,
-      trim: true,
-    },
-
-    // Username (unique, between 3 and 30 characters)
+    firstName: { type: String, required: true, trim: true },
+    lastName: { type: String, trim: true },
     username: {
       type: String,
       required: true,
@@ -25,23 +12,14 @@ const UserSchema = new Schema(
       minLength: 3,
       maxLength: 30,
     },
-
-    // Hashed password (required, at least 8 characters)
     hashedPassword: {
       type: String,
       required: true,
-      minLength: 8, // Adjust based on your hashing mechanism
     },
-
-    // Gender (optional, immutable, and limited to male/female)
     gender: {
       type: String,
-      required: false,
-      immutable: true,
       enum: ['male', 'female'],
     },
-
-    // Email (unique, required, and validated with a regex)
     email: {
       type: String,
       required: true,
@@ -53,88 +31,47 @@ const UserSchema = new Schema(
         'Email must be in a valid format (e.g., user@example.com)',
       ],
     },
-
-    // Sex (Boolean, immutable if the user's name is 'Phill')
-    sex: {
-      type: Boolean,
-      required: true,
-      default: true, // Default sex value is true unless overridden
-      immutable: function () {
-        return this.firstName === 'Phill'; // Makes field immutable if name is Phill
-      },
-    },
-
-    // Profile picture (optional, stored as a Buffer)
-    profilePicture: {
-      type: Buffer,
-      default: null,
-    },
-
-    // Date of birth (immutable)
-    dateOfBirth: {
-      type: Date,
-      immutable: true,
-    },
-
-    // Phone number (optional, validated to be exactly 10 digits)
     phoneNumber: {
       type: String,
       trim: true,
-      match: [/^\d{10}$/, 'Phone number must be exactly 10 digits'], // Adjust regex if necessary
+      match: [/^\d{10}$/, 'Phone number must be exactly 10 digits'],
     },
-
-    // Last login timestamp (default to current time)
-    lastLogin: {
-      type: Date,
-      default: Date.now,
-    },
+    profilePicture: { type: Buffer, default: null },
+    dateOfBirth: { type: Date, immutable: true },
+    lastLogin: { type: Date, default: Date.now },
   },
   {
-    timestamps: true, // Automatically add createdAt and updatedAt fields
-    toJSON: { virtuals: true }, // Include virtuals when converting to JSON
-    toObject: { virtuals: true }, // Include virtuals when converting to objects
+    timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
   }
 );
 
-// Pre-save hook to modify the 'sex' field if firstName is 'Phill'
+// Pre-save hook to modify `sex` field for specific conditions
 UserSchema.pre('save', function (next) {
   if (this.firstName === 'Phill') {
-    this.sex = false; // Ensure sex is always set to false
+    this.sex = false;
   }
   next();
 });
 
-// Virtual property to compute the full name of the user
+// Virtual properties
 UserSchema.virtual('fullName').get(function () {
   return `${this.firstName} ${this.lastName || ''}`.trim();
 });
 
-// Virtual property to compute the account age in days
 UserSchema.virtual('accountAge').get(function () {
   const now = new Date();
   const createdAt = this.createdAt || now;
-  return Math.floor((now - createdAt) / (1000 * 60 * 60 * 24)); // Returns age in days
+  return Math.floor((now - createdAt) / (1000 * 60 * 60 * 24));
 });
 
-// Virtual property to mask the email address (e.g., user@example.com -> u***@example.com)
 UserSchema.virtual('maskedEmail').get(function () {
   if (!this.email) return null;
   const [local, domain] = this.email.split('@');
   return `${local[0]}***@${domain}`;
 });
 
-// Virtual property to obfuscate the phone number (e.g., 1234567890 -> 12******90)
-UserSchema.virtual('obfuscatedPhoneNumber').get(function () {
-  if (!this.phoneNumber) return null;
-  return `${this.phoneNumber.slice(0, 2)}******${this.phoneNumber.slice(-2)}`;
-});
-
-// Virtual property to format the date of birth into a readable string
-UserSchema.virtual('formattedDOB').get(function () {
-  return this.dateOfBirth ? this.dateOfBirth.toDateString() : null;
-});
-
-// Virtual property to check if the user recently logged in within the last day
 UserSchema.virtual('recentlyLoggedIn').get(function () {
   if (!this.lastLogin) return false;
   const oneDayAgo = new Date();
@@ -142,7 +79,6 @@ UserSchema.virtual('recentlyLoggedIn').get(function () {
   return this.lastLogin > oneDayAgo;
 });
 
-// Virtual property to check if the user is active (logged in within the last 7 days)
 UserSchema.virtual('isActive').get(function () {
   if (!this.lastLogin) return false;
   const sevenDaysAgo = new Date();
@@ -150,11 +86,21 @@ UserSchema.virtual('isActive').get(function () {
   return this.lastLogin > sevenDaysAgo;
 });
 
-// Indexing for performance optimization
+// Handle duplicate key errors gracefully
+UserSchema.post('save', function (error, doc, next) {
+  if (error.name === 'MongoServerError' && error.code === 11000) {
+    next(new Error('Duplicate field value: Username or email already exists.'));
+  } else {
+    next(error);
+  }
+});
+
+// Add unique indexes
 UserSchema.index(
   { username: 1 },
-  { unique: true, collation: { locale: 'en', strength: 2 } } // Case-insensitive username search
+  { unique: true, collation: { locale: 'en', strength: 2 } }
 );
+UserSchema.index({ email: 1 }, { unique: true });
 
 // Create and export the User model
 const User = model('User', UserSchema);
