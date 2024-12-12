@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 import SearchableDropdown from './SearchableDropdown';
 import PropTypes from 'prop-types';
@@ -5,10 +7,7 @@ import PropTypes from 'prop-types';
 /**
  * IngredientSelect Component
  *
- * @param {function} onSelect - Callback when an ingredient is selected.
- * @param {boolean} required - Whether the field is required.
- * @param {string} name - Name attribute for the input.
- * @param {string} label - Label for the dropdown.
+ * Uses SearchableDropdown to load ingredients from the API.
  */
 const IngredientSelect = ({ onSelect, required, name, label }) => {
   const handleSelect = (selectedOption) => {

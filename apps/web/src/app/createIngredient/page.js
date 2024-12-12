@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Navbar } from '@/components/navbar';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -131,7 +130,6 @@ export default function CreateIngredient() {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navbar />
       <main className="max-w-2xl mx-auto py-6 sm:px-6 lg:px-8">
         <Card>
           <CardHeader>

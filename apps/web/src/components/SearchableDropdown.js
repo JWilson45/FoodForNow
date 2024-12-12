@@ -5,16 +5,6 @@ import Select from 'react-select';
 import PropTypes from 'prop-types';
 import config from '@/config'; // Ensure config.apiBaseUrl is correctly set
 
-/**
- * SearchableDropdown Component
- *
- * @param {string} label - Label for the dropdown.
- * @param {string} apiEndpoint - API endpoint to fetch options.
- * @param {function} onChange - Callback when an option is selected.
- * @param {boolean} required - Whether the field is required.
- * @param {string} placeholder - Placeholder text for the dropdown.
- * @param {string} name - Name attribute for the input.
- */
 const SearchableDropdown = ({
   label,
   apiEndpoint,
@@ -32,7 +22,7 @@ const SearchableDropdown = ({
       setIsLoading(true);
       try {
         const response = await fetch(`${config.apiBaseUrl}${apiEndpoint}`, {
-          credentials: 'include', // Include cookies in the request
+          credentials: 'include',
         });
 
         if (!response.ok) {
@@ -40,8 +30,7 @@ const SearchableDropdown = ({
         }
 
         const data = await response.json();
-
-        // Determine the key based on the endpoint
+        // Determine the data key based on the endpoint
         let dataKey = '';
         if (apiEndpoint.includes('recipes')) {
           dataKey = 'recipes';
@@ -53,7 +42,7 @@ const SearchableDropdown = ({
 
         setOptions(
           (data[dataKey] || []).map((item) => ({
-            value: item.id || item._id, // Handle both 'id' and '_id'
+            value: item._id || item.id,
             label: item.name,
           }))
         );
@@ -101,7 +90,7 @@ const SearchableDropdown = ({
 
 SearchableDropdown.propTypes = {
   label: PropTypes.string.isRequired,
-  apiEndpoint: PropTypes.string.isRequired, // Now required
+  apiEndpoint: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,
   required: PropTypes.bool,
   placeholder: PropTypes.string,

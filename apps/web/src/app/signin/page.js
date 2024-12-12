@@ -5,7 +5,7 @@ import config from '@/config';
 import Button from '@/components/Button';
 import Label from '@/components/Label';
 import Input from '@/components/Input';
-import Checkbox from '@/components/Checkbox';
+import Checkbox from '@/components/ui/Checkbox';
 
 export default function SignInPage() {
   const [formData, setFormData] = useState({
