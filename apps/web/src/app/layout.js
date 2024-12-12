@@ -24,3 +24,43 @@ export default function RootLayout({ children }) {
     </html>
   );
 }
+
+// import type { Metadata } from 'next'
+// import { Inter } from 'next/font/google'
+// import './globals.css'
+// import { ThemeProvider } from "@/components/theme-provider"
+// import { Toaster } from "@/components/ui/toaster"
+// import { Header } from "@/components/header"
+
+// const inter = Inter({ subsets: ['latin'] })
+
+// export const metadata: Metadata = {
+//   title: 'FoodForNow',
+//   description: 'Manage your ingredients, recipes, and meals',
+// }
+
+// export default function RootLayout({
+//   children,
+// }: {
+//   children: React.ReactNode
+// }) {
+//   return (
+//     <html lang="en">
+//       <head>
+//         <link
+//           rel="stylesheet"
+//           href="https://cdnjs.cloudflare.com/ajax/libs/paper-css/0.4.1/paper.min.css"
+//         />
+//       </head>
+//       <body className={inter.className}>
+//         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+//           <Header />
+//           <div className="pt-16">
+//             {children}
+//           </div>
+//           <Toaster />
+//         </ThemeProvider>
+//       </body>
+//     </html>
+//   )
+// }
