@@ -5,24 +5,11 @@ const { Schema, model } = require('mongoose');
 // Define the Mongoose schema for Pantry
 const PantrySchema = new Schema(
   {
-    // Name of the ingredient
-    name: {
-      type: String,
+    // Reference to the Ingredient model
+    ingredientId: {
+      type: Schema.Types.ObjectId,
       required: true,
-      trim: true,
-    },
-
-    // Quantity of the ingredient
-    quantity: {
-      type: Number,
-      required: true,
-      min: 1, // Must be at least 1
-    },
-
-    // Unit of measurement (optional)
-    unit: {
-      type: String,
-      trim: true,
+      ref: 'Ingredient', // Assumes a separate Ingredient model
     },
 
     // User ID (reference to the User model)
@@ -30,6 +17,13 @@ const PantrySchema = new Schema(
       type: Schema.Types.ObjectId,
       required: true,
       ref: 'User', // References the User model
+    },
+
+    // Quantity of the ingredient in the pantry
+    quantity: {
+      type: Number,
+      required: true,
+      min: 1, // Must be at least 1
     },
 
     // Date added to pantry
@@ -45,10 +39,12 @@ const PantrySchema = new Schema(
   }
 );
 
-// Virtual property to format the ingredient's full description
-PantrySchema.virtual('fullDescription').get(function () {
-  const quantityString = this.quantity ? `${this.quantity} ${this.unit || ''}`.trim() : '';
-  return `${quantityString} ${this.name}`.trim();
+// Virtual property to retrieve full ingredient details
+PantrySchema.virtual('ingredientDetails', {
+  ref: 'Ingredient',
+  localField: 'ingredientId',
+  foreignField: '_id',
+  justOne: true, // Returns a single ingredient object
 });
 
 // Virtual property to calculate how long the ingredient has been in the pantry (in days)
@@ -58,10 +54,10 @@ PantrySchema.virtual('daysInPantry').get(function () {
   return Math.floor((now - addedAt) / (1000 * 60 * 60 * 24)); // Returns days
 });
 
-// Indexing for optimized queries
+// Index to prevent duplicate entries for the same user and ingredient
 PantrySchema.index(
-  { name: 1, userId: 1 },
-  { unique: true, collation: { locale: 'en', strength: 2 } } // Case-insensitive name per user
+  { ingredientId: 1, userId: 1 },
+  { unique: true } // Ensures each user can only add an ingredient once
 );
 
 // Create and export the Pantry model
