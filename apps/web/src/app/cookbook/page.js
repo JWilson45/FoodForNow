@@ -124,7 +124,7 @@ export default function Cookbook() {
         </div>
       </div>
       <div className="mt-6 text-center">
-        <Button onClick={() => router.push('/create-recipe')}>
+        <Button onClick={() => router.push('/createRecipe')}>
           Add New Recipe
         </Button>
       </div>
