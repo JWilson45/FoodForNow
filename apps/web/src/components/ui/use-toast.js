@@ -1,22 +1,27 @@
 'use client';
 
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useCallback } from 'react';
 
 const ToastContext = createContext();
 
 export const ToastProvider = ({ children }) => {
   const [toasts, setToasts] = useState([]);
 
-  const addToast = (toast) => {
-    const id = Date.now();
-    setToasts((prevToasts) => [...prevToasts, { ...toast, id }]);
-    // Automatically remove the toast after 3 seconds
-    setTimeout(() => removeToast(id), 3000);
-  };
-
-  const removeToast = (id) => {
+  // Stabilize removeToast with useCallback
+  const removeToast = useCallback((id) => {
     setToasts((prevToasts) => prevToasts.filter((toast) => toast.id !== id));
-  };
+  }, []);
+
+  // Stabilize addToast with useCallback and include removeToast in dependencies
+  const addToast = useCallback(
+    (toast) => {
+      const id = Date.now();
+      setToasts((prevToasts) => [...prevToasts, { ...toast, id }]);
+      // Automatically remove the toast after 3 seconds
+      setTimeout(() => removeToast(id), 3000);
+    },
+    [removeToast]
+  );
 
   return (
     <ToastContext.Provider value={{ addToast, removeToast }}>

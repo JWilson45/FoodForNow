@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -23,29 +23,29 @@ export default function Cookbook() {
   const router = useRouter();
   const { addToast } = useToast();
 
-  useEffect(() => {
-    const fetchRecipes = async () => {
-      try {
-        const res = await fetch(`${config.apiBaseUrl}/recipes`, {
-          credentials: 'include',
-        });
-        if (!res.ok) {
-          throw new Error(`Error fetching recipes: ${res.statusText}`);
-        }
-        const data = await res.json();
-        setRecipes(data.recipes || []);
-      } catch (err) {
-        console.error('Error fetching recipes:', err);
-        addToast({
-          title: 'Error',
-          description: 'Failed to fetch recipes. Please try again.',
-          variant: 'destructive',
-        });
+  const fetchRecipes = useCallback(async () => {
+    try {
+      const res = await fetch(`${config.apiBaseUrl}/recipes`, {
+        credentials: 'include',
+      });
+      if (!res.ok) {
+        throw new Error(`Error fetching recipes: ${res.statusText}`);
       }
-    };
-
-    fetchRecipes();
+      const data = await res.json();
+      setRecipes(data.recipes || []);
+    } catch (err) {
+      console.error('Error fetching recipes:', err);
+      addToast({
+        title: 'Error',
+        description: 'Failed to fetch recipes. Please try again.',
+        variant: 'destructive',
+      });
+    }
   }, [addToast]);
+
+  useEffect(() => {
+    fetchRecipes();
+  }, [fetchRecipes]);
 
   const pageVariants = {
     initial: (direction) => ({
