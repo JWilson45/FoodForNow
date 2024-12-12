@@ -27,7 +27,7 @@ import config from '@/config';
 
 export default function CreateRecipe() {
   const router = useRouter();
-  const { toast } = useToast();
+  const { addToast } = useToast();
   const [instructions, setInstructions] = useState(['']);
   const [ingredients, setIngredients] = useState([
     { ingredientId: '', amount: '', unit: '', notes: '' },
@@ -148,20 +148,20 @@ export default function CreateRecipe() {
       });
 
       if (res.ok) {
-        toast({
+        addToast({
           title: 'Success',
           description: 'Recipe created successfully!',
         });
         router.push('/cookbook');
       } else if (res.status === 401) {
-        toast({
+        addToast({
           title: 'Error',
           description: 'You must be logged in to create a recipe.',
           variant: 'destructive',
         });
         router.push('/signin');
       } else if (res.status === 409) {
-        toast({
+        addToast({
           title: 'Error',
           description: 'Recipe already exists.',
           variant: 'destructive',
@@ -169,7 +169,7 @@ export default function CreateRecipe() {
       } else {
         const errData = await res.json();
         if (errData.errors && Array.isArray(errData.errors)) {
-          toast({
+          addToast({
             title: 'Error',
             description: errData.errors
               .map((error) => `${error.field}: ${error.message}`)
@@ -177,7 +177,7 @@ export default function CreateRecipe() {
             variant: 'destructive',
           });
         } else {
-          toast({
+          addToast({
             title: 'Error',
             description:
               errData.error || 'An error occurred while creating the recipe.',
@@ -187,7 +187,7 @@ export default function CreateRecipe() {
       }
     } catch (error) {
       console.error('Error creating recipe:', error);
-      toast({
+      addToast({
         title: 'Error',
         description: 'An unexpected error occurred. Please try again.',
         variant: 'destructive',

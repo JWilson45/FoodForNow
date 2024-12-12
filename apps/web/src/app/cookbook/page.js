@@ -3,9 +3,16 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { useToast } from "@/components/ui/use-toast"
+import { Button } from '@/components/ui/button';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import { useToast } from '@/components/ui/use-toast';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import config from '@/config';
 
@@ -13,7 +20,7 @@ export default function Cookbook() {
   const [recipes, setRecipes] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
   const router = useRouter();
-  const { toast } = useToast();
+  const { addToast } = useToast();
 
   useEffect(() => {
     const fetchRecipes = async () => {
@@ -28,34 +35,30 @@ export default function Cookbook() {
         setRecipes(data.recipes || []);
       } catch (err) {
         console.error('Error fetching recipes:', err);
-        toast({
-          title: "Error",
-          description: "Failed to fetch recipes. Please try again.",
-          variant: "destructive",
+        addToast({
+          title: 'Error',
+          description: 'Failed to fetch recipes. Please try again.',
+          variant: 'destructive',
         });
       }
     };
 
     fetchRecipes();
-  }, [toast]);
+  }, [addToast]);
 
   const pageVariants = {
-    initial: (direction: number) => {
-      return {
-        opacity: 0,
-        x: direction > 0 ? '100%' : '-100%',
-      };
-    },
+    initial: (direction) => ({
+      opacity: 0,
+      x: direction > 0 ? '100%' : '-100%',
+    }),
     in: {
       opacity: 1,
       x: 0,
     },
-    out: (direction: number) => {
-      return {
-        opacity: 0,
-        x: direction < 0 ? '100%' : '-100%',
-      };
-    },
+    out: (direction) => ({
+      opacity: 0,
+      x: direction < 0 ? '100%' : '-100%',
+    }),
   };
 
   const pageTransition = {
@@ -64,7 +67,7 @@ export default function Cookbook() {
     duration: 0.5,
   };
 
-  const handlePageTurn = (direction: number) => {
+  const handlePageTurn = (direction) => {
     setCurrentPage((prevPage) => {
       const newPage = prevPage + direction;
       return Math.max(0, Math.min(newPage, recipes.length - 1));
@@ -132,7 +135,8 @@ function RecipeCard({ recipe }) {
       <CardHeader>
         <CardTitle>{recipe.name}</CardTitle>
         <CardDescription>
-          Servings: {recipe.servings} | Prep: {recipe.prepTime} min | Cook: {recipe.cookTime} min
+          Servings: {recipe.servings} | Prep: {recipe.prepTime} min | Cook:{' '}
+          {recipe.cookTime} min
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -162,7 +166,13 @@ function RecipeCard({ recipe }) {
         )}
       </CardContent>
       <CardFooter>
-        <Button variant="outline" className="w-full" onClick={() => window.location.href = `/viewRecipe?id=${recipe._id}`}>
+        <Button
+          variant="outline"
+          className="w-full"
+          onClick={() =>
+            (window.location.href = `/viewRecipe?id=${recipe._id}`)
+          }
+        >
           View Full Recipe
         </Button>
       </CardFooter>
@@ -170,3 +180,22 @@ function RecipeCard({ recipe }) {
   );
 }
 
+RecipeCard.propTypes = {
+  recipe: PropTypes.shape({
+    _id: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
+    servings: PropTypes.number.isRequired,
+    prepTime: PropTypes.number.isRequired,
+    cookTime: PropTypes.number.isRequired,
+    ingredients: PropTypes.arrayOf(
+      PropTypes.shape({
+        ingredientId: PropTypes.string.isRequired,
+        amount: PropTypes.number.isRequired,
+        unit: PropTypes.string.isRequired,
+        notes: PropTypes.string,
+      })
+    ).isRequired,
+    instructions: PropTypes.arrayOf(PropTypes.string).isRequired,
+    description: PropTypes.string,
+  }).isRequired,
+};

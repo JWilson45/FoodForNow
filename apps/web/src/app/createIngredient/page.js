@@ -19,7 +19,7 @@ import config from '@/config';
 
 export default function CreateIngredient() {
   const router = useRouter();
-  const { toast } = useToast();
+  const { addToast } = useToast();
   const [formData, setFormData] = useState({
     name: '',
     description: '',
@@ -59,7 +59,6 @@ export default function CreateIngredient() {
     if (!formData.name.trim()) {
       errors.name = 'Name is required and cannot be empty.';
     }
-    // Add more validation as needed
     setFormErrors(errors);
     return Object.keys(errors).length === 0;
   };
@@ -73,10 +72,15 @@ export default function CreateIngredient() {
 
     const formDataToSend = new FormData();
     formDataToSend.append('name', formData.name.trim());
-    if (formData.description)
+    if (formData.description) {
       formDataToSend.append('description', formData.description.trim());
-    if (formData.calories) formDataToSend.append('calories', formData.calories);
-    if (formData.image) formDataToSend.append('image', formData.image);
+    }
+    if (formData.calories) {
+      formDataToSend.append('calories', formData.calories);
+    }
+    if (formData.image) {
+      formDataToSend.append('image', formData.image);
+    }
 
     const nutritionalInfo = {};
     Object.entries(formData.nutritionalInfo).forEach(([key, value]) => {
@@ -94,13 +98,13 @@ export default function CreateIngredient() {
       });
 
       if (res.ok) {
-        toast({
+        addToast({
           title: 'Success',
           description: 'Ingredient created successfully!',
         });
         router.push('/ingredients');
       } else if (res.status === 401) {
-        toast({
+        addToast({
           title: 'Error',
           description: 'You must be logged in to create an ingredient.',
           variant: 'destructive',
@@ -108,7 +112,7 @@ export default function CreateIngredient() {
         router.push('/signin');
       } else {
         const errData = await res.json();
-        toast({
+        addToast({
           title: 'Error',
           description:
             errData.error || 'An error occurred while creating the ingredient.',
@@ -117,7 +121,7 @@ export default function CreateIngredient() {
       }
     } catch (error) {
       console.error('Error creating ingredient:', error);
-      toast({
+      addToast({
         title: 'Error',
         description: 'An unexpected error occurred. Please try again.',
         variant: 'destructive',
