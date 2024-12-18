@@ -1,8 +1,17 @@
+// /src/components/ui/button.js
+
+'use client';
+
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
-export const Button = ({
+/**
+ * UIButton Component
+ *
+ * A styled button component with variants and sizes.
+ */
+export const UIButton = ({
   children,
   onClick,
   variant = 'primary',
@@ -45,7 +54,7 @@ export const Button = ({
   );
 };
 
-Button.propTypes = {
+UIButton.propTypes = {
   children: PropTypes.node.isRequired,
   onClick: PropTypes.func,
   variant: PropTypes.oneOf(['primary', 'secondary', 'outline', 'destructive']),

@@ -3,26 +3,26 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@/components/ui/use-toast';
-import { Button } from '@/components/ui/Button';
-import { Input } from '@/components/ui/Input';
-import { Label } from '@/components/ui/Label';
-import { Textarea } from '@/components/ui/Textarea';
+import { UIButton as Button } from '@/components/ui/button'; // Correct named import
+import { Input } from '@/components/ui/input';
+import Label from '@/components/ui/label'; // Correct default import
+import { Textarea } from '@/components/ui/textarea';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/Select';
-import { Checkbox } from '@/components/ui/Checkbox';
+} from '@/components/ui/select';
+import { UICheckbox as Checkbox } from '@/components/ui/checkbox'; // Correct named import
 import {
   Card,
   CardContent,
   CardFooter,
   CardHeader,
   CardTitle,
-} from '@/components/ui/Card';
-import IngredientSelect from '@/components/IngredientSelect'; // Using default export
+} from '@/components/ui/card';
+import IngredientSelect from '@/components/IngredientSelect'; // Ensure this path is correct
 import config from '@/config';
 
 export default function CreateRecipe() {

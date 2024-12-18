@@ -1,7 +1,14 @@
+// /src/components/ui/card.js
+
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
+/**
+ * Card Component
+ *
+ * A container component with a consistent style.
+ */
 export const Card = ({ children, className, ...props }) => {
   return (
     <div
@@ -21,6 +28,11 @@ Card.propTypes = {
   className: PropTypes.string,
 };
 
+/**
+ * CardHeader Component
+ *
+ * The header section of the card.
+ */
 export const CardHeader = ({ children, className, ...props }) => {
   return (
     <div
@@ -37,6 +49,11 @@ CardHeader.propTypes = {
   className: PropTypes.string,
 };
 
+/**
+ * CardTitle Component
+ *
+ * The title section of the card.
+ */
 export const CardTitle = ({ children, className, ...props }) => {
   return (
     <h2
@@ -53,6 +70,11 @@ CardTitle.propTypes = {
   className: PropTypes.string,
 };
 
+/**
+ * CardDescription Component
+ *
+ * The description section of the card.
+ */
 export const CardDescription = ({ children, className, ...props }) => {
   return (
     <p className={classNames('text-sm text-gray-600', className)} {...props}>
@@ -66,6 +88,11 @@ CardDescription.propTypes = {
   className: PropTypes.string,
 };
 
+/**
+ * CardContent Component
+ *
+ * The main content area of the card.
+ */
 export const CardContent = ({ children, className, ...props }) => {
   return (
     <div className={classNames('px-6 py-4', className)} {...props}>
@@ -79,6 +106,11 @@ CardContent.propTypes = {
   className: PropTypes.string,
 };
 
+/**
+ * CardFooter Component
+ *
+ * The footer section of the card.
+ */
 export const CardFooter = ({ children, className, ...props }) => {
   return (
     <div

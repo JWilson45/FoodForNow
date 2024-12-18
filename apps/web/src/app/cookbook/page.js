@@ -1,10 +1,12 @@
+// /src/app/cookbook/page.js
+
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Button } from '@/components/ui/button';
+import { UIButton as Button } from '@/components/ui/button'; // Corrected Import
 import {
   Card,
   CardContent,
@@ -23,7 +25,6 @@ export default function Cookbook() {
   const router = useRouter();
   const { addToast } = useToast();
 
-  // fetchRecipes is now stable because addToast is stable
   const fetchRecipes = useCallback(async () => {
     try {
       const res = await fetch(`${config.apiBaseUrl}/recipes`, {
@@ -46,7 +47,6 @@ export default function Cookbook() {
 
   useEffect(() => {
     fetchRecipes();
-    // Empty dependency array since fetchRecipes is stable
   }, [fetchRecipes]);
 
   const pageVariants = {

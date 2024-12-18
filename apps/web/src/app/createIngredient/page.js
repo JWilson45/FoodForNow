@@ -1,18 +1,20 @@
+// /src/app/createIngredient/page.js
+
 'use client';
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
+import { UIButton as Button } from '@/components/ui/button'; // Corrected Import
+import { Input } from '@/components/ui/input'; // Named export
+import Label from '@/components/ui/label'; // Default export
+import { Textarea } from '@/components/ui/textarea'; // Named export
 import {
   Card,
   CardContent,
   CardFooter,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
+} from '@/components/ui/card'; // Named exports
 import { useToast } from '@/components/ui/use-toast';
 import config from '@/config';
 

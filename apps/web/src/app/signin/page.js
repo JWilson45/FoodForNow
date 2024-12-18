@@ -1,11 +1,12 @@
 'use client';
+
 import Head from 'next/head';
 import { useState } from 'react';
 import config from '@/config';
-import Button from '@/components/Button';
-import Label from '@/components/Label';
+import { UIButton } from '@/components/ui/button';
+import Label from '@/components/ui/label';
+import { UICheckbox } from '@/components/ui/checkbox';
 import Input from '@/components/Input';
-import Checkbox from '@/components/ui/Checkbox';
 
 export default function SignInPage() {
   const [formData, setFormData] = useState({
@@ -45,7 +46,7 @@ export default function SignInPage() {
       if (response.ok) {
         const data = await response.json();
         alert('Sign-in successful');
-        window.location.href = '/'; // Redirect to home or dashboard page
+        window.location.href = '/';
       } else {
         const errorData = await response.json();
         setError(errorData.error || 'Failed to sign in');
@@ -97,16 +98,16 @@ export default function SignInPage() {
                 onChange={handleChange}
               />
             </div>
-            <Checkbox
+            <UICheckbox
               id="showPassword"
               name="showPassword"
               checked={formData.showPassword}
               onChange={handleChange}
               label="Show Password"
             />
-            <Button type="submit" className="w-full" disabled={loading}>
+            <UIButton type="submit" className="w-full" disabled={loading}>
               {loading ? 'Signing in...' : 'Enter'}
-            </Button>
+            </UIButton>
           </form>
         </section>
       </main>

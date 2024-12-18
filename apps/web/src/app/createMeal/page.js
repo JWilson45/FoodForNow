@@ -1,3 +1,5 @@
+// /src/app/createMeal/page.js
+
 'use client';
 
 import Head from 'next/head';
@@ -7,7 +9,7 @@ import Input from '@/components/Input';
 import Textarea from '@/components/Textarea';
 import Button from '@/components/Button';
 import Select from '@/components/Select';
-import Checkbox from '@/components/ui/Checkbox';
+import { UICheckbox as Checkbox } from '@/components/ui/Checkbox'; // Corrected Import
 import RecipeSelect from '@/components/RecipeSelect';
 import config from '@/config'; // Ensure this path is correct
 

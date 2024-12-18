@@ -1,28 +1,25 @@
+// /src/components/Label.js
+
 'use client';
 
-import React from 'react';
 import PropTypes from 'prop-types';
-import classNames from 'classnames';
 
 /**
  * Label Component
  *
- * A reusable label component for form inputs.
+ * A standard label component.
  */
-export const Label = ({ htmlFor, children, className, ...props }) => {
+export default function Label({ htmlFor, children, className = '', ...props }) {
   return (
     <label
       htmlFor={htmlFor}
-      className={classNames(
-        'block text-sm font-medium text-gray-700',
-        className
-      )}
+      className={`block mb-2 text-gray-300 font-semibold ${className}`}
       {...props}
     >
       {children}
     </label>
   );
-};
+}
 
 Label.propTypes = {
   htmlFor: PropTypes.string.isRequired,

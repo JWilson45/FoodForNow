@@ -2,6 +2,11 @@
 
 import PropTypes from 'prop-types';
 
+/**
+ * Input Component
+ *
+ * A reusable input field component.
+ */
 export default function Input({
   id,
   name,
