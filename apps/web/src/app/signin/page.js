@@ -5,7 +5,7 @@ import { useState } from 'react';
 import config from '@/config';
 import { UIButton } from '@/components/ui/button';
 import Label from '@/components/ui/label';
-import { UICheckbox } from '@/components/ui/checkbox';
+import { UICheckbox } from '@/components/ui/Checkbox';
 import Input from '@/components/Input';
 
 export default function SignInPage() {

@@ -5,11 +5,9 @@ import Head from 'next/head';
 import { useState } from 'react';
 import config from '@/config';
 import { UIButton } from '@/components/ui/button';
-import { UILabel } from '@/components/ui/label';
+import Label from '@/components/ui/label';
 import Input from '@/components/Input';
 import ProgressBar from '@/components/ProgressBar';
-
-console.log({ UIButton, UILabel, Input, ProgressBar });
 
 export default function Signup() {
   const [formData, setFormData] = useState({
@@ -117,7 +115,7 @@ export default function Signup() {
           )}
 
           <div className="mb-4">
-            <UILabel htmlFor="firstName">First Name:</UILabel>
+            <Label htmlFor="firstName">First Name:</Label>
             <Input
               id="firstName"
               name="firstName"
@@ -128,7 +126,7 @@ export default function Signup() {
           </div>
 
           <div className="mb-4">
-            <UILabel htmlFor="lastName">Last Name:</UILabel>
+            <Label htmlFor="lastName">Last Name:</Label>
             <Input
               id="lastName"
               name="lastName"
@@ -138,7 +136,7 @@ export default function Signup() {
           </div>
 
           <div className="mb-4">
-            <UILabel htmlFor="username">Username:</UILabel>
+            <Label htmlFor="username">Username:</Label>
             <Input
               id="username"
               name="username"
@@ -151,7 +149,7 @@ export default function Signup() {
           </div>
 
           <div className="mb-4">
-            <UILabel htmlFor="password">Password:</UILabel>
+            <Label htmlFor="password">Password:</Label>
             <Input
               id="password"
               name="password"
@@ -192,7 +190,7 @@ export default function Signup() {
           </div>
 
           <div className="mb-4">
-            <UILabel htmlFor="email">Email:</UILabel>
+            <Label htmlFor="email">Email:</Label>
             <Input
               id="email"
               name="email"
@@ -204,7 +202,7 @@ export default function Signup() {
           </div>
 
           <div className="mb-6">
-            <UILabel htmlFor="dateOfBirth">Date of Birth:</UILabel>
+            <Label htmlFor="dateOfBirth">Date of Birth:</Label>
             <Input
               id="dateOfBirth"
               name="dateOfBirth"

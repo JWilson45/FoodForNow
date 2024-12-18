@@ -14,7 +14,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { UICheckbox as Checkbox } from '@/components/ui/checkbox'; // Correct named import
+import { UICheckbox as Checkbox } from '@/components/ui/Checkbox'; // Correct named import
 import {
   Card,
   CardContent,

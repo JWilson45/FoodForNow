@@ -2,8 +2,13 @@
 'use client';
 
 import React from 'react';
-import SearchableDropdown from './SearchableDropdown';
+import dynamic from 'next/dynamic';
 import PropTypes from 'prop-types';
+
+// Dynamically import SearchableDropdown with no SSR
+const SearchableDropdown = dynamic(() => import('./SearchableDropdown'), {
+  ssr: false,
+});
 
 /**
  * IngredientSelect Component

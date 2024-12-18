@@ -17,8 +17,15 @@ const SearchableDropdown = ({
   const [options, setOptions] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [fetchError, setFetchError] = useState(null);
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
+    setIsMounted(true); // Component has mounted
+  }, []);
+
+  useEffect(() => {
+    if (!isMounted) return; // Prevent fetching on server
+
     const fetchOptions = async () => {
       setIsLoading(true);
       try {
@@ -55,13 +62,18 @@ const SearchableDropdown = ({
     };
 
     fetchOptions();
-  }, [apiEndpoint]);
+  }, [apiEndpoint, isMounted]);
 
   const handleChange = (selectedOption) => {
     if (onChange) {
       onChange(selectedOption);
     }
   };
+
+  // Prevent rendering on server
+  if (!isMounted) {
+    return null;
+  }
 
   return (
     <div className="mb-4">
@@ -83,6 +95,7 @@ const SearchableDropdown = ({
           classNamePrefix="react-select"
           className="text-black"
           noOptionsMessage={() => 'No options found'}
+          // Removed aria-activedescendant={undefined}
         />
       )}
     </div>
