@@ -1,6 +1,6 @@
 const Quagga = require('@ericblade/quagga2');
 
-const imagePath = '/Users/jasonwilson/Desktop/tabasco_barcode.jpg'; // Replace with your image path
+const imagePath = './tabasco_barcode.jpg'; // Replace with your image path
 
 Quagga.decodeSingle(
   {
