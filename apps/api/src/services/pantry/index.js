@@ -1,11 +1,45 @@
-// src/services/pantry/index.js
+const Pantry = require('../database/models/pantry');
+const Ingredient = require('../database/models/ingredient');
 
-const Pantry = require('../database/models/pantry'); // Ensure this path is correct
-const Ingredient = require('../database/models/ingredient'); // Ensure this path is correct
+/**
+ * Creates a new pantry for the user.
+ */
+const createPantry = async (req, res) => {
+  try {
+    const { pantryName = 'Home' } = req.body; // Default to "Home" if not provided
+    const userId = req.user.userId;
+
+    if (!pantryName) {
+      return res.status(400).json({ error: 'Pantry name cannot be null or empty.' });
+    }
+
+    // Check for duplicate pantry
+    const existingPantry = await Pantry.findOne({ userId, pantryName });
+    if (existingPantry) {
+      return res.status(409).json({ error: 'A pantry with this name already exists.' });
+    }
+
+    // Create the pantry
+    const pantry = new Pantry({
+      userId,
+      pantryName,
+      ingredients: [],
+    });
+    await pantry.save();
+
+    res.status(201).json({ message: 'Pantry created successfully.', pantry });
+  } catch (error) {
+    if (error.code === 11000) {
+      console.error('Duplicate pantry creation error:', error);
+      return res.status(409).json({ error: 'Duplicate pantry name detected for this user.' });
+    }
+    console.error('Error creating pantry:', error);
+    res.status(500).json({ error: 'Internal server error.' });
+  }
+};
 
 /**
  * Adds an ingredient to a specific pantry for the user.
- * If the pantry does not exist, it creates one.
  */
 const addPantryIngredient = async (req, res) => {
   try {
@@ -18,32 +52,27 @@ const addPantryIngredient = async (req, res) => {
       return res.status(404).json({ error: 'Ingredient not found.' });
     }
 
-    // Find the user's pantry by userId and pantryName
     let pantry = await Pantry.findOne({ userId, pantryName });
 
-    // If the pantry doesn't exist, create it
     if (!pantry) {
       pantry = new Pantry({
         userId,
         pantryName,
-        ingredients: [{ ingredientId, quantity, unit }]
+        ingredients: [{ ingredientId, quantity, unit }],
       });
       await pantry.save();
-      return res.status(201).json({ message: 'Ingredient added.', pantry });
+    } else {
+      const ingredientInPantry = pantry.ingredients.find(
+        (item) => item.ingredientId.toString() === ingredientId
+      );
+
+      if (ingredientInPantry) {
+        return res.status(409).json({ error: 'Ingredient already in pantry.' });
+      }
+
+      pantry.ingredients.push({ ingredientId, quantity, unit });
+      await pantry.save();
     }
-
-    // If pantry exists, check if ingredient is already present
-    const ingredientInPantry = pantry.ingredients.find(
-      (item) => item.ingredientId.toString() === ingredientId
-    );
-
-    if (ingredientInPantry) {
-      return res.status(409).json({ error: 'Ingredient already in pantry.' });
-    }
-
-    // Add new ingredient to the array
-    pantry.ingredients.push({ ingredientId, quantity, unit });
-    await pantry.save();
 
     res.status(201).json({ message: 'Ingredient added.', pantry });
   } catch (error) {
@@ -60,8 +89,7 @@ const getPantryIngredients = async (req, res) => {
     const userId = req.user.userId;
     const pantryName = req.params.pantryName || 'Home';
 
-    const pantry = await Pantry.findOne({ userId, pantryName })
-      .populate('ingredients.ingredientId');
+    const pantry = await Pantry.findOne({ userId, pantryName }).populate('ingredients.ingredientId');
     if (!pantry) {
       return res.status(200).json({ ingredients: [] });
     }
@@ -74,7 +102,7 @@ const getPantryIngredients = async (req, res) => {
 };
 
 /**
- * Updates a pantry ingredient's quantity (and optionally unit).
+ * Updates a pantry ingredient's quantity and unit.
  */
 const updatePantryIngredient = async (req, res) => {
   try {
@@ -83,11 +111,8 @@ const updatePantryIngredient = async (req, res) => {
     const userId = req.user.userId;
     const pantryName = req.params.pantryName || 'Home';
 
-    // Build the update object
     const updateFields = { 'ingredients.$.quantity': quantity };
-    if (unit !== undefined) {
-      updateFields['ingredients.$.unit'] = unit;
-    }
+    if (unit !== undefined) updateFields['ingredients.$.unit'] = unit;
 
     const pantry = await Pantry.findOneAndUpdate(
       { userId, pantryName, 'ingredients.ingredientId': ingredientId },
@@ -133,6 +158,7 @@ const deletePantryIngredient = async (req, res) => {
 };
 
 module.exports = {
+  createPantry,
   addPantryIngredient,
   getPantryIngredients,
   updatePantryIngredient,

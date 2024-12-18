@@ -1,11 +1,13 @@
 const express = require('express');
 const validate = require('../../middleware/validate');
 const {
+  createPantryValidationSchema,
   addPantryIngredientValidationSchema,
   updatePantryIngredientValidationSchema,
   getPantryIngredientValidationSchema,
 } = require('./validator');
 const {
+  createPantry,
   addPantryIngredient,
   getPantryIngredients,
   updatePantryIngredient,
@@ -14,17 +16,16 @@ const {
 
 const pantryRouter = express.Router();
 
-// Add a new ingredient to a specified pantry (default pantry is 'Home')
-pantryRouter.post(
-  '/:pantryName/ingredients',
-  validate(addPantryIngredientValidationSchema, 'body'),
-  addPantryIngredient
-);
+// Create a new pantry
+pantryRouter.post('/', validate(createPantryValidationSchema, 'body'), createPantry);
 
-// Get all ingredients from a specified pantry (default pantry is 'Home')
+// Add an ingredient to a pantry
+pantryRouter.post('/:pantryName/ingredients', validate(addPantryIngredientValidationSchema, 'body'), addPantryIngredient);
+
+// Get all ingredients from a pantry
 pantryRouter.get('/:pantryName/ingredients', getPantryIngredients);
 
-// Update an ingredient in a specified pantry by ingredient ID
+// Update an ingredient in a pantry
 pantryRouter.put(
   '/:pantryName/ingredients/:id',
   validate(getPantryIngredientValidationSchema, 'params'),
@@ -32,11 +33,20 @@ pantryRouter.put(
   updatePantryIngredient
 );
 
-// Delete an ingredient from a specified pantry by ingredient ID
+// Delete an ingredient from a pantry
 pantryRouter.delete(
   '/:pantryName/ingredients/:id',
   validate(getPantryIngredientValidationSchema, 'params'),
   deletePantryIngredient
 );
+
+// Catch-all route for debugging
+pantryRouter.use((req, res) => {
+  res.status(404).json({
+    error: 'Pantry route not found',
+    path: req.originalUrl,
+    method: req.method,
+  });
+});
 
 module.exports = pantryRouter;
