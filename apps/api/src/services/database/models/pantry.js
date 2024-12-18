@@ -1,35 +1,48 @@
-// src/services/database/models/pantry.js
-
-const { Schema, model } = require('mongoose');
+const { Schema, model, Types } = require('mongoose');
 
 // Define the Mongoose schema for Pantry
 const PantrySchema = new Schema(
   {
-    // Reference to the Ingredient model
-    ingredientId: {
-      type: Schema.Types.ObjectId,
+    pantryName: {
+      type: String,
       required: true,
-      ref: 'Ingredient', // Assumes a separate Ingredient model
+      default: 'Home', 
+      // The default pantry name is 'Home'.
+      // Not setting `unique: true` here, as multiple users can have a 'Home' pantry,
+      // but a single user cannot have two 'Home' pantries.
     },
+
+    // Array of ingredients (references to the Ingredient model)
+    ingredients: [
+      {
+        ingredientId: {
+          type: Schema.Types.ObjectId,
+          required: true,
+          ref: 'Ingredient', // Assumes a separate Ingredient model
+        },
+        quantity: {
+          type: Number,
+          required: true,
+          min: 1, // Must be at least 1
+        },
+        unit: {
+          type: String,
+          required: true,
+          default: 'unit', // A default unit; customize as needed
+          // Optionally use enum: ['unit', 'g', 'kg', 'oz', 'lbs', 'ml', 'L']
+        },
+        dateAdded: {
+          type: Date,
+          default: Date.now,
+        },
+      },
+    ],
 
     // User ID (reference to the User model)
     userId: {
       type: Schema.Types.ObjectId,
       required: true,
       ref: 'User', // References the User model
-    },
-
-    // Quantity of the ingredient in the pantry
-    quantity: {
-      type: Number,
-      required: true,
-      min: 1, // Must be at least 1
-    },
-
-    // Date added to pantry
-    dateAdded: {
-      type: Date,
-      default: Date.now,
     },
   },
   {
@@ -39,26 +52,21 @@ const PantrySchema = new Schema(
   }
 );
 
-// Virtual property to retrieve full ingredient details
-PantrySchema.virtual('ingredientDetails', {
-  ref: 'Ingredient',
-  localField: 'ingredientId',
-  foreignField: '_id',
-  justOne: true, // Returns a single ingredient object
+// Virtual property to calculate how long each ingredient has been in the pantry (in days)
+PantrySchema.virtual('ingredients.daysInPantry').get(function () {
+  return this.ingredients.map((ingredient) => {
+    const now = new Date();
+    const addedAt = ingredient.dateAdded || now;
+    return {
+      ingredientId: ingredient.ingredientId,
+      daysInPantry: Math.floor((now - addedAt) / (1000 * 60 * 60 * 24)), // Returns days
+    };
+  });
 });
 
-// Virtual property to calculate how long the ingredient has been in the pantry (in days)
-PantrySchema.virtual('daysInPantry').get(function () {
-  const now = new Date();
-  const addedAt = this.dateAdded || this.createdAt || now;
-  return Math.floor((now - addedAt) / (1000 * 60 * 60 * 24)); // Returns days
-});
-
-// Index to prevent duplicate entries for the same user and ingredient
-PantrySchema.index(
-  { ingredientId: 1, userId: 1 },
-  { unique: true } // Ensures each user can only add an ingredient once
-);
+// Create a composite unique index so that a user cannot have multiple pantries with the same name.
+// This still allows different users to have a pantry with the same name.
+PantrySchema.index({ userId: 1, pantryName: 1 }, { unique: true });
 
 // Create and export the Pantry model
 const Pantry = model('Pantry', PantrySchema);

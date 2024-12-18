@@ -7,34 +7,34 @@ const {
 } = require('./validator');
 const {
   addPantryIngredient,
-  getPantryIngredients, // Import getPantryIngredients
+  getPantryIngredients,
   updatePantryIngredient,
   deletePantryIngredient,
 } = require('../../services/pantry');
 
 const pantryRouter = express.Router();
 
-// Add a new ingredient to the pantry
+// Add a new ingredient to a specified pantry (default pantry is 'Home')
 pantryRouter.post(
-  '/',
+  '/:pantryName/ingredients',
   validate(addPantryIngredientValidationSchema, 'body'),
   addPantryIngredient
 );
 
-// Get all pantry ingredients for the authenticated user
-pantryRouter.get('/', getPantryIngredients);
+// Get all ingredients from a specified pantry (default pantry is 'Home')
+pantryRouter.get('/:pantryName/ingredients', getPantryIngredients);
 
-// Update a pantry ingredient by ID
+// Update an ingredient in a specified pantry by ingredient ID
 pantryRouter.put(
-  '/:id',
+  '/:pantryName/ingredients/:id',
   validate(getPantryIngredientValidationSchema, 'params'),
   validate(updatePantryIngredientValidationSchema, 'body'),
   updatePantryIngredient
 );
 
-// Delete a pantry ingredient by ID
+// Delete an ingredient from a specified pantry by ingredient ID
 pantryRouter.delete(
-  '/:id',
+  '/:pantryName/ingredients/:id',
   validate(getPantryIngredientValidationSchema, 'params'),
   deletePantryIngredient
 );

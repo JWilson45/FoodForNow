@@ -4,33 +4,48 @@ const Pantry = require('../database/models/pantry'); // Ensure this path is corr
 const Ingredient = require('../database/models/ingredient'); // Ensure this path is correct
 
 /**
- * Adds an ingredient to the pantry.
+ * Adds an ingredient to a specific pantry for the user.
+ * If the pantry does not exist, it creates one.
  */
 const addPantryIngredient = async (req, res) => {
   try {
-    const { ingredientId, quantity } = req.body;
-    const userId = req.user.userId; // Assuming authentication middleware populates req.user
+    const { ingredientId, quantity, unit } = req.body;
+    const userId = req.user.userId;
+    const pantryName = req.params.pantryName || 'Home';
 
-    // Validate existence of the ingredient
     const ingredientExists = await Ingredient.findById(ingredientId);
     if (!ingredientExists) {
       return res.status(404).json({ error: 'Ingredient not found.' });
     }
 
-    // Check if the ingredient already exists in the user's pantry
-    const existingPantryItem = await Pantry.findOne({ userId, ingredientId });
-    if (existingPantryItem) {
-      return res.status(409).json({ error: 'Ingredient already exists in pantry.' });
+    // Find the user's pantry by userId and pantryName
+    let pantry = await Pantry.findOne({ userId, pantryName });
+
+    // If the pantry doesn't exist, create it
+    if (!pantry) {
+      pantry = new Pantry({
+        userId,
+        pantryName,
+        ingredients: [{ ingredientId, quantity, unit }]
+      });
+      await pantry.save();
+      return res.status(201).json({ message: 'Ingredient added.', pantry });
     }
 
-    // Create and save a new pantry item
-    const newPantryItem = new Pantry({ userId, ingredientId, quantity });
-    await newPantryItem.save();
+    // If pantry exists, check if ingredient is already present
+    const ingredientInPantry = pantry.ingredients.find(
+      (item) => item.ingredientId.toString() === ingredientId
+    );
 
-    res.status(201).json({
-      message: 'Ingredient added to pantry successfully.',
-      pantryItem: newPantryItem,
-    });
+    if (ingredientInPantry) {
+      return res.status(409).json({ error: 'Ingredient already in pantry.' });
+    }
+
+    // Add new ingredient to the array
+    pantry.ingredients.push({ ingredientId, quantity, unit });
+    await pantry.save();
+
+    res.status(201).json({ message: 'Ingredient added.', pantry });
   } catch (error) {
     console.error('Error adding pantry ingredient:', error);
     res.status(500).json({ error: 'Internal server error.' });
@@ -38,16 +53,20 @@ const addPantryIngredient = async (req, res) => {
 };
 
 /**
- * Retrieves all pantry ingredients for the authenticated user.
+ * Retrieves all ingredients from a specific pantry for the user.
  */
 const getPantryIngredients = async (req, res) => {
   try {
     const userId = req.user.userId;
+    const pantryName = req.params.pantryName || 'Home';
 
-    // Retrieve and populate ingredient details
-    const pantryItems = await Pantry.find({ userId }).populate('ingredientId');
+    const pantry = await Pantry.findOne({ userId, pantryName })
+      .populate('ingredients.ingredientId');
+    if (!pantry) {
+      return res.status(200).json({ ingredients: [] });
+    }
 
-    res.status(200).json({ pantryItems });
+    res.status(200).json({ ingredients: pantry.ingredients });
   } catch (error) {
     console.error('Error retrieving pantry ingredients:', error);
     res.status(500).json({ error: 'Internal server error.' });
@@ -55,29 +74,32 @@ const getPantryIngredients = async (req, res) => {
 };
 
 /**
- * Updates a pantry ingredient by its ID.
+ * Updates a pantry ingredient's quantity (and optionally unit).
  */
 const updatePantryIngredient = async (req, res) => {
   try {
-    const { id } = req.params;
-    const { quantity } = req.body;
+    const { id: ingredientId } = req.params;
+    const { quantity, unit } = req.body;
     const userId = req.user.userId;
+    const pantryName = req.params.pantryName || 'Home';
 
-    // Update the pantry item
-    const updatedItem = await Pantry.findOneAndUpdate(
-      { _id: id, userId },
-      { quantity },
-      { new: true, runValidators: true }
-    );
+    // Build the update object
+    const updateFields = { 'ingredients.$.quantity': quantity };
+    if (unit !== undefined) {
+      updateFields['ingredients.$.unit'] = unit;
+    }
 
-    if (!updatedItem) {
+    const pantry = await Pantry.findOneAndUpdate(
+      { userId, pantryName, 'ingredients.ingredientId': ingredientId },
+      { $set: updateFields },
+      { new: true }
+    ).populate('ingredients.ingredientId');
+
+    if (!pantry) {
       return res.status(404).json({ error: 'Pantry item not found.' });
     }
 
-    res.status(200).json({
-      message: 'Pantry item updated successfully.',
-      pantryItem: updatedItem,
-    });
+    res.status(200).json({ message: 'Pantry item updated.', pantry });
   } catch (error) {
     console.error('Error updating pantry ingredient:', error);
     res.status(500).json({ error: 'Internal server error.' });
@@ -85,24 +107,25 @@ const updatePantryIngredient = async (req, res) => {
 };
 
 /**
- * Deletes a pantry ingredient by its ID.
+ * Deletes a specific ingredient from a pantry.
  */
 const deletePantryIngredient = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { id: ingredientId } = req.params;
     const userId = req.user.userId;
+    const pantryName = req.params.pantryName || 'Home';
 
-    // Delete the pantry item
-    const deletedItem = await Pantry.findOneAndDelete({ _id: id, userId });
+    const pantry = await Pantry.findOneAndUpdate(
+      { userId, pantryName },
+      { $pull: { ingredients: { ingredientId } } },
+      { new: true }
+    ).populate('ingredients.ingredientId');
 
-    if (!deletedItem) {
-      return res.status(404).json({ error: 'Pantry item not found.' });
+    if (!pantry) {
+      return res.status(404).json({ error: 'Pantry not found or no ingredient to delete.' });
     }
 
-    res.status(200).json({
-      message: 'Pantry item deleted successfully.',
-      pantryItem: deletedItem,
-    });
+    res.status(200).json({ message: 'Ingredient removed from pantry.', pantry });
   } catch (error) {
     console.error('Error deleting pantry ingredient:', error);
     res.status(500).json({ error: 'Internal server error.' });
