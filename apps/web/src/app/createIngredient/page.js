@@ -57,9 +57,16 @@ export default function CreateIngredient() {
 
   const validateForm = () => {
     const errors = {};
+
     if (!formData.name.trim()) {
       errors.name = 'Name is required and cannot be empty.';
     }
+
+    // Validate calories only if it's provided
+    if (formData.calories.trim() && isNaN(Number(formData.calories))) {
+      errors.calories = 'Calories must be a valid number.';
+    }
+
     setFormErrors(errors);
     return Object.keys(errors).length === 0;
   };
@@ -71,31 +78,27 @@ export default function CreateIngredient() {
       return;
     }
 
-    const formDataToSend = new FormData();
-    formDataToSend.append('name', formData.name.trim());
-    if (formData.description) {
-      formDataToSend.append('description', formData.description.trim());
-    }
-    if (formData.calories) {
-      formDataToSend.append('calories', formData.calories);
-    }
-    if (formData.image) {
-      formDataToSend.append('image', formData.image);
-    }
+    const payload = {
+      name: formData.name.trim(),
+      description: formData.description.trim() || null,
+      ...(formData.calories.trim() && { calories: Number(formData.calories) }),
+      nutritionalInfo: {},
+    };
 
-    const nutritionalInfo = {};
     Object.entries(formData.nutritionalInfo).forEach(([key, value]) => {
-      if (value) nutritionalInfo[key] = parseFloat(value);
+      if (value) {
+        payload.nutritionalInfo[key] = parseFloat(value);
+      }
     });
-    if (Object.keys(nutritionalInfo).length > 0) {
-      formDataToSend.append('nutritionalInfo', JSON.stringify(nutritionalInfo));
-    }
 
     try {
       const res = await fetch(`${config.apiBaseUrl}/ingredients`, {
         method: 'POST',
         credentials: 'include',
-        body: formDataToSend,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
       });
 
       if (res.ok) {
@@ -103,22 +106,39 @@ export default function CreateIngredient() {
           title: 'Success',
           description: 'Ingredient created successfully!',
         });
-        router.push('/ingredients');
-      } else if (res.status === 401) {
-        addToast({
-          title: 'Error',
-          description: 'You must be logged in to create an ingredient.',
-          variant: 'destructive',
+        setFormData({
+          name: '',
+          description: '',
+          calories: '',
+          image: null,
+          nutritionalInfo: {
+            fat: '',
+            protein: '',
+            carbohydrates: '',
+            fiber: '',
+          },
         });
-        router.push('/signin');
+        document.getElementById('name').focus();
       } else {
         const errData = await res.json();
-        addToast({
-          title: 'Error',
-          description:
-            errData.error || 'An error occurred while creating the ingredient.',
-          variant: 'destructive',
-        });
+        if (errData.errors && Array.isArray(errData.errors)) {
+          const errorMessages = errData.errors
+            .map((err) => `${err.field}: ${err.message}`)
+            .join('\n');
+          addToast({
+            title: 'Error',
+            description: errorMessages,
+            variant: 'destructive',
+          });
+        } else {
+          addToast({
+            title: 'Error',
+            description:
+              errData.error ||
+              'An error occurred while creating the ingredient.',
+            variant: 'destructive',
+          });
+        }
       }
     } catch (error) {
       console.error('Error creating ingredient:', error);
@@ -170,6 +190,9 @@ export default function CreateIngredient() {
                   value={formData.calories}
                   onChange={handleInputChange}
                 />
+                {formErrors.calories && (
+                  <p className="text-red-500 text-sm">{formErrors.calories}</p>
+                )}
               </div>
               <div className="space-y-2">
                 <Label htmlFor="image">Image</Label>
