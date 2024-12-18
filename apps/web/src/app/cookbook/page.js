@@ -82,7 +82,7 @@ export default function Cookbook() {
       <h1 className="text-3xl font-bold mb-6 text-center">My Cookbook</h1>
       <div className="flex-grow flex items-center justify-center">
         <div className="w-full max-w-4xl aspect-[3/2] bg-background border-2 border-primary rounded-lg shadow-lg overflow-hidden relative">
-          <div className="absolute inset-0 bg-[url('/paper-texture.jpg')] opacity-10 pointer-events-none" />
+          <div className="absolute inset-0 bg-gray-100 opacity-10 pointer-events-none" />
           <AnimatePresence initial={false} custom={currentPage}>
             <motion.div
               key={currentPage}
