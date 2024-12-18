@@ -1,7 +1,7 @@
-// /Users/jasonwilson/git/FoodForNow/apps/web/src/app/layout.js
 import './globals.css';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import { ToastProvider } from '@/components/ui/use-toast';
 
 export const metadata = {
   title: 'FoodForNow',
@@ -17,9 +17,11 @@ export default function RootLayout({ children }) {
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       </head>
       <body>
-        <Header />
-        <main className="px-4 py-6 container mx-auto">{children}</main>
-        <Footer />
+        <ToastProvider>
+          <Header />
+          <main className="px-4 py-6 container mx-auto">{children}</main>
+          <Footer />
+        </ToastProvider>
       </body>
     </html>
   );

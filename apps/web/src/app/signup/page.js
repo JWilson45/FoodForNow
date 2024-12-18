@@ -1,9 +1,11 @@
+// /src/app/signup/page.js
+
 'use client';
 import Head from 'next/head';
 import { useState } from 'react';
 import config from '@/config';
-import Button from '@/components/Button';
-import Label from '@/components/Label';
+import { UIButton } from '@/components/ui/button';
+import Label from '@/components/ui/label';
 import Input from '@/components/Input';
 import ProgressBar from '@/components/ProgressBar';
 
@@ -36,9 +38,9 @@ export default function Signup() {
   };
 
   const calculatePasswordStrength = (password) => {
-    if (password.length > 12) return 3; // Strong
-    if (password.length > 8) return 2; // Medium
-    return 1; // Weak
+    if (password.length > 12) return 100; // Strong
+    if (password.length > 8) return 66; // Medium
+    return 33; // Weak
   };
 
   const togglePasswordVisibility = (show) => {
@@ -53,7 +55,6 @@ export default function Signup() {
     setSuccessMessage('');
 
     try {
-      // Here we can use Joi or a simple check based on the validator.js schema
       const response = await fetch(`${config.apiBaseUrl}/users`, {
         method: 'POST',
         headers: {
@@ -178,7 +179,13 @@ export default function Signup() {
           <div className="mb-4">
             <ProgressBar
               value={passwordStrength}
-              strength={['weak', 'medium', 'strong'][passwordStrength - 1]}
+              strength={
+                passwordStrength === 100
+                  ? 'strong'
+                  : passwordStrength === 66
+                    ? 'medium'
+                    : 'weak'
+              }
             />
           </div>
 
@@ -205,9 +212,9 @@ export default function Signup() {
             />
           </div>
 
-          <Button type="submit" className="w-full" disabled={loading}>
+          <UIButton type="submit" className="w-full" disabled={loading}>
             {loading ? 'Signing Up...' : 'Sign Up'}
-          </Button>
+          </UIButton>
         </form>
       </main>
     </>

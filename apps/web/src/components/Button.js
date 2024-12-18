@@ -1,9 +1,15 @@
 // /src/components/Button.js
 
 'use client';
+
 import { useRouter } from 'next/navigation';
 import PropTypes from 'prop-types';
 
+/**
+ * Button Component
+ *
+ * A standard button component.
+ */
 export default function Button({
   children,
   onClick,
@@ -11,6 +17,7 @@ export default function Button({
   className = '',
   href,
   disabled = false,
+  ...props // Include props here for spreading
 }) {
   const router = useRouter();
 
@@ -37,6 +44,7 @@ export default function Button({
       className={`px-4 py-2 bg-button-blue hover:bg-button-blue-hover active:bg-button-blue-active text-white font-bold uppercase rounded-lg transition-transform transform hover:scale-105 active:scale-100 shadow-custom hover:shadow-custom-hover ${
         disabled ? 'opacity-50 cursor-not-allowed' : ''
       } ${className}`}
+      {...props} // Spread additional props
     >
       {children}
     </button>

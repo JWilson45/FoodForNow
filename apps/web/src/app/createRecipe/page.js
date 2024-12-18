@@ -1,17 +1,33 @@
 'use client';
 
-import Head from 'next/head';
 import { useState } from 'react';
-import Label from '@/components/Label';
-import Input from '@/components/Input';
-import Textarea from '@/components/Textarea';
-import Button from '@/components/Button';
-import Select from '@/components/Select';
-import Checkbox from '@/components/Checkbox';
-import IngredientSelect from '@/components/IngredientSelect';
-import config from '@/config'; // Ensure config.apiBaseUrl is imported
+import { useRouter } from 'next/navigation';
+import { useToast } from '@/components/ui/use-toast';
+import { UIButton as Button } from '@/components/ui/button'; // Correct named import
+import { Input } from '@/components/ui/input';
+import Label from '@/components/ui/label'; // Correct default import
+import { Textarea } from '@/components/ui/textarea';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { UICheckbox as Checkbox } from '@/components/ui/Checkbox'; // Correct named import
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import IngredientSelect from '@/components/IngredientSelect'; // Ensure this path is correct
+import config from '@/config';
 
 export default function CreateRecipe() {
+  const router = useRouter();
+  const { addToast } = useToast();
   const [instructions, setInstructions] = useState(['']);
   const [ingredients, setIngredients] = useState([
     { ingredientId: '', amount: '', unit: '', notes: '' },
@@ -109,9 +125,9 @@ export default function CreateRecipe() {
         unit: ing.unit.trim(),
         notes: ing.notes.trim() || undefined,
       })),
-      servings: parseInt(formData.servings),
-      prepTime: parseInt(formData.prepTime),
-      cookTime: parseInt(formData.cookTime),
+      servings: parseInt(formData.servings, 10),
+      prepTime: parseInt(formData.prepTime, 10),
+      cookTime: parseInt(formData.cookTime, 10),
       mealTime: formData.mealTime || undefined,
       cuisine: formData.cuisine || undefined,
       calories: formData.calories ? parseFloat(formData.calories) : undefined,
@@ -123,9 +139,8 @@ export default function CreateRecipe() {
 
     try {
       const res = await fetch(`${config.apiBaseUrl}/recipes`, {
-        // Use config.apiBaseUrl
         method: 'POST',
-        credentials: 'include', // Include cookies in the request
+        credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -133,385 +148,379 @@ export default function CreateRecipe() {
       });
 
       if (res.ok) {
-        alert('Recipe created successfully!');
-        window.location.href = '/cookbook';
+        addToast({
+          title: 'Success',
+          description: 'Recipe created successfully!',
+        });
+        router.push('/cookbook');
       } else if (res.status === 401) {
-        alert('You must be logged in to create a recipe.');
-        window.location.href = '/signin';
+        addToast({
+          title: 'Error',
+          description: 'You must be logged in to create a recipe.',
+          variant: 'destructive',
+        });
+        router.push('/signin');
       } else if (res.status === 409) {
-        alert('Recipe already exists.');
+        addToast({
+          title: 'Error',
+          description: 'Recipe already exists.',
+          variant: 'destructive',
+        });
       } else {
         const errData = await res.json();
         if (errData.errors && Array.isArray(errData.errors)) {
-          alert(
-            errData.errors
+          addToast({
+            title: 'Error',
+            description: errData.errors
               .map((error) => `${error.field}: ${error.message}`)
-              .join('\n')
-          );
+              .join('\n'),
+            variant: 'destructive',
+          });
         } else {
-          alert(
-            errData.error || 'An error occurred while creating the recipe.'
-          );
+          addToast({
+            title: 'Error',
+            description:
+              errData.error || 'An error occurred while creating the recipe.',
+            variant: 'destructive',
+          });
         }
       }
     } catch (error) {
       console.error('Error creating recipe:', error);
-      alert('An unexpected error occurred. Please try again.');
+      addToast({
+        title: 'Error',
+        description: 'An unexpected error occurred. Please try again.',
+        variant: 'destructive',
+      });
     }
   };
 
   return (
-    <>
-      <Head>
-        <title>Create Recipe</title>
-      </Head>
-      <main className="flex justify-center items-center p-6 bg-gray-900 min-h-screen">
-        <form
-          id="recipeForm"
-          onSubmit={handleSubmit}
-          aria-labelledby="formTitle"
-          className="w-full max-w-2xl bg-black/80 border-2 border-button-blue rounded-xl p-8 shadow-custom animate-fadeIn space-y-6"
-        >
-          <h2
-            id="formTitle"
-            className="text-2xl font-bold text-center text-white"
-          >
-            Create Recipe
-          </h2>
-
-          {/* Error Handling */}
-          {Object.keys(formErrors).length > 0 && (
-            <div className="mb-4">
-              {Object.entries(formErrors).map(([key, message]) => (
-                <p key={key} className="text-red-500">
-                  {message}
-                </p>
-              ))}
+    <div className="container mx-auto py-6">
+      <Card className="w-full max-w-4xl mx-auto">
+        <CardHeader>
+          <CardTitle>Create Recipe</CardTitle>
+        </CardHeader>
+        <form onSubmit={handleSubmit}>
+          <CardContent className="space-y-6">
+            {/* Name */}
+            <div className="space-y-2">
+              <Label htmlFor="recipeName">Name</Label>
+              <Input
+                id="recipeName"
+                name="name"
+                required
+                value={formData.name}
+                onChange={(e) =>
+                  setFormData({ ...formData, name: e.target.value })
+                }
+                placeholder="Enter recipe name"
+              />
+              {formErrors.name && (
+                <p className="text-sm text-red-500">{formErrors.name}</p>
+              )}
             </div>
-          )}
 
-          {/* Name */}
-          <div>
-            <Label htmlFor="recipeName">Name:</Label>
-            <Input
-              id="recipeName"
-              name="name"
-              required
-              value={formData.name}
-              onChange={(e) =>
-                setFormData({ ...formData, name: e.target.value })
-              }
-              placeholder="Enter recipe name"
-            />
-          </div>
+            {/* Alias */}
+            <div className="space-y-2">
+              <Label htmlFor="recipeAlias">Alias</Label>
+              <Input
+                id="recipeAlias"
+                name="alias"
+                value={formData.alias}
+                onChange={(e) =>
+                  setFormData({ ...formData, alias: e.target.value })
+                }
+                placeholder="Enter recipe alias"
+              />
+            </div>
 
-          {/* Alias */}
-          <div>
-            <Label htmlFor="recipeAlias">Alias:</Label>
-            <Input
-              id="recipeAlias"
-              name="alias"
-              value={formData.alias}
-              onChange={(e) =>
-                setFormData({ ...formData, alias: e.target.value })
-              }
-              placeholder="Enter recipe alias"
-            />
-          </div>
+            {/* Description */}
+            <div className="space-y-2">
+              <Label htmlFor="recipeDescription">Description</Label>
+              <Textarea
+                id="recipeDescription"
+                name="description"
+                value={formData.description}
+                onChange={(e) =>
+                  setFormData({ ...formData, description: e.target.value })
+                }
+                placeholder="Enter recipe description"
+              />
+            </div>
 
-          {/* Description */}
-          <div>
-            <Label htmlFor="recipeDescription">Description:</Label>
-            <Textarea
-              id="recipeDescription"
-              name="description"
-              value={formData.description}
-              onChange={(e) =>
-                setFormData({ ...formData, description: e.target.value })
-              }
-              placeholder="Enter recipe description"
-            />
-          </div>
-
-          {/* Instructions */}
-          <fieldset className="space-y-4">
-            <legend className="block mb-2 text-gray-300 font-semibold">
-              Instructions:
-            </legend>
-            {instructions.map((inst, i) => (
-              <div key={i} className="flex items-center space-x-2">
-                <span className="text-gray-300">Step {i + 1}:</span>
-                <Input
-                  id={`instruction-${i}`}
-                  name={`instruction-${i}`}
-                  required
-                  value={inst}
-                  onChange={(e) => updateInstruction(i, e.target.value)}
-                  placeholder={`Enter instruction ${i + 1}`}
-                  className="flex-1"
-                />
-                {instructions.length > 1 && (
-                  <button
-                    type="button"
-                    onClick={() => removeInstruction(i)}
-                    className="text-red-500 hover:text-red-700"
-                    aria-label={`Remove instruction ${i + 1}`}
-                  >
-                    Remove
-                  </button>
-                )}
-              </div>
-            ))}
-            {formErrors.instructions && (
-              <p className="text-red-500">{formErrors.instructions}</p>
-            )}
-            <Button
-              type="button"
-              onClick={addInstruction}
-              className="px-4 py-2 bg-button-blue hover:bg-button-blue-hover"
-            >
-              Add Instruction
-            </Button>
-          </fieldset>
-
-          {/* Ingredients */}
-          <fieldset className="space-y-4">
-            <legend className="block mb-2 text-gray-300 font-semibold">
-              Ingredients:
-            </legend>
-            {ingredients.map((ing, i) => (
-              <div key={i} className="space-y-2">
-                <div className="flex items-center space-x-2">
-                  <IngredientSelect
-                    label={`Ingredient ${i + 1}:`}
-                    name={`ingredient-${i}`}
+            {/* Instructions */}
+            <div className="space-y-4">
+              <Label>Instructions</Label>
+              {instructions.map((inst, i) => (
+                <div key={i} className="flex items-center space-x-2">
+                  <Input
+                    id={`instruction-${i}`}
+                    name={`instruction-${i}`}
                     required
-                    onSelect={(selected) => handleIngredientSelect(i, selected)}
+                    value={inst}
+                    onChange={(e) => updateInstruction(i, e.target.value)}
+                    placeholder={`Enter instruction ${i + 1}`}
+                    className="flex-1"
                   />
-                  {ingredients.length > 1 && (
-                    <button
+                  {instructions.length > 1 && (
+                    <Button
                       type="button"
-                      onClick={() => removeIngredientField(i)}
-                      className="text-red-500 hover:text-red-700"
-                      aria-label={`Remove ingredient ${i + 1}`}
+                      variant="outline"
+                      size="sm"
+                      onClick={() => removeInstruction(i)}
                     >
                       Remove
-                    </button>
+                    </Button>
                   )}
                 </div>
-                <div className="grid grid-cols-3 gap-4">
-                  <div>
-                    <Label htmlFor={`amount-${i}`}>Amount:</Label>
-                    <Input
-                      type="number"
-                      id={`amount-${i}`}
-                      name={`amount-${i}`}
-                      min="0"
+              ))}
+              {formErrors.instructions && (
+                <p className="text-sm text-red-500">
+                  {formErrors.instructions}
+                </p>
+              )}
+              <Button type="button" onClick={addInstruction} variant="outline">
+                Add Instruction
+              </Button>
+            </div>
+
+            {/* Ingredients */}
+            <div className="space-y-4">
+              <Label>Ingredients</Label>
+              {ingredients.map((ing, i) => (
+                <div key={i} className="space-y-2">
+                  <div className="flex items-center space-x-2">
+                    <IngredientSelect
+                      onSelect={(selected) =>
+                        handleIngredientSelect(i, selected)
+                      }
+                      name={`ingredient-${i}`}
                       required
-                      value={ing.amount}
-                      onChange={(e) =>
-                        updateIngredientField(i, 'amount', e.target.value)
-                      }
-                      placeholder="e.g., 2"
                     />
+                    {ingredients.length > 1 && (
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => removeIngredientField(i)}
+                      >
+                        Remove
+                      </Button>
+                    )}
                   </div>
-                  <div>
-                    <Label htmlFor={`unit-${i}`}>Unit:</Label>
-                    <Input
-                      id={`unit-${i}`}
-                      name={`unit-${i}`}
-                      required
-                      value={ing.unit}
-                      onChange={(e) =>
-                        updateIngredientField(i, 'unit', e.target.value)
-                      }
-                      placeholder="e.g., cups"
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor={`notes-${i}`}>Notes:</Label>
-                    <Input
-                      type="text"
-                      id={`notes-${i}`}
-                      name={`notes-${i}`}
-                      value={ing.notes}
-                      onChange={(e) =>
-                        updateIngredientField(i, 'notes', e.target.value)
-                      }
-                      placeholder="Optional notes"
-                    />
+                  <div className="grid grid-cols-3 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor={`amount-${i}`}>Amount</Label>
+                      <Input
+                        type="number"
+                        id={`amount-${i}`}
+                        name={`amount-${i}`}
+                        min="0"
+                        required
+                        value={ing.amount}
+                        onChange={(e) =>
+                          updateIngredientField(i, 'amount', e.target.value)
+                        }
+                        placeholder="e.g., 2"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor={`unit-${i}`}>Unit</Label>
+                      <Input
+                        id={`unit-${i}`}
+                        name={`unit-${i}`}
+                        required
+                        value={ing.unit}
+                        onChange={(e) =>
+                          updateIngredientField(i, 'unit', e.target.value)
+                        }
+                        placeholder="e.g., cups"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor={`notes-${i}`}>Notes</Label>
+                      <Input
+                        type="text"
+                        id={`notes-${i}`}
+                        name={`notes-${i}`}
+                        value={ing.notes}
+                        onChange={(e) =>
+                          updateIngredientField(i, 'notes', e.target.value)
+                        }
+                        placeholder="Optional notes"
+                      />
+                    </div>
                   </div>
                 </div>
-                {formErrors.ingredients && (
-                  <p className="text-red-500">{formErrors.ingredients}</p>
-                )}
-              </div>
-            ))}
-            <Button
-              type="button"
-              onClick={addIngredientField}
-              className="px-4 py-2 bg-button-blue hover:bg-button-blue-hover"
-            >
-              Add Ingredient
+              ))}
+              {formErrors.ingredients && (
+                <p className="text-sm text-red-500">{formErrors.ingredients}</p>
+              )}
+              <Button
+                type="button"
+                onClick={addIngredientField}
+                variant="outline"
+              >
+                Add Ingredient
+              </Button>
+            </div>
+
+            {/* Servings */}
+            <div className="space-y-2">
+              <Label htmlFor="recipeServings">Servings</Label>
+              <Input
+                type="number"
+                id="recipeServings"
+                name="servings"
+                min="1"
+                required
+                value={formData.servings}
+                onChange={(e) =>
+                  setFormData({ ...formData, servings: e.target.value })
+                }
+                placeholder="Enter number of servings"
+              />
+              {formErrors.servings && (
+                <p className="text-sm text-red-500">{formErrors.servings}</p>
+              )}
+            </div>
+
+            {/* Prep Time */}
+            <div className="space-y-2">
+              <Label htmlFor="recipePrepTime">Prep Time (minutes)</Label>
+              <Input
+                type="number"
+                id="recipePrepTime"
+                name="prepTime"
+                min="0"
+                required
+                value={formData.prepTime}
+                onChange={(e) =>
+                  setFormData({ ...formData, prepTime: e.target.value })
+                }
+                placeholder="Enter prep time in minutes"
+              />
+              {formErrors.prepTime && (
+                <p className="text-sm text-red-500">{formErrors.prepTime}</p>
+              )}
+            </div>
+
+            {/* Cook Time */}
+            <div className="space-y-2">
+              <Label htmlFor="recipeCookTime">Cook Time (minutes)</Label>
+              <Input
+                type="number"
+                id="recipeCookTime"
+                name="cookTime"
+                min="0"
+                required
+                value={formData.cookTime}
+                onChange={(e) =>
+                  setFormData({ ...formData, cookTime: e.target.value })
+                }
+                placeholder="Enter cook time in minutes"
+              />
+              {formErrors.cookTime && (
+                <p className="text-sm text-red-500">{formErrors.cookTime}</p>
+              )}
+            </div>
+
+            {/* Meal Time */}
+            <div className="space-y-2">
+              <Label htmlFor="recipeMealTime">Meal Time</Label>
+              <select
+                id="recipeMealTime"
+                value={formData.mealTime}
+                onChange={(e) =>
+                  setFormData({ ...formData, mealTime: e.target.value })
+                }
+                className="block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm"
+              >
+                <option value="" disabled>
+                  Select meal time
+                </option>
+                <option value="breakfast">Breakfast</option>
+                <option value="lunch">Lunch</option>
+                <option value="dinner">Dinner</option>
+                <option value="snack">Snack</option>
+                <option value="dessert">Dessert</option>
+              </select>
+            </div>
+
+            {/* Cuisine */}
+            <div className="space-y-2">
+              <Label htmlFor="recipeCuisine">Cuisine</Label>
+              <select
+                id="recipeCuisine"
+                value={formData.cuisine}
+                onChange={(e) =>
+                  setFormData({ ...formData, cuisine: e.target.value })
+                }
+                className="block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm"
+              >
+                <option value="" disabled>
+                  Select cuisine
+                </option>
+                <option value="italian">Italian</option>
+                <option value="chinese">Chinese</option>
+                <option value="mexican">Mexican</option>
+                <option value="indian">Indian</option>
+                <option value="american">American</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+
+            {/* Calories */}
+            <div className="space-y-2">
+              <Label htmlFor="recipeCalories">Calories</Label>
+              <Input
+                type="number"
+                id="recipeCalories"
+                name="calories"
+                min="0"
+                value={formData.calories}
+                onChange={(e) =>
+                  setFormData({ ...formData, calories: e.target.value })
+                }
+                placeholder="Enter calories"
+              />
+            </div>
+
+            {/* Tags */}
+            <div className="space-y-2">
+              <Label htmlFor="recipeTags">Tags (comma-separated)</Label>
+              <Input
+                type="text"
+                id="recipeTags"
+                name="tags"
+                value={formData.tags}
+                onChange={(e) =>
+                  setFormData({ ...formData, tags: e.target.value })
+                }
+                placeholder="e.g., spicy, vegan"
+              />
+            </div>
+
+            {/* Is Public */}
+            <div className="flex items-center space-x-2">
+              <Checkbox
+                id="recipeIsPublic"
+                checked={formData.isPublic}
+                onChange={(e) =>
+                  setFormData({ ...formData, isPublic: e.target.checked })
+                }
+              />
+              <Label htmlFor="recipeIsPublic">Make Public</Label>
+            </div>
+          </CardContent>
+          <CardFooter>
+            <Button type="submit" className="w-full">
+              Create Recipe
             </Button>
-          </fieldset>
-
-          {/* Servings */}
-          <div>
-            <Label htmlFor="recipeServings">Servings:</Label>
-            <Input
-              type="number"
-              id="recipeServings"
-              name="servings"
-              min="1"
-              required
-              value={formData.servings}
-              onChange={(e) =>
-                setFormData({ ...formData, servings: e.target.value })
-              }
-              placeholder="Enter number of servings"
-            />
-            {formErrors.servings && (
-              <p className="text-red-500">{formErrors.servings}</p>
-            )}
-          </div>
-
-          {/* Prep Time */}
-          <div>
-            <Label htmlFor="recipePrepTime">Prep Time (minutes):</Label>
-            <Input
-              type="number"
-              id="recipePrepTime"
-              name="prepTime"
-              min="0"
-              required
-              value={formData.prepTime}
-              onChange={(e) =>
-                setFormData({ ...formData, prepTime: e.target.value })
-              }
-              placeholder="Enter prep time in minutes"
-            />
-            {formErrors.prepTime && (
-              <p className="text-red-500">{formErrors.prepTime}</p>
-            )}
-          </div>
-
-          {/* Cook Time */}
-          <div>
-            <Label htmlFor="recipeCookTime">Cook Time (minutes):</Label>
-            <Input
-              type="number"
-              id="recipeCookTime"
-              name="cookTime"
-              min="0"
-              required
-              value={formData.cookTime}
-              onChange={(e) =>
-                setFormData({ ...formData, cookTime: e.target.value })
-              }
-              placeholder="Enter cook time in minutes"
-            />
-            {formErrors.cookTime && (
-              <p className="text-red-500">{formErrors.cookTime}</p>
-            )}
-          </div>
-
-          {/* Meal Time */}
-          <div>
-            <Label htmlFor="recipeMealTime">Meal Time:</Label>
-            <Select
-              id="recipeMealTime"
-              name="mealTime"
-              value={formData.mealTime}
-              onChange={(e) =>
-                setFormData({ ...formData, mealTime: e.target.value })
-              }
-              placeholder="Select meal time"
-            >
-              <option value="">Select meal time</option>
-              <option value="breakfast">Breakfast</option>
-              <option value="lunch">Lunch</option>
-              <option value="dinner">Dinner</option>
-              <option value="snack">Snack</option>
-              <option value="dessert">Dessert</option>
-            </Select>
-          </div>
-
-          {/* Cuisine */}
-          <div>
-            <Label htmlFor="recipeCuisine">Cuisine:</Label>
-            <Select
-              id="recipeCuisine"
-              name="cuisine"
-              value={formData.cuisine}
-              onChange={(e) =>
-                setFormData({ ...formData, cuisine: e.target.value })
-              }
-              placeholder="Select cuisine"
-            >
-              <option value="">Select cuisine</option>
-              <option value="italian">Italian</option>
-              <option value="chinese">Chinese</option>
-              <option value="mexican">Mexican</option>
-              <option value="indian">Indian</option>
-              <option value="american">American</option>
-              <option value="other">Other</option>
-            </Select>
-          </div>
-
-          {/* Calories */}
-          <div>
-            <Label htmlFor="recipeCalories">Calories:</Label>
-            <Input
-              type="number"
-              id="recipeCalories"
-              name="calories"
-              min="0"
-              value={formData.calories}
-              onChange={(e) =>
-                setFormData({ ...formData, calories: e.target.value })
-              }
-              placeholder="Enter calories"
-            />
-          </div>
-
-          {/* Tags */}
-          <div>
-            <Label htmlFor="recipeTags">Tags (comma-separated):</Label>
-            <Input
-              type="text"
-              id="recipeTags"
-              name="tags"
-              value={formData.tags}
-              onChange={(e) =>
-                setFormData({ ...formData, tags: e.target.value })
-              }
-              placeholder="e.g., spicy, vegan"
-            />
-          </div>
-
-          {/* Is Public */}
-          <div>
-            <Checkbox
-              id="recipeIsPublic"
-              name="isPublic"
-              checked={formData.isPublic}
-              onChange={(e) =>
-                setFormData({ ...formData, isPublic: e.target.checked })
-              }
-              label="Make Public"
-            />
-          </div>
-
-          {/* Submit Button */}
-          <Button
-            type="submit"
-            className="w-full py-3 bg-button-blue hover:bg-button-blue-hover"
-          >
-            Create Recipe
-          </Button>
+          </CardFooter>
         </form>
-      </main>
-    </>
+      </Card>
+    </div>
   );
 }

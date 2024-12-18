@@ -1,15 +1,14 @@
 // /src/components/RecipeSelect.js
-
 'use client';
 
 import React from 'react';
 import dynamic from 'next/dynamic';
 import PropTypes from 'prop-types';
 
-const SearchableDropdown = dynamic(
-  () => import('./SearchableDropdown'),
-  { ssr: false } // Ensure it's only rendered on the client
-);
+// Dynamically import SearchableDropdown with no SSR
+const SearchableDropdown = dynamic(() => import('./SearchableDropdown'), {
+  ssr: false,
+});
 
 /**
  * RecipeSelect Component

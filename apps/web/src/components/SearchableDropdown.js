@@ -1,3 +1,4 @@
+// /src/components/SearchableDropdown.js
 'use client';
 
 import React, { useState, useEffect } from 'react';
@@ -5,16 +6,6 @@ import Select from 'react-select';
 import PropTypes from 'prop-types';
 import config from '@/config'; // Ensure config.apiBaseUrl is correctly set
 
-/**
- * SearchableDropdown Component
- *
- * @param {string} label - Label for the dropdown.
- * @param {string} apiEndpoint - API endpoint to fetch options.
- * @param {function} onChange - Callback when an option is selected.
- * @param {boolean} required - Whether the field is required.
- * @param {string} placeholder - Placeholder text for the dropdown.
- * @param {string} name - Name attribute for the input.
- */
 const SearchableDropdown = ({
   label,
   apiEndpoint,
@@ -26,13 +17,20 @@ const SearchableDropdown = ({
   const [options, setOptions] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [fetchError, setFetchError] = useState(null);
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
+    setIsMounted(true); // Component has mounted
+  }, []);
+
+  useEffect(() => {
+    if (!isMounted) return; // Prevent fetching on server
+
     const fetchOptions = async () => {
       setIsLoading(true);
       try {
         const response = await fetch(`${config.apiBaseUrl}${apiEndpoint}`, {
-          credentials: 'include', // Include cookies in the request
+          credentials: 'include',
         });
 
         if (!response.ok) {
@@ -40,8 +38,6 @@ const SearchableDropdown = ({
         }
 
         const data = await response.json();
-
-        // Determine the key based on the endpoint
         let dataKey = '';
         if (apiEndpoint.includes('recipes')) {
           dataKey = 'recipes';
@@ -53,7 +49,7 @@ const SearchableDropdown = ({
 
         setOptions(
           (data[dataKey] || []).map((item) => ({
-            value: item.id || item._id, // Handle both 'id' and '_id'
+            value: item._id || item.id,
             label: item.name,
           }))
         );
@@ -66,13 +62,18 @@ const SearchableDropdown = ({
     };
 
     fetchOptions();
-  }, [apiEndpoint]);
+  }, [apiEndpoint, isMounted]);
 
   const handleChange = (selectedOption) => {
     if (onChange) {
       onChange(selectedOption);
     }
   };
+
+  // Prevent rendering on server
+  if (!isMounted) {
+    return null;
+  }
 
   return (
     <div className="mb-4">
@@ -84,6 +85,7 @@ const SearchableDropdown = ({
       ) : (
         <Select
           id={name}
+          instanceId={name} // Use a consistent instanceId
           name={name}
           options={options}
           isLoading={isLoading}
@@ -93,6 +95,7 @@ const SearchableDropdown = ({
           classNamePrefix="react-select"
           className="text-black"
           noOptionsMessage={() => 'No options found'}
+          // Removed aria-activedescendant={undefined}
         />
       )}
     </div>
@@ -101,7 +104,7 @@ const SearchableDropdown = ({
 
 SearchableDropdown.propTypes = {
   label: PropTypes.string.isRequired,
-  apiEndpoint: PropTypes.string.isRequired, // Now required
+  apiEndpoint: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,
   required: PropTypes.bool,
   placeholder: PropTypes.string,

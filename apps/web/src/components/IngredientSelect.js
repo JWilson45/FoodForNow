@@ -1,14 +1,19 @@
+// /src/components/IngredientSelect.js
+'use client';
+
 import React from 'react';
-import SearchableDropdown from './SearchableDropdown';
+import dynamic from 'next/dynamic';
 import PropTypes from 'prop-types';
+
+// Dynamically import SearchableDropdown with no SSR
+const SearchableDropdown = dynamic(() => import('./SearchableDropdown'), {
+  ssr: false,
+});
 
 /**
  * IngredientSelect Component
  *
- * @param {function} onSelect - Callback when an ingredient is selected.
- * @param {boolean} required - Whether the field is required.
- * @param {string} name - Name attribute for the input.
- * @param {string} label - Label for the dropdown.
+ * Uses SearchableDropdown to load ingredients from the API.
  */
 const IngredientSelect = ({ onSelect, required, name, label }) => {
   const handleSelect = (selectedOption) => {
