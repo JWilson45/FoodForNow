@@ -1,3 +1,4 @@
+// /src/components/SearchableDropdown.js
 'use client';
 
 import React, { useState, useEffect } from 'react';
@@ -30,7 +31,6 @@ const SearchableDropdown = ({
         }
 
         const data = await response.json();
-        // Determine the data key based on the endpoint
         let dataKey = '';
         if (apiEndpoint.includes('recipes')) {
           dataKey = 'recipes';
@@ -73,6 +73,7 @@ const SearchableDropdown = ({
       ) : (
         <Select
           id={name}
+          instanceId={name} // Use a consistent instanceId
           name={name}
           options={options}
           isLoading={isLoading}

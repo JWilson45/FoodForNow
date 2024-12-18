@@ -1,3 +1,4 @@
+// /src/components/IngredientSelect.js
 'use client';
 
 import React from 'react';

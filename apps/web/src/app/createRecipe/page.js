@@ -125,9 +125,9 @@ export default function CreateRecipe() {
         unit: ing.unit.trim(),
         notes: ing.notes.trim() || undefined,
       })),
-      servings: parseInt(formData.servings),
-      prepTime: parseInt(formData.prepTime),
-      cookTime: parseInt(formData.cookTime),
+      servings: parseInt(formData.servings, 10),
+      prepTime: parseInt(formData.prepTime, 10),
+      cookTime: parseInt(formData.cookTime, 10),
       mealTime: formData.mealTime || undefined,
       cuisine: formData.cuisine || undefined,
       calories: formData.calories ? parseFloat(formData.calories) : undefined,
@@ -429,46 +429,46 @@ export default function CreateRecipe() {
             {/* Meal Time */}
             <div className="space-y-2">
               <Label htmlFor="recipeMealTime">Meal Time</Label>
-              <Select
+              <select
+                id="recipeMealTime"
                 value={formData.mealTime}
-                onValueChange={(value) =>
-                  setFormData({ ...formData, mealTime: value })
+                onChange={(e) =>
+                  setFormData({ ...formData, mealTime: e.target.value })
                 }
+                className="block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm"
               >
-                <SelectTrigger id="recipeMealTime">
-                  <SelectValue placeholder="Select meal time" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="breakfast">Breakfast</SelectItem>
-                  <SelectItem value="lunch">Lunch</SelectItem>
-                  <SelectItem value="dinner">Dinner</SelectItem>
-                  <SelectItem value="snack">Snack</SelectItem>
-                  <SelectItem value="dessert">Dessert</SelectItem>
-                </SelectContent>
-              </Select>
+                <option value="" disabled>
+                  Select meal time
+                </option>
+                <option value="breakfast">Breakfast</option>
+                <option value="lunch">Lunch</option>
+                <option value="dinner">Dinner</option>
+                <option value="snack">Snack</option>
+                <option value="dessert">Dessert</option>
+              </select>
             </div>
 
             {/* Cuisine */}
             <div className="space-y-2">
               <Label htmlFor="recipeCuisine">Cuisine</Label>
-              <Select
+              <select
+                id="recipeCuisine"
                 value={formData.cuisine}
-                onValueChange={(value) =>
-                  setFormData({ ...formData, cuisine: value })
+                onChange={(e) =>
+                  setFormData({ ...formData, cuisine: e.target.value })
                 }
+                className="block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm"
               >
-                <SelectTrigger id="recipeCuisine">
-                  <SelectValue placeholder="Select cuisine" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="italian">Italian</SelectItem>
-                  <SelectItem value="chinese">Chinese</SelectItem>
-                  <SelectItem value="mexican">Mexican</SelectItem>
-                  <SelectItem value="indian">Indian</SelectItem>
-                  <SelectItem value="american">American</SelectItem>
-                  <SelectItem value="other">Other</SelectItem>
-                </SelectContent>
-              </Select>
+                <option value="" disabled>
+                  Select cuisine
+                </option>
+                <option value="italian">Italian</option>
+                <option value="chinese">Chinese</option>
+                <option value="mexican">Mexican</option>
+                <option value="indian">Indian</option>
+                <option value="american">American</option>
+                <option value="other">Other</option>
+              </select>
             </div>
 
             {/* Calories */}
@@ -507,8 +507,8 @@ export default function CreateRecipe() {
               <Checkbox
                 id="recipeIsPublic"
                 checked={formData.isPublic}
-                onCheckedChange={(checked) =>
-                  setFormData({ ...formData, isPublic: checked })
+                onChange={(e) =>
+                  setFormData({ ...formData, isPublic: e.target.checked })
                 }
               />
               <Label htmlFor="recipeIsPublic">Make Public</Label>
