@@ -1,6 +1,16 @@
+// /apps/api/src/services/ingredients/index.js
+
+const fs = require('fs').promises;
+const {
+  fetchProductData,
+  decodeBarcode,
+} = require('../../utilities/barcode/barcodeReader');
+const { uploadMiddleware } = require('../../utilities/barcode/multerConfig');
 const Ingredient = require('../database/models/ingredient');
 
-// Create a new ingredient
+/**
+ * Creates a new ingredient.
+ */
 const createIngredient = async (req, res) => {
   try {
     const { name, description, calories, image, nutritionalInfo } = req.body;
@@ -47,7 +57,9 @@ const createIngredient = async (req, res) => {
   }
 };
 
-// Controller function to get all ingredients
+/**
+ * Retrieves all ingredients.
+ */
 const getIngredients = async (_, res) => {
   try {
     const ingredients = await Ingredient.find({}).lean();
@@ -61,7 +73,9 @@ const getIngredients = async (_, res) => {
   }
 };
 
-// Get a single ingredient by ID (no ownership enforced)
+/**
+ * Retrieves a single ingredient by ID.
+ */
 const getIngredientById = async (req, res) => {
   try {
     const { id } = req.params;
@@ -80,7 +94,9 @@ const getIngredientById = async (req, res) => {
   }
 };
 
-// Update an ingredient (no ownership enforced)
+/**
+ * Updates an existing ingredient by ID.
+ */
 const updateIngredient = async (req, res) => {
   try {
     const { id } = req.params;
@@ -111,9 +127,121 @@ const updateIngredient = async (req, res) => {
   }
 };
 
+/**
+ * Handles barcode lookup.
+ * @route GET /ingredients/barcode/lookup
+ */
+const handleBarcodeLookup = async (req, res) => {
+  try {
+    const { barcode } = req.query;
+
+    if (!barcode) {
+      return res
+        .status(400)
+        .json({ error: 'Please provide a barcode in the query parameter.' });
+    }
+
+    let ingredient = await Ingredient.findOne({ barcodeNumber: barcode });
+    if (ingredient) {
+      return res.status(200).json({
+        message: 'Ingredient already exists',
+        ingredient,
+      });
+    }
+
+    const productData = await fetchProductData(barcode);
+    if (!productData) {
+      return res
+        .status(404)
+        .json({ error: 'Product not found for the provided barcode.' });
+    }
+
+    ingredient = new Ingredient({
+      ...productData,
+      barcodeNumber: barcode,
+      createdBy: req.user.userId,
+    });
+
+    await ingredient.save();
+
+    res.status(201).json({
+      message: 'Ingredient created successfully from barcode lookup',
+      ingredient,
+    });
+  } catch (error) {
+    console.error('Error in handleBarcodeLookup:', error.message);
+    res.status(500).json({ error: error.message });
+  }
+};
+
+/**
+ * Handles barcode decoding and ingredient creation.
+ * @route POST /ingredients/barcode/decode
+ */
+const handleBarcodeDecode = (req, res) => {
+  uploadMiddleware(req, res, async (err) => {
+    if (err) {
+      console.error('Error in file upload:', err.message);
+      return res.status(400).json({ error: err.message });
+    }
+
+    if (!req.file) {
+      return res
+        .status(400)
+        .json({ error: 'Please upload an image containing the barcode.' });
+    }
+
+    try {
+      const barcode = await decodeBarcode(req.file.path);
+
+      // Cleanup the uploaded file
+      await fs.unlink(req.file.path);
+
+      if (!barcode) {
+        return res
+          .status(404)
+          .json({ error: 'No barcode detected in the uploaded image.' });
+      }
+
+      let ingredient = await Ingredient.findOne({ barcodeNumber: barcode });
+      if (ingredient) {
+        return res.status(200).json({
+          message: 'Ingredient already exists',
+          ingredient,
+        });
+      }
+
+      const productData = await fetchProductData(barcode);
+      if (!productData) {
+        return res
+          .status(404)
+          .json({ error: 'Product not found for the decoded barcode.' });
+      }
+
+      ingredient = new Ingredient({
+        ...productData,
+        barcodeNumber: barcode,
+        createdBy: req.user.userId,
+      });
+
+      await ingredient.save();
+
+      res.status(201).json({
+        message: 'Ingredient created successfully from barcode decode',
+        ingredient,
+      });
+    } catch (error) {
+      console.error('Error in handleBarcodeDecode:', error.message);
+      res.status(500).json({ error: error.message });
+    }
+  });
+};
+
 module.exports = {
   createIngredient,
   getIngredients,
   getIngredientById,
   updateIngredient,
+  handleBarcodeLookup,
+  handleBarcodeDecode,
 };

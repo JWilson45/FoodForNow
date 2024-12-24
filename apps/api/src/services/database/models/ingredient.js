@@ -13,6 +13,12 @@ const IngredientSchema = new Schema(
       lowercase: true,
     },
 
+    alias: {
+      type: String,
+      required: false,
+      trim: true,
+    },
+
     // Description is optional and trimmed
     description: {
       type: String,
@@ -26,7 +32,6 @@ const IngredientSchema = new Schema(
       required: false,
     },
 
-    // Image field is optional and stores binary data (or can be changed to a string for URLs)
     image: {
       type: Buffer, // Use a URL (String) instead if scalability or external storage is needed
       required: false,
@@ -38,6 +43,19 @@ const IngredientSchema = new Schema(
       protein: { type: Number }, // Protein content in grams
       carbohydrates: { type: Number }, // Carbohydrate content in grams
       fiber: { type: Number }, // Fiber content in grams
+      sodium: { type: Number }, // Sodium content in mg
+      salt: { type: Number }, // Salt content in mg
+    },
+
+    servingUnit: {
+      type: String,
+      trim: true,
+      required: false,
+    },
+
+    barcodeNumber: {
+      type: String,
+      required: false,
     },
 
     // Field to track the user who created the ingredient

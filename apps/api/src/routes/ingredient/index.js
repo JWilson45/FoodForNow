@@ -10,6 +10,8 @@ const {
   getIngredients,
   updateIngredient,
   getIngredientById,
+  handleBarcodeLookup,
+  handleBarcodeDecode,
 } = require('../../services/ingredients');
 
 const ingredientRouter = express.Router();
@@ -21,7 +23,7 @@ ingredientRouter.post(
   createIngredient
 );
 
-// GET all ingredients for authenticated users
+// GET all ingredients
 ingredientRouter.get('/', getIngredients);
 
 // GET ingredient by ID
@@ -39,8 +41,8 @@ ingredientRouter.put(
   updateIngredient
 );
 
-ingredientRouter.all('/', async (_, res) => {
-  res.status(200).send('ingredients!');
-});
+// Barcode-related routes
+ingredientRouter.get('/barcode/lookup', handleBarcodeLookup);
+ingredientRouter.post('/barcode/decode', handleBarcodeDecode);
 
 module.exports = ingredientRouter;
