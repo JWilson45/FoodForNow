@@ -1,3 +1,5 @@
+// /apps/api/src/services/ingredients/index.js
+
 const Ingredient = require('../database/models/ingredient');
 
 // Create a new ingredient

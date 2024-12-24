@@ -1,3 +1,5 @@
+// /apps/api/src/routes/ingredient/index.js
+
 const express = require('express');
 const validate = require('../../middleware/validate');
 const {
@@ -12,6 +14,8 @@ const {
   getIngredientById,
 } = require('../../services/ingredients');
 
+const barcodeRouter = require('./barcode');
+
 const ingredientRouter = express.Router();
 
 // CREATE ingredient
@@ -21,7 +25,7 @@ ingredientRouter.post(
   createIngredient
 );
 
-// GET all ingredients for authenticated users
+// GET all ingredients
 ingredientRouter.get('/', getIngredients);
 
 // GET ingredient by ID
@@ -38,6 +42,9 @@ ingredientRouter.put(
   validate(updateIngredientValidationSchema, 'body'),
   updateIngredient
 );
+
+// Barcode-related routes
+ingredientRouter.use('/barcode', barcodeRouter);
 
 ingredientRouter.all('/', async (_, res) => {
   res.status(200).send('ingredients!');
