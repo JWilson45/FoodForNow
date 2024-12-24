@@ -10,40 +10,31 @@ const axios = require('axios');
  */
 const decodeBarcode = (imagePath) => {
   return new Promise((resolve, reject) => {
-    try {
-      Quagga.decodeSingle(
-        {
-          src: imagePath,
-          numOfWorkers: 0, // Use 0 for Node.js
-          inputStream: {
-            size: 1280, // Resize image for better performance
-          },
-          locator: {
-            halfSample: true, // Faster processing for large images
-          },
-          decoder: {
-            readers: [
-              'code_128_reader',
-              'ean_reader',
-              'upc_reader',
-              'upc_e_reader',
-              'code_39_reader',
-            ],
-          },
-          locate: true, // Locate the barcode in the image
+    Quagga.decodeSingle(
+      {
+        src: imagePath,
+        numOfWorkers: 0,
+        inputStream: { size: 1280 },
+        locator: { halfSample: true },
+        decoder: {
+          readers: [
+            'code_128_reader',
+            'ean_reader',
+            'upc_reader',
+            'upc_e_reader',
+            'code_39_reader',
+          ],
         },
-        (result) => {
-          if (result && result.codeResult && result.codeResult.code) {
-            resolve(result.codeResult.code);
-          } else {
-            reject(new Error('No barcode found in the image.'));
-          }
+        locate: true,
+      },
+      (result) => {
+        if (result?.codeResult?.code) {
+          resolve(result.codeResult.code);
+        } else {
+          reject(new Error('No barcode found in the image.'));
         }
-      );
-    } catch (error) {
-      console.error('Error in Quagga decoding:', error.message);
-      reject(new Error('Failed to process the image.'));
-    }
+      }
+    );
   });
 };
 

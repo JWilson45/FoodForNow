@@ -128,102 +128,111 @@ const updateIngredient = async (req, res) => {
 };
 
 /**
- * Looks up or creates an ingredient based on a barcode.
+ * Handles barcode lookup.
+ * @route GET /ingredients/barcode/lookup
  */
-const lookupProductByBarcode = async (barcode, userId) => {
-  let ingredient = await Ingredient.findOne({ barcodeNumber: barcode });
-  if (ingredient) {
-    return { message: 'Ingredient already exists', ingredient };
-  }
-
-  const productData = await fetchProductData(barcode);
-  if (!productData) {
-    throw new Error('Product data not found for the provided barcode.');
-  }
-
-  ingredient = new Ingredient({
-    name: productData.name,
-    description: productData.description,
-    calories: productData.calories,
-    nutritionalInfo: productData.nutritionalInfo,
-    servingUnit: productData.servingUnit,
-    barcodeNumber: barcode,
-    createdBy: userId,
-  });
-  await ingredient.save();
-
-  return { message: 'Ingredient imported successfully', ingredient };
-};
-
-/**
- * Decodes a barcode from an uploaded image and creates an ingredient.
- */
-const decodeBarcodeImageFallback = async (imagePath, userId) => {
-  try {
-    const barcode = await decodeBarcode(imagePath);
-    await fs.unlink(imagePath); // Cleanup file
-    if (!barcode) {
-      throw new Error('No barcode detected in the image.');
-    }
-    return await lookupProductByBarcode(barcode, userId);
-  } catch (error) {
-    console.error('Error in decoding barcode image:', error.message);
-    await fs.unlink(imagePath).catch(() => null); // Ensure file cleanup
-    throw new Error(`Failed to decode barcode: ${error.message}`);
-  }
-};
-
-/**
- * Handler for GET /ingredients/barcode/lookup
- */
-const barcodeLookupHandler = async (req, res) => {
+const handleBarcodeLookup = async (req, res) => {
   try {
     const { barcode } = req.query;
+
     if (!barcode) {
       return res
         .status(400)
         .json({ error: 'Please provide a barcode in the query parameter.' });
     }
 
-    const data = await lookupProductByBarcode(barcode, req.user.userId);
-    return res.json(data);
+    let ingredient = await Ingredient.findOne({ barcodeNumber: barcode });
+    if (ingredient) {
+      return res.status(200).json({
+        message: 'Ingredient already exists',
+        ingredient,
+      });
+    }
+
+    const productData = await fetchProductData(barcode);
+    if (!productData) {
+      return res
+        .status(404)
+        .json({ error: 'Product not found for the provided barcode.' });
+    }
+
+    ingredient = new Ingredient({
+      ...productData,
+      barcodeNumber: barcode,
+      createdBy: req.user.userId,
+    });
+
+    await ingredient.save();
+
+    res.status(201).json({
+      message: 'Ingredient created successfully from barcode lookup',
+      ingredient,
+    });
   } catch (error) {
-    console.error('Error in barcodeLookupHandler:', error.message);
-    return res.status(500).json({ error: error.message });
+    console.error('Error in handleBarcodeLookup:', error.message);
+    res.status(500).json({ error: error.message });
   }
 };
 
 /**
- * Handler for POST /ingredients/barcode/decode
+ * Handles barcode decoding and ingredient creation.
+ * @route POST /ingredients/barcode/decode
  */
-const barcodeDecodeHandler = (req, res) => {
-  // Apply the multer middleware to handle file upload
+const handleBarcodeDecode = (req, res) => {
   uploadMiddleware(req, res, async (err) => {
-    if (err instanceof multer.MulterError) {
-      // A Multer error occurred when uploading.
-      console.error('Multer error:', err.message);
-      return res.status(400).json({ error: err.message });
-    } else if (err) {
-      // An unknown error occurred when uploading.
-      console.error('Unknown upload error:', err.message);
+    if (err) {
+      console.error('Error in file upload:', err.message);
       return res.status(400).json({ error: err.message });
     }
 
     if (!req.file) {
-      return res.status(400).json({
-        error: 'Please upload an image file containing the barcode.',
-      });
+      return res
+        .status(400)
+        .json({ error: 'Please upload an image containing the barcode.' });
     }
 
     try {
-      const data = await decodeBarcodeImageFallback(
-        req.file.path,
-        req.user.userId
-      );
-      return res.json(data);
+      const barcode = await decodeBarcode(req.file.path);
+
+      // Cleanup the uploaded file
+      await fs.unlink(req.file.path);
+
+      if (!barcode) {
+        return res
+          .status(404)
+          .json({ error: 'No barcode detected in the uploaded image.' });
+      }
+
+      let ingredient = await Ingredient.findOne({ barcodeNumber: barcode });
+      if (ingredient) {
+        return res.status(200).json({
+          message: 'Ingredient already exists',
+          ingredient,
+        });
+      }
+
+      const productData = await fetchProductData(barcode);
+      if (!productData) {
+        return res
+          .status(404)
+          .json({ error: 'Product not found for the decoded barcode.' });
+      }
+
+      ingredient = new Ingredient({
+        ...productData,
+        barcodeNumber: barcode,
+        createdBy: req.user.userId,
+      });
+
+      await ingredient.save();
+
+      res.status(201).json({
+        message: 'Ingredient created successfully from barcode decode',
+        ingredient,
+      });
     } catch (error) {
-      console.error('Error in barcodeDecodeHandler:', error.message);
-      return res.status(500).json({ error: error.message });
+      console.error('Error in handleBarcodeDecode:', error.message);
+      res.status(500).json({ error: error.message });
     }
   });
 };
@@ -233,6 +242,6 @@ module.exports = {
   getIngredients,
   getIngredientById,
   updateIngredient,
-  barcodeLookupHandler,
-  barcodeDecodeHandler,
+  handleBarcodeLookup,
+  handleBarcodeDecode,
 };

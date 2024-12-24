@@ -1,5 +1,3 @@
-// /apps/api/src/routes/ingredient/index.js
-
 const express = require('express');
 const validate = require('../../middleware/validate');
 const {
@@ -12,8 +10,8 @@ const {
   getIngredients,
   updateIngredient,
   getIngredientById,
-  barcodeLookupHandler,
-  barcodeDecodeHandler,
+  handleBarcodeLookup,
+  handleBarcodeDecode,
 } = require('../../services/ingredients');
 
 const ingredientRouter = express.Router();
@@ -44,15 +42,7 @@ ingredientRouter.put(
 );
 
 // Barcode-related routes
-// GET /ingredients/barcode/lookup?barcode=123456
-ingredientRouter.get('/barcode/lookup', barcodeLookupHandler);
-
-// POST /ingredients/barcode/decode
-ingredientRouter.post('/barcode/decode', barcodeDecodeHandler);
-
-// Fallback for all other routes
-ingredientRouter.all('/', async (_, res) => {
-  res.status(200).send('ingredients!');
-});
+ingredientRouter.get('/barcode/lookup', handleBarcodeLookup);
+ingredientRouter.post('/barcode/decode', handleBarcodeDecode);
 
 module.exports = ingredientRouter;
