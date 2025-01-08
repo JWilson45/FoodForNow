@@ -3,7 +3,7 @@
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const morgan = require('morgan');
-const cors = require('cors'); // Import CORS
+const cors = require('cors');
 
 const routes = require('./routes');
 const errorHandler = require('./middleware/errorHandler');
@@ -45,9 +45,18 @@ app.use((_, res) => {
 // Centralized Error Handling Middleware
 app.use(errorHandler);
 
-// Start Server after Database Connection
-const PORT = process.env.PORT || 9696;
-app.listen(PORT, async () => {
+// Get the port from command-line arguments or environment variable
+const args = process.argv.slice(2);
+let port = 9696; // default port
+const portFlagIndex = args.indexOf('--port');
+if (portFlagIndex !== -1 && args[portFlagIndex + 1]) {
+  const parsedPort = parseInt(args[portFlagIndex + 1], 10);
+  if (!isNaN(parsedPort)) {
+    port = parsedPort;
+  }
+}
+
+app.listen(port, async () => {
   await connectDB(); // Ensure database is connected before starting the server
-  console.log(`Server is running on port ${PORT}`);
+  console.log(`Meal Server is running on port ${port}`);
 });

@@ -6,13 +6,20 @@
     "apps/*"
   ],
   "scripts": {
+    "start": "concurrently \"npm start --workspace=api -- --port 3001\" \"npm start --workspace=ingredient -- --port 3002\" \"npm start --workspace=meal -- --port 3003\" \"npm start --workspace=pantry -- --port 3004\" \"npm start --workspace=user -- --port 3005\" \"npm start --workspace=recipe -- --port 3006\" \"npm start --workspace=web -- -p 3000\"",
     "dev:api": "npm run dev --workspace=api",
+    "dev:ingredient": "npm run dev --workspace=ingredient",
+    "dev:meal": "npm run dev --workspace=meal",
+    "dev:pantry": "npm run dev --workspace=pantry",
+    "dev:user": "npm run dev --workspace=user",
+    "dev:recipe": "npm run dev --workspace=recipe",
     "dev:web": "npm run dev --workspace=web",
-    "dev": "npm run dev:api & npm run dev:web",
-    "format": "npm run format --workspaces",
+    "dev": "concurrently \"npm run dev:api\" \"npm run dev:ingredient\" \"npm run dev:meal\" \"npm run dev:pantry\" \"npm run dev:user\" \"npm run dev:recipe\" \"npm run dev:web\"",
+    "format": "prettier --write .",
     "test": "npm run test --workspaces"
   },
   "devDependencies": {
+    "concurrently": "^9.1.2",
     "prettier": "^3.3.3"
   }
 }

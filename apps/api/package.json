@@ -4,8 +4,8 @@
   "description": "FoodForNow Express API Server",
   "main": "./src/server.js",
   "scripts": {
-    "dev": "node --watch --env-file=.env .",
-    "start": "node --env-file=.env .",
+    "dev": "node --watch --env-file=.env src/server.js",
+    "start": "node src/server.js",
     "test": "npx jest",
     "format": "prettier --write ."
   },
